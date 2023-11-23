@@ -212,7 +212,7 @@ code, code > * {
   white-space: pre-wrap !important;
 }
 .article-content > code, .article-content > p > code, .article-content > ul > li > p > code, .article-content > ul > li > code {
-  color: #000;
+  color: #fff;
   font-size: 13px;
   background: #e2e8f0;
   padding: 0.25rem;
