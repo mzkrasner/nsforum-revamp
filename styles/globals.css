@@ -43,15 +43,15 @@ html {
   --brand-color-hover: #ffffff;
 
   --brand-color-400: #D02128;
-  --brand-color-400-reverse: #111111;
+  --brand-color-400-reverse: #fff;
 
 
   --primary-color: #ffffff;
   --secondary-color: #ffffff;
   --tertiary-color: #ffffff;
-  --border-primary: #4F4F4F;
+  --border-primary: #ffffff;
   --border-secondary: #F2F2F2;
-  --border-tertary: #020617;
+  --border-tertary: #fff;
   --brand-blue: #FF000A;
   /***/
 
