@@ -49,9 +49,9 @@ html {
   --primary-color: #ffffff;
   --secondary-color: #ffffff;
   --tertiary-color: #ffffff;
-  --border-primary: #ffffff;
+  --border-primary: #4F4F4F;
   --border-secondary: #F2F2F2;
-  --border-tertary: #fff;
+  --border-tertary: #020617;
   --brand-blue: #FF000A;
   /***/
 
@@ -178,7 +178,7 @@ p, ul, li, span, input, button {
   color: #FFF !important;
 }
 .article-content a {
-  color: #000;
+  color: #fff;
   font-weight: 600;
 }
 .article-content a:hover {
