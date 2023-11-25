@@ -242,7 +242,7 @@ code, code > * {
 }
 /* trying to update comments to black background*/
 .comments-section {
-  background-color: #111111;
+  background-color: rgb(0,0,0);
 }
 
 
