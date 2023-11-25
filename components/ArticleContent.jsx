@@ -134,7 +134,7 @@ export default function ArticleContent({post}) {
 export const theme = {
   "code[class*=\"language-\"]": {
     "background": "transparent",
-    "color": "#FFFFFF",
+    "color": "#111111",
     "fontSize": "#12px",
     "textShadow": "0 1px rgba(0, 0, 0, 0.3)",
     "direction": "ltr",
