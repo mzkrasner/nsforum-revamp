@@ -119,7 +119,7 @@ export default function ArticleContent({post}) {
 
         {/** Show commenting feed only if not new post  */}
         {post.stream_id &&
-          <div className="mt-8">
+          <div className="mt-8" style={{ backgroundColor: 'black' }}>
             <Discussion context={post.content.context} master={post.stream_id} />
           </div>
         }
