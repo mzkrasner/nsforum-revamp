@@ -153,7 +153,7 @@ export const theme = {
   },
   "pre[class*=\"language-\"]": {
     "background": "#142438",
-    "color": "#FFFFFF",
+    "color": "#111111",
     "direction": "ltr",
     "textAlign": "left",
     "whiteSpace": "pre",
