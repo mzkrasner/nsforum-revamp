@@ -119,7 +119,7 @@ export default function ArticleContent({post}) {
 
         {/** Show commenting feed only if not new post  */}
         {post.stream_id &&
-          <div className="mt-8">
+          <div className="mt-8 comments-section">
             <Discussion context={post.content.context} master={post.stream_id} />
           </div>
         }
@@ -134,7 +134,7 @@ export default function ArticleContent({post}) {
 export const theme = {
   "code[class*=\"language-\"]": {
     "background": "transparent",
-    "color": "#FFFFFF",
+    "color": "#111111",
     "fontSize": "#12px",
     "textShadow": "0 1px rgba(0, 0, 0, 0.3)",
     "direction": "ltr",
@@ -153,7 +153,7 @@ export const theme = {
   },
   "pre[class*=\"language-\"]": {
     "background": "#142438",
-    "color": "#FFFFFF",
+    "color": "#111111",
     "direction": "ltr",
     "textAlign": "left",
     "whiteSpace": "pre",

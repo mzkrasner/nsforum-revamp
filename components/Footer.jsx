@@ -56,7 +56,7 @@ function Footer() {
             </ul>
 
             {/* Copyright
-            <div className="text-sm text-secondary">Copyright © Orbis Labs. All rights reserved.</div> */}
+            <div className="text-sm text-secondary">Copyright © BanklessDeSci. All rights reserved.</div> */}
           </div>
         </div>
       </div>

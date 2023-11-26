@@ -240,6 +240,11 @@ code, code > * {
    padding-bottom: 5px;
    padding-right: 5px;
 }
+/* trying to update comments to black background*/
+.comments-section {
+  background-color: black;
+}
+
 
 /** Minor utilities */
 .min-height-200 {
