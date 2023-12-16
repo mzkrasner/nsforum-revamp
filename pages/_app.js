@@ -1,5 +1,5 @@
 
-import '@/styles/globals.css'
+import '../styles/globals.css'
 import { Orbis, OrbisProvider } from "@orbisclub/components";
 import "@orbisclub/components/dist/index.modern.css";
 import React, { useEffect, useState } from 'react';
@@ -9,13 +9,13 @@ import { GlobalContext } from "../contexts/GlobalContext";
  * Set the global forum context here (you can create categories using the dashboard by clicking on "Create a sub-context"
  * from your main forum context)
  */
-global.orbis_context = "kjzl6cwe1jw14a0hk6aa2v861m4uz3plo20suhkasrnwm9nnhwflxjobudolhc9";
+global.orbis_context = "";
 
 /**
  * Set the global chat context here (the chat displayed when users click on the "Community Chat" button).
  * The Community Chat button will be displayed only if this variable is set
  */
-global.orbis_chat_context = "kjzl6cwe1jw14a0hk6aa2v861m4uz3plo20suhkasrnwm9nnhwflxjobudolhc9";
+global.orbis_chat_context = "";
 
 let orbis = new Orbis({
   useLit: true,
