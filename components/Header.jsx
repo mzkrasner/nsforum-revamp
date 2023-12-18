@@ -54,11 +54,16 @@ function Header() {
       const selectedWallet = await silkProvider.loginSelector()
 
       if (selectedWallet === 'silk') {
+        // Setting selectedEthereumProvider on window is a hack so that
+        // we can access the provider elsewhere in the app. For some reason,
+        // orbis doesn't seem to expose the provider on the orbis object.
+        window.selectedEthereumProvider = silkProvider
         const result = await orbis.connect_v2({
           provider: silkProvider,
         })
         setUser(result?.details)
       } else if (selectedWallet === 'injected') {
+        window.selectedEthereumProvider = window.ethereum
         const result = await orbis.connect_v2({
           provider: window.ethereum,
         })
