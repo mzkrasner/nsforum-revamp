@@ -1,5 +1,7 @@
 # Attestation-Gated Forum Template
 
+This branch contains an integration to create and vote on Snapshot proposals from within the forum.
+
 A template for setting up attestation-gated decentralized forums built with Ceramic (using ComposeDB), Orbis SDK, and Hololym. 
 
 ## Getting Started (to be updated)
