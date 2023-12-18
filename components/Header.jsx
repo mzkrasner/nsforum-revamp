@@ -3,16 +3,24 @@ import Link from 'next/link';
 import { Logo, PanelRight, SearchIcon, MenuVerticalIcon, LoadingCircle, PassportLogo, PassportLogoWhite } from "./Icons";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { useOrbis, User, UserPopup, Chat, Post } from "@orbisclub/components";
+import { initSilk } from '@silk-wallet/silk-wallet-sdk';
 import { getTimestamp } from "../utils";
 import { GlobalContext } from "../contexts/GlobalContext";
 import { getPassport } from "../utils/passport";
 
 function Header() {
-  const { orbis, user, connecting, setConnectModalVis } = useOrbis();
+  const { orbis, user, setUser, connecting, setConnectModalVis } = useOrbis();
   const [showCommunityChat, setShowCommunityChat] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
+  const [silkProvider, setSilkProvider] = useState(null);
+
+  useEffect(() => {
+    const silk = initSilk()
+    setSilkProvider(silk)
+  }, [])
+  
   useEffect(() => {
     getLastTimeRead();
 
@@ -39,6 +47,34 @@ function Header() {
   function openCommunityChat() {
     setShowCommunityChat(true);
     setHasUnreadMessages(false);
+  }
+
+  async function onClickConnect() {
+    try {
+      const selectedWallet = await silkProvider.loginSelector()
+
+      if (selectedWallet === 'silk') {
+        // Setting selectedEthereumProvider on window is a hack so that
+        // we can access the provider elsewhere in the app. For some reason,
+        // orbis doesn't seem to expose the provider on the orbis object.
+        window.selectedEthereumProvider = silkProvider
+        const result = await orbis.connect_v2({
+          provider: silkProvider,
+        })
+        setUser(result?.details)
+      } else if (selectedWallet === 'injected') {
+        window.selectedEthereumProvider = window.ethereum
+        const result = await orbis.connect_v2({
+          provider: window.ethereum,
+        })
+        setUser(result?.details)
+      } else if (selectedWallet === 'walletconnect') {
+        // TODO...
+        // See https://docs.useorbis.com/sdk/methods/connection/connect_v2
+      }
+    } catch (err) {
+      console.error('Connect error:', err)
+    }
   }
 
   return (
@@ -87,7 +123,7 @@ function Header() {
                     {connecting ?
                       <div className="btn-sm btn-main w-full" onClick={() => setConnectModalVis(true)}><LoadingCircle style={{marginRight: 3}} /> Connecting</div>
                     :
-                      <div className="btn-sm btn-main w-full" onClick={() => setConnectModalVis(true)}>Connect</div>
+                      <div className="btn-sm btn-main w-full" onClick={onClickConnect}>Connect</div>
                     }
 
                   </li>

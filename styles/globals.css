@@ -39,11 +39,11 @@ html {
   --bg-secondary: #7E4343;
 
   --brand-color: #D02128;
-  --brand-color-reverse: #111111;
-  --brand-color-hover: #313131;
+  --brand-color-reverse: #ffffff;
+  --brand-color-hover: #ffffff;
 
   --brand-color-400: #D02128;
-  --brand-color-400-reverse: #111111;
+  --brand-color-400-reverse: #fff;
 
 
   --primary-color: #ffffff;
@@ -178,7 +178,7 @@ p, ul, li, span, input, button {
   color: #FFF !important;
 }
 .article-content a {
-  color: #000;
+  color: #fff;
   font-weight: 600;
 }
 .article-content a:hover {
@@ -212,7 +212,7 @@ code, code > * {
   white-space: pre-wrap !important;
 }
 .article-content > code, .article-content > p > code, .article-content > ul > li > p > code, .article-content > ul > li > code {
-  color: #000;
+  color: #fff;
   font-size: 13px;
   background: #e2e8f0;
   padding: 0.25rem;
@@ -240,6 +240,11 @@ code, code > * {
    padding-bottom: 5px;
    padding-right: 5px;
 }
+/* trying to update comments to black background*/
+.comments-section {
+  background-color: black;
+}
+
 
 /** Minor utilities */
 .min-height-200 {
