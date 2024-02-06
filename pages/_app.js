@@ -2,7 +2,7 @@
 import '../styles/globals.css'
 import { Orbis, OrbisProvider } from "@orbisclub/components";
 import "@orbisclub/components/dist/index.modern.css";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { GlobalContext } from "../contexts/GlobalContext";
 
 /**
@@ -28,7 +28,7 @@ let orbis = new Orbis({
 export default function App({ Component, pageProps }) {
   return(
     <OrbisProvider defaultOrbis={orbis} authMethods={["metamask", "wallet-connect", "email"]}>
-      <GlobalContext.Provider>
+      <GlobalContext.Provider value={{orbis: orbis}}>
         <Component {...pageProps} />
       </GlobalContext.Provider>
     </OrbisProvider>

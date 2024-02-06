@@ -1,6 +1,6 @@
 export function getActiveProposals() {
   const apiUrl = 'https://hub.snapshot.org/graphql';
-  const space = 'banklessdesi.eth';
+  const space = 'majac.eth';
 
   const query = `
     {

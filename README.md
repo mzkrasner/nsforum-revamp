@@ -1,8 +1,10 @@
-# Attestation-Gated Forum Template
+# Attestation-Gated Forum Template (Snapshot + Shared Node)
 
 This branch contains an integration to create and vote on Snapshot proposals from within the forum.
 
-A template for setting up attestation-gated decentralized forums built with Ceramic (using ComposeDB), Orbis SDK, and Hololym. 
+A template for setting up attestation-gated decentralized forums built with Ceramic (using ComposeDB), Orbis SDK, and Hololym.
+
+Finally, this branch uses an existing dummy shared node.
 
 ## Getting Started (to be updated)
 
@@ -20,7 +22,7 @@ npm install
 npm run author
 ```
 
-4. Generate your Ceramic admin seed, DID, and ComposeDB configuration file. Copy-paste the resulting string found in your admin_seed.txt file into your `SEED` field in your .env file:
+4. Generate the seed your setup script will use. Copy-paste the resulting string found in your admin_seed.txt file into your `SEED` field in your .env file:
 
 ```bash
 npm run generate

@@ -9,7 +9,7 @@ import { definition } from "../../src/__generated__/definition.js";
 export default async function getList(req, res) {
   //instantiate a composeDB client instance
   const composeClient = new ComposeClient({
-    ceramic: "http://localhost:7007",
+    ceramic: "https://ceramic-temp.hirenodes.io",
     definition,
   });
 

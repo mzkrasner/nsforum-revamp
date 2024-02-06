@@ -15,11 +15,11 @@ export default async function handler(req, res) {
   const { message, uid, account, domain, types, signature } = req.body;
   console.log(env.AUTHOR_KEY);
   //instantiate a ceramic client instance
-  const ceramic = new CeramicClient("http://localhost:7007");
+  const ceramic = new CeramicClient("https://ceramic-temp.hirenodes.io");
 
   //instantiate a composeDB client instance
   const composeClient = new ComposeClient({
-    ceramic: "http://localhost:7007",
+    ceramic: "https://ceramic-temp.hirenodes.io",
     definition,
   });
 

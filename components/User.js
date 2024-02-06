@@ -146,7 +146,7 @@ export default function Create() {
                           <div className="flex flex-row">
                             <p className="text-base text-secondary mb-2 text-right">
                               <a
-                                href={`http://localhost:7007/api/v0/streams/${a.id}`}
+                                href={`https://ceramic-temp.hirenodes.io/api/v0/streams/${a.id}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="text-blue-500"

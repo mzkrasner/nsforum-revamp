@@ -11,7 +11,7 @@ export default async function createAttestation(
 
   //instantiate a composeDB client instance
   const composeClient = new ComposeClient({
-    ceramic: "http://localhost:7007",
+    ceramic: "https://ceramic-temp.hirenodes.io",
     definition,
   });
 

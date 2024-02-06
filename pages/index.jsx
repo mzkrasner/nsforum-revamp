@@ -7,22 +7,7 @@ import Sidebar from "../components/Sidebar";
 import PostItem from "../components/PostItem";
 import Footer from "../components/Footer";
 import { LoadingCircle } from "../components/Icons";
-import { Orbis, useOrbis } from "@orbisclub/components";
-import useDidToAddress from "../hooks/useDidToAddress";
-// pages/index.js
-import React from 'react';
-import ProposalForm from '../components/ProposalForm';
-
-const Home = () => {
-  return (
-    <div>
-      <h1>Create Proposal</h1>
-      <ProposalForm />
-    </div>
-  );
-};
-
-export default Home;
+import { useOrbis } from "@orbisclub/components";
 
 
 function Home({ defaultPosts }) {
