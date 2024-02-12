@@ -1,5 +1,6 @@
 
 import '../styles/globals.css'
+import "../styles/survey.css"
 import { Orbis, OrbisProvider } from "@orbisclub/components";
 import "@orbisclub/components/dist/index.modern.css";
 import React from 'react';

@@ -10,7 +10,8 @@ import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 import { useOrbis, User } from "@orbisclub/components";
 import { Web3Provider } from "@ethersproject/providers";
-import { getActiveProposals } from "../utils/snapshot";
+import { getActiveProposals, getSingleProposal } from "../utils/snapshot";
+import { set } from "zod";
 
 const surveyJson = {
   elements: [
@@ -38,12 +39,16 @@ export default function Create() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [status, setStatus] = useState(0);
+  const [surv, setSurv] = useState();
   const [choices, setChoices] = useState([]);
   const [choice, setChoice] = useState("");
+  const [reason, setReason] = useState("");
   const [toolbarStyle, setToolbarStyle] = useState({});
   const [type, setType] = useState("single-choice");
-  const [mediaLoading, setMediaLoading] = useState(false);
+  const [voting, setVoting] = useState(false);
+  const [proposal, setProposal] = useState({});
   const [proposals, setProposals] = useState([]);
+  const [vote, setVote] = useState("");
   const textareaRef = useRef();
   const survey = new Model(surveyJson);
   survey.onComplete.add(onCompleteProposal);
@@ -154,6 +159,91 @@ export default function Create() {
     }
   };
 
+  const completeVote = async (proposal) => {
+    if (!reason) {
+      alert("Please provide a reason for your vote.");
+      return;
+    }
+    try {
+      const provider = window.selectedEthereumProvider ?? window.ethereum;
+      const web3 = new Web3Provider(provider);
+      const [account] = await web3.listAccounts();
+
+      const hub = "https://hub.snapshot.org"; // or https://testnet.hub.snapshot.org for testnet
+      const client = new snapshot.Client712(hub);
+
+      const prop = {
+        space: "majac.eth",
+        proposal,
+        type: "single-choice",
+        choice: 1,
+        reason,
+        app: "my-app",
+      };
+      console.log("prop", prop);
+
+      const receipt = await client.vote(web3, account, prop);
+
+      console.log("receipt", receipt);
+      if (receipt.id) {
+        alert("Vote submitted!");
+        setTitle("");
+        setBody("");
+        setChoices([]);
+        setChoice("");
+        setReason("");
+        setType("single-choice");
+        setVoting(false);
+      }
+    } catch (err) {
+      // Temporary error handling
+      console.error(err);
+      alert("Error creating proposal. Check the console for details.");
+    }
+  };
+
+  const getProposal = async (id) => {
+    setVoting(true);
+    const prop = await getSingleProposal(id);
+    const arr = prop.proposal.choices;
+    const choices = arr.map((choice) => {
+      return { value: choice, text: choice };
+    });
+    console.log("choices", choices);
+    const json = {
+      showCompletedPage: "false",
+      showQuestionNumbers: false,
+      focusFirstQuestionAutomatic: false,
+      completeText: "Submit",
+      title: "Snapshot Voting",
+      description: prop.proposal.body,
+      elements: [
+        {
+          type: "radiogroup",
+          isRequired: true,
+          name: "feature",
+          title: prop.proposal.title,
+          showOtherItem: false,
+          choices,
+        },
+      ],
+    };
+    const survey = new Model(json);
+    // survey.onComplete.add(onCompleteProposal);
+    setSurv(survey);
+
+    const provider = window.selectedEthereumProvider ?? window.ethereum;
+    const web3 = new Web3Provider(provider);
+    const ens = await web3.lookupAddress(prop.proposal.author);
+    console.log("ens", ens);
+    if (ens !== null) {
+      prop.proposal.author = ens;
+    }
+    console.log("prop", prop.proposal);
+    setProposal({ ...prop.proposal });
+    console.log("proposal", proposal);
+  };
+
   useEffect(() => {
     if (global.orbis_context) {
       console.log(global.orbis_context);
@@ -204,7 +294,7 @@ export default function Create() {
               <Header />
               <Hero
                 title="Create a New Proposal on the BanklessDeSci Hub"
-                description="You are about to share a new post. Make sure to read our rules before doing so."
+                description="You are about to share a new proposal. Make sure to read our rules before doing so."
                 image
               />
 
@@ -214,7 +304,7 @@ export default function Create() {
                   <div className="md:flex md:justify-between">
                     {/* Show post editor or connect button */}
                     <div className="md:grow pt-0 pb-12 pr-10">
-                      {user ? (
+                      {user && !voting ? (
                         <>
                           {create ? (
                             <>
@@ -251,13 +341,6 @@ export default function Create() {
                                     <option value="single-choice">
                                       Single Choice
                                     </option>
-                                    <option value="weighted">Weighted</option>
-                                    <option value="approval">Approval</option>
-                                    <option value="quadratic">Quadratic</option>
-                                    <option value="ranked-choice">
-                                      Ranked Choice
-                                    </option>
-                                    <option value="basic">Basic</option>
                                   </select>
                                 </form>
                                 {type !== "basic" && (
@@ -325,6 +408,65 @@ export default function Create() {
                             </>
                           )}
                         </>
+                      ) : user && voting ? (
+                        <>
+                          <div className="">
+                            <h2 className="text-1xl text-secondary mb-2">
+                              Proposal Title: <br />
+                              <span className="text-2xl">{proposal.title}</span>
+                            </h2>
+                            <p className="text-base text-secondary mb-2">
+                              Created By: <br />
+                              <span className="text-xl">{proposal.author}</span>
+                            </p>
+                            <p className="text-base text-secondary mb-2">
+                              Description: <br />
+                              <span className="">{proposal.body}</span>
+                            </p>
+
+                            {proposal.choices &&
+                              proposal.choices.length > 0 && (
+                                <div className="flex flex-col">
+                                  <h3 className="text-lg text-secondary">
+                                    Choices
+                                  </h3>
+                            
+                                    <select
+                                      className="text-center text-black mt-2 mb-2 w-1/2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                      onChange={(e) => setVote(e.target.value)}
+                                    >
+                                      {proposal.choices.map((choice, index) => (
+                                        <option key={index} value={choice}>
+                                          {choice}
+                                        </option>
+                                      ))}
+                                    </select>
+                               
+                                  <TextareaAutosize
+                                    className="resize-none w-full h-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                    placeholder="Reason for your choice"
+                                    value={reason}
+                                    onChange={(e) => setReason(e.target.value)}
+                                  />
+                                </div>
+                              )}
+                            {/* {surv && <Survey model={surv} className='sa-poll-table'/>} */}
+                          </div>
+                          <button
+                            className="btn-sm py-1.5 btn-main mt-2 mr-2"
+                            onClick={() => {
+                              completeVote(proposal.id);
+                            }}
+                          >
+                            Vote
+                          </button>
+                          <button
+                            className="btn-sm py-1.5 btn-secondary mt-2"
+                            onClick={() => setVoting(false)}
+                          >
+                            Back
+                          </button>
+                        </>
                       ) : (
                         <div className="w-full text-center bg-slate-50 rounded border border-primary bg-secondary p-6">
                           <p className="text-base text-secondary mb-2">
@@ -339,23 +481,26 @@ export default function Create() {
                           </button>
                         </div>
                       )}
-                      {proposals.map((proposal) => (
-                        <div className="mt-8 text-white" key={proposal.id}>
-                          <div className="flex justify-between items-center">
-                            <h2>{proposal.title}</h2>
-                            <button
-                              className="btn-sm py-1.5 btn-brand"
-                              onClick={async () => {
-                                window.open(
-                                  `https://snapshot.org/#/majac.eth/proposal/${proposal.id}`
-                                );
-                              }}
-                            >
-                              Vote
-                            </button>
+
+                      {!voting &&
+                        proposals.map((proposal) => (
+                          <div className="mt-8 text-white" key={proposal.id}>
+                            <div className="flex justify-between items-center">
+                              <h2>{proposal.title}</h2>
+                              <button
+                                className="btn-sm py-1.5 btn-brand"
+                                onClick={async () => {
+                                  // window.open(
+                                  //   `https://snapshot.org/#/majac.eth/proposal/${proposal.id}`
+                                  // );
+                                  await getProposal(proposal.id);
+                                }}
+                              >
+                                Vote
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                     <Sidebar />
                   </div>
