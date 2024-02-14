@@ -61,7 +61,6 @@ const AttestEditor = ({ context }) => {
       `https://api.holonym.io/sybil-resistance/phone/optimism?user=${address}&action-id=123456789`
     );
     const { result: isUnique } = await resp.json();
-    console.log(isUnique);
     if (isUnique) {
       setIsUnique(1);
     } else {
@@ -226,7 +225,7 @@ const AttestEditor = ({ context }) => {
                         <div className="flex flex-row">
                           <p className="text-base text-secondary mb-2 text-right">
                             <a
-                              href={`https://ceramic-temp.hirenodes.io/api/v0/streams/${a.id}`}
+                              href={`https://ceramic-arcanumsci-mainnet.hirenodes.io/api/v0/streams/${a.id}`}
                               target="_blank"
                               rel="noreferrer"
                               className="text-blue-500"

@@ -4,10 +4,10 @@ import { definition } from "../src/__generated__/definition.js";
 /**
  * Configure ceramic Client & create context.
  */
-const ceramic = new CeramicClient("https://ceramic-temp.hirenodes.io");
+const ceramic = new CeramicClient("https://ceramic-arcanumsci-mainnet.hirenodes.io/");
 
 const composeClient = new ComposeClient({
-  ceramic: "https://ceramic-temp.hirenodes.io",
+  ceramic: "https://ceramic-arcanumsci-mainnet.hirenodes.io/",
   // @ts-ignore
   definition: definition,
 });

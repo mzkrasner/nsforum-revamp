@@ -116,7 +116,7 @@ export default function Create() {
       const end = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 5; // End 5 days from now
       const blockNumberSnapshot = 13620822;
       const prop = {
-        space: "majac.eth", // TODO: Replace with your space name
+        space: "verifiedtalent.eth", // TODO: Replace with your space name
         type,
         title,
         body,
@@ -131,7 +131,7 @@ export default function Create() {
       console.log("prop", prop);
 
       const receipt = await client.proposal(web3, account, {
-        space: "majac.eth", // TODO: Replace with your space name
+        space: "verifiedtalent.eth", // TODO: Replace with your space name
         type,
         title,
         body,
@@ -152,10 +152,12 @@ export default function Create() {
         setChoice("");
         setType("single-choice");
       }
+      setCreate(false)
     } catch (err) {
       // Temporary error handling
       console.error(err);
       alert("Error creating proposal. Check the console for details.");
+      setCreate(false)
     }
   };
 
@@ -173,7 +175,7 @@ export default function Create() {
       const client = new snapshot.Client712(hub);
 
       const prop = {
-        space: "majac.eth",
+        space: "verifiedtalent.eth",
         proposal,
         type: "single-choice",
         choice: 1,
