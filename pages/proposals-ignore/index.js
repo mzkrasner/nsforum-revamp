@@ -24,12 +24,12 @@ function ProposalsHome() {
     <>
       <Head>
         {/** Title */}
-        <title key="title">BanklessDeSci Community Hub | Orbis</title>
-        <meta property="og:title" content="BanklessDeSci Community Hub | BanklessDAO" key="og_title" />
+        <title key="title">Network Society Community Hub </title>
+        <meta property="og:title" content="Network Society Community Hub" key="og_title" />
 
         {/** Description */}
-        <meta name="description" content="An open and decentralized social application. Built using Ceramic and Orbis Protocol." key="description"></meta>
-        <meta property="og:description" content="An open and decentralized social application. Built using Ceramic and Orbis Protocol." key="og_description"/>
+        <meta name="description" content="An open and decentralized social application and discussion forum for network socities. Powered by Silk." key="description"></meta>
+        <meta property="og:description" content="An open and decentralized social application and discussion forum for network socities. Powered by Silk." key="og_description"/>
         <link rel="icon" href="/favicon.png" />
       </Head>
       <div className="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main">
@@ -43,7 +43,7 @@ function ProposalsHome() {
               <Header />
 
               {/* Hero section with main title and description */}
-              <Hero title="BanklessDeSci Community Hub" description="Doing science without permission" />
+              <Hero title="Network Society Community Hub" description="A coordination tool and discussion forum for network societies" />
 
               {/* Page content */}
               <section>

@@ -100,22 +100,22 @@ export default function Create() {
     <>
       <Head>
         {/** Title */}
-        <title key="title">View Attestations | BanklessDeSci Hub</title>
+        <title key="title">View Attestations | Network Society Hub</title>
         <meta
           property="og:title"
-          content="View Attestations | BanklessDeSci Hub"
+          content="View Attestations | Networking Society Hub"
           key="og_title"
         />
 
         {/** Description */}
         <meta
           name="description"
-          content="Discuss the future of BanklessDeSci"
+          content="Discussions about network societies"
           key="description"
         ></meta>
         <meta
           property="og:description"
-          content="Discuss the future of BanklessDeSci"
+          content="Discussions about network societies"
           key="og_description"
         />
         <link rel="icon" href="/favicon.png" />

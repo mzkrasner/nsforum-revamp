@@ -118,22 +118,22 @@ function Home({ defaultPosts }) {
     <>
       <Head>
         {/** Title */}
-        <title key="title">BanklessDeSci Community Hub | Orbis</title>
+        <title key="title">Network Society Community Hub | Silk</title>
         <meta
           property="og:title"
-          content="BanklessDeSci Community Hub | BanklessDAO"
+          content="Network Society Community Hub | Powered by Silk"
           key="og_title"
         />
 
         {/** Description */}
         <meta
           name="description"
-          content="An open and decentralized social application. Built using Ceramic and Orbis Protocol."
+          content="An open and decentralized social application for network societies. Built by Silk."
           key="description"
         ></meta>
         <meta
           property="og:description"
-          content="An open and decentralized social application. Built using Ceramic and Orbis Protocol."
+          content="An open and decentralized social application for network societies. Built by Silk."
           key="og_description"
         />
         <link rel="icon" href="/favicon.png" />
@@ -148,8 +148,8 @@ function Home({ defaultPosts }) {
 
               {/* Hero section with main title and description */}
               <Hero
-                title="BanklessDeSci Community Hub"
-                description="Doing science without permission"
+                title="Network Society Community Hub"
+                description="A composable coordination platform and discussion forum"
               />
 
               {/* Page content */}
