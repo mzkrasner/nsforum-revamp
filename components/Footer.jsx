@@ -25,7 +25,7 @@ function Footer() {
                 </li>*/}
                 <li>
                   <Link className="text-secondary hover:underline flex flex-row items-center" href="https://www.banklessdesci.org/" target="_blank">
-                    Built by BanklessDAO
+                    Secured by Silk
                   </Link>
                 </li>
 
@@ -41,7 +41,7 @@ function Footer() {
                 <Link
                   className="flex justify-center items-center text-brand text-brand-hover"
                   target="_blank"
-                  href="https://twitter.com/BanklessDeSci">
+                  href="https://twitter.com/noahchonlee">
                   <TwitterIcon />
                 </Link>
               </li>
@@ -49,14 +49,14 @@ function Footer() {
                 <Link
                   className="flex justify-center items-center text-brand text-brand-hover"
                   target="_blank"
-                  href="https://github.com/BanklessDeSci">
+                  href="https://github.com/">
                   <GithubIcon />
                 </Link>
               </li>
             </ul>
 
             {/* Copyright
-            <div className="text-sm text-secondary">Copyright © BanklessDeSci. All rights reserved.</div> */}
+            <div className="text-sm text-secondary">Copyright © Silk. All rights reserved.</div> */}
           </div>
         </div>
       </div>

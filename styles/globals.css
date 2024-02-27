@@ -35,14 +35,14 @@
 
 html {
   /** Colors */
-  --bg-color: #000000;
-  --bg-secondary: #7E4343;
+  --bg-color: #222222;
+  --bg-secondary: #db982B;
 
-  --brand-color: #D02128;
+  --brand-color: #f562eb;;
   --brand-color-reverse: #ffffff;
   --brand-color-hover: #ffffff;
 
-  --brand-color-400: #D02128;
+  --brand-color-400: #Db982B;
   --brand-color-400-reverse: #fff;
 
 
