@@ -148,7 +148,7 @@ function Home({ defaultPosts }) {
 
               {/* Hero section with main title and description */}
               <Hero
-                title="Network Society Community Hub"
+                title="Network Society Forum"
                 description="A composable coordination platform and discussion forum"
               />
 
