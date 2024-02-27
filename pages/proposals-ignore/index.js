@@ -24,8 +24,8 @@ function ProposalsHome() {
     <>
       <Head>
         {/** Title */}
-        <title key="title">Network Society Community Hub </title>
-        <meta property="og:title" content="Network Society Community Hub" key="og_title" />
+        <title key="title">Network Society  Forum </title>
+        <meta property="og:title" content="Network Society Forum" key="og_title" />
 
         {/** Description */}
         <meta name="description" content="An open and decentralized social application and discussion forum for network socities. Secured by Silk." key="description"></meta>
@@ -43,7 +43,7 @@ function ProposalsHome() {
               <Header />
 
               {/* Hero section with main title and description */}
-              <Hero title="Network Society Community Hub" description="A coordination tool and discussion forum for network societies" />
+              <Hero title="Network Society Forum" description="A coordination tool and discussion forum for network societies" />
 
               {/* Page content */}
               <section>

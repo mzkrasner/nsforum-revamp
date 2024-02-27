@@ -118,10 +118,10 @@ function Home({ defaultPosts }) {
     <>
       <Head>
         {/** Title */}
-        <title key="title">Network Society Community Hub | Silk</title>
+        <title key="title">Network Society Forum | Silk</title>
         <meta
           property="og:title"
-          content="Network Society Community Hub | Secured by Silk"
+          content="Network Society Forum| Secured by Silk"
           key="og_title"
         />
 
