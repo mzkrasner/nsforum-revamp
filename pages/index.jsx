@@ -121,19 +121,19 @@ function Home({ defaultPosts }) {
         <title key="title">Network Society Community Hub | Silk</title>
         <meta
           property="og:title"
-          content="Network Society Community Hub | Powered by Silk"
+          content="Network Society Community Hub | Secured by Silk"
           key="og_title"
         />
 
         {/** Description */}
         <meta
           name="description"
-          content="An open and decentralized social application for network societies. Built by Silk."
+          content="An open and decentralized social application for network societies. Secured by Silk."
           key="description"
         ></meta>
         <meta
           property="og:description"
-          content="An open and decentralized social application for network societies. Built by Silk."
+          content="An open and decentralized social application for network societies. Secured by Silk."
           key="og_description"
         />
         <link rel="icon" href="/favicon.png" />

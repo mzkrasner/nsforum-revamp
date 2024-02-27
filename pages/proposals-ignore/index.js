@@ -28,8 +28,8 @@ function ProposalsHome() {
         <meta property="og:title" content="Network Society Community Hub" key="og_title" />
 
         {/** Description */}
-        <meta name="description" content="An open and decentralized social application and discussion forum for network socities. Powered by Silk." key="description"></meta>
-        <meta property="og:description" content="An open and decentralized social application and discussion forum for network socities. Powered by Silk." key="og_description"/>
+        <meta name="description" content="An open and decentralized social application and discussion forum for network socities. Secured by Silk." key="description"></meta>
+        <meta property="og:description" content="An open and decentralized social application and discussion forum for network socities. Secured by Silk." key="og_description"/>
         <link rel="icon" href="/favicon.png" />
       </Head>
       <div className="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main">
