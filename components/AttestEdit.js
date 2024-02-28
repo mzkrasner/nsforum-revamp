@@ -264,9 +264,9 @@ const AttestEditor = ({ context }) => {
               </p>
               <button
                 className="btn-sm py-1.5 btn-brand"
-                onClick={() => window.open("https://app.holonym.id/issuance")}
+                onClick={() => window.open("https://silksecure.net/holonym/silk")}
               >
-                Visit Holonym
+                Visit Silk
               </button>
             </div>
           )}
