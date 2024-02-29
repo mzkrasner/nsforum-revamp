@@ -24,10 +24,10 @@ export default function Create() {
     <>
       <Head>
         {/** Title */}
-        <title key="title">Share a new post | Network Society Hub</title>
+        <title key="title">Share a new post | Network Society Forum</title>
         <meta
           property="og:title"
-          content="Share a new post | Network Society Hub"
+          content="Share a new post | Network Society Forum"
           key="og_title"
         />
 
@@ -52,7 +52,7 @@ export default function Create() {
               {/*  Site header */}
               <Header />
               <Hero
-                title="Sharing a new post on the Network Society Hub"
+                title="Sharing a new post on the Network Society Forum"
                 description="You are about to share a new post. Make sure to read our rules before doing so."
                 image
               />
