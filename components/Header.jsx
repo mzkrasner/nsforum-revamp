@@ -49,7 +49,7 @@ function Header() {
         });
         setUser(result?.details);
       } else if (selectedWallet === 'walletconnect') {
-        // TODO...
+        // TODO:
         // See https://docs.useorbis.com/sdk/methods/connection/connect_v2
       }
     } catch (err) {
