@@ -73,7 +73,7 @@ const Editor = ({ post }) => {
       );
 
       const final = [...new Set(multipleRecipients.map((a) => a.recipient))];
-      final.push({category})
+      final.push({ category })
       console.log(final, "final");
       const newOptions = {
         method: "POST",
@@ -92,32 +92,32 @@ const Editor = ({ post }) => {
       setHasAccess(false);
       let { data, error } = await orbis.getContext(category);
       console.log("Context details", data);
-      if(data.content.accessRules.length > 0){
-        const currAccessRules = data.content.accessRules.filter(
+      if (data?.content.accessRules.length > 0) {
+        const currAccessRules = data?.content.accessRules.filter(
           (item) => item.type === "did"
         );
-        if(currAccessRules.length > 0){
+        if (currAccessRules.length > 0) {
           await updateList(category);
         }
       }
       if (data && data.content) {
         /** Save context access rules in state */
         setCategoryAccessRules(
-          data.content.accessRules ? data.content.accessRules : []
+          data?.content.accessRules ? data?.content.accessRules : []
         );
 
         /** Now check if user has access */
-        if (!data.content.accessRules || data.content.accessRules.length == 0) {
+        if (!data?.content.accessRules || data?.content.accessRules.length == 0) {
           setHasAccess(true);
         } else {
           console.log("Checking access rules...");
-          checkContextAccess(user, data.content?.accessRules, () =>
+          checkContextAccess(user, data?.content?.accessRules, () =>
             setHasAccess(true)
           );
         }
       }
       setAccessRulesLoading(false);
-      console.log(data.content.context)
+      console.log(data?.content.context)
     }
   }, [category, credentials]);
 
@@ -169,10 +169,10 @@ const Editor = ({ post }) => {
 
     setBody(
       value.substring(0, selectionStart) +
-        before +
-        selectedText +
-        after +
-        value.substring(selectionEnd)
+      before +
+      selectedText +
+      after +
+      value.substring(selectionEnd)
     );
 
     // Store the current scroll position
@@ -281,8 +281,8 @@ const Editor = ({ post }) => {
         const { value } = textareaRef.current;
         setBody(
           value.substring(0, storedSelectionStart) +
-            imgTag +
-            value.substring(storedSelectionEnd)
+          imgTag +
+          value.substring(storedSelectionEnd)
         );
       } else {
         alert("Error uploading image.");
@@ -561,11 +561,10 @@ const Categories = ({ category, setCategory }) => {
         {categories.map((cat) => {
           return (
             <div
-              className={`flex flex-row btn rounded-full py-1.5 px-3 cursor-pointer ${
-                category == cat.stream_id
+              className={`flex flex-row btn rounded-full py-1.5 px-3 cursor-pointer ${category == cat.stream_id
                   ? "bg-blue-100 border border-blue-400"
                   : "bg-white border border-slate-300 hover:border-slate-400 bg-slate-50 text-gray-900"
-              }`}
+                }`}
               key={cat.stream_id}
               onClick={() => setCategory(cat.stream_id)}
             >
