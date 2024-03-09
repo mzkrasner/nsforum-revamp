@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../../components/Header';
 import ArticleContent from '../../components/ArticleContent';
+import ArticleTableOfContent from '../../components/ArticleTableOfContent';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
 import { Orbis, Comments, User, useOrbis } from "@orbisclub/components";
 
 export default function Post({ post, post_id }) {
+  const articleRef = useRef()
+
   const { orbis, user } = useOrbis();
   return (
     <>
@@ -18,7 +21,7 @@ export default function Post({ post, post_id }) {
 
         {/** Description */}
         <meta name="description" content={post.content?.data?.abstract} key="description"></meta>
-        <meta property="og:description" content={post.content?.data?.abstract} key="og_description"/>
+        <meta property="og:description" content={post.content?.data?.abstract} key="og_description" />
         <link rel="icon" href="/favicon.png" />
 
         {post.content?.media && post.content?.media.length > 0 &&
@@ -34,9 +37,10 @@ export default function Post({ post, post_id }) {
         <main className="grow">
           <section>
             <div className="flex max-w-6xl mx-auto px-4 sm:px-6 pt-6">
-              <div className="md:flex md:justify-between w-full">
+              <div className="md:flex md:gap-6 md:justify-between w-full">
                 {/* Page content*/}
-                <ArticleContent post={post} />
+                <ArticleTableOfContent post={post} ref={articleRef} />
+                <ArticleContent post={post} ref={articleRef} />
                 <Sidebar />
               </div>
             </div>
