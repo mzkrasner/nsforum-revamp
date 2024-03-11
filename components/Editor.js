@@ -407,7 +407,7 @@ const Editor = ({ post }) => {
 
   return (
     <div className="container mx-auto text-gray-900">
-      {YTModalOpen && <Modal>
+      {YTModalOpen && <Modal ref={YTModalRef}>
         <TextareaAutosize
           className="resize-none w-full h-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
           placeholder="Paste YouTube url code here"
