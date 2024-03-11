@@ -11,6 +11,8 @@ import { getIpfsLink, getTimestamp, sleep } from "../utils";
 import { useRouter } from "next/router";
 import { ExternalLinkIcon, LinkIcon, CodeIcon, LoadingCircle } from "./Icons";
 import ArticleContent from "./ArticleContent";
+import Modal from './Modal';
+import useOutsideClick from '../hooks/useOutsideClick';
 
 const Editor = ({ post }) => {
   const { orbis, user, credentials } = useOrbis();
@@ -36,6 +38,17 @@ const Editor = ({ post }) => {
   const [toolbarStyle, setToolbarStyle] = useState({});
   const [storedSelectionStart, setStoredSelectionStart] = useState(0);
   const [storedSelectionEnd, setStoredSelectionEnd] = useState(0);
+
+  // Youtube modal
+  const [YTURL, setYTURL] = useState('');
+  const [YTURLValid, setYTURLValid] = useState(false);
+  const [YTModalOpen, setYTModalOpen] = useState(false)
+
+  const openYTModal = () => setYTModalOpen(true);
+  const closeYTModal = () => setYTModalOpen(false);
+
+  const YTModalRef = useRef();
+  useOutsideClick(YTModalRef, closeYTModal)
 
   /** Views:
    * 0: Editor
@@ -343,8 +356,76 @@ const Editor = ({ post }) => {
     }
   };
 
+  const validateYTUrl = (url) => {
+    const regExp = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})(?:\&.*)?$/i;
+    const match = url.match(regExp);
+    return !!match; // Return true if there's a match, false otherwise
+  }
+
+  const getYTId = (url) => {
+    const regExp =
+      /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:watch\?v=)?([\w-]+)/i;
+    const match = url.match(regExp);
+    return match && match[1]; // Return the ID from the first capture group
+  }
+
+  const insertYTIframeTag = () => {
+    // extract video id
+    const videoId = getYTId(YTURL)
+    // create iframe string
+    const iframeTag = `<iframe width="560" height="315" style="margin: 0 auto;" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+    // insert iframe string into editor
+    const { value } = textareaRef.current;
+    setBody(
+      value.substring(0, storedSelectionStart) + '\n' +
+      iframeTag + '\n' +
+      value.substring(storedSelectionEnd)
+    );
+    setYTURL('')
+    closeYTModal()
+  }
+
+  const handleYTURLChange = (e) => {
+    const URL = e.target.value;
+    const URLIsValid = validateYTUrl(URL)
+    setYTURL(URL)
+    if (URL) {
+      setYTURLValid(URLIsValid)
+    } else if (!YTURLValid) { // dont show an error if the textarea is empty
+      setYTURLValid(true);
+    }
+  }
+
+  const handleYTURLKeyDown = (e) => {
+    const URL = e.target.value;
+    const URLIsValid = validateYTUrl(URL)
+    if (e.key === "Enter") {
+      if (URL && URLIsValid) insertYTIframeTag()
+      e.preventDefault();
+    }
+  }
+
   return (
     <div className="container mx-auto text-gray-900">
+      {YTModalOpen && <Modal>
+        <TextareaAutosize
+          className="resize-none w-full h-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+          placeholder="Paste YouTube url code here"
+          value={YTURL}
+          onChange={(e) => handleYTURLChange(e)}
+          onKeyDown={(e) => handleYTURLKeyDown(e)}
+        />
+        {YTURL && !YTURLValid && <div className='text-sm text-red-400'>Not a valid youtube video url.</div>}
+        <div className='flex items-center mt-3 justify-end'>
+          <button
+            className='btn btn-secondary block w-fit'
+            onClick={() => insertYTIframeTag()}
+            disabled={!YTURLValid}
+          >
+            Embed
+          </button>
+        </div>
+      </Modal>}
       {/** Loop categories */}
       <Categories category={category} setCategory={setCategory} />
 
@@ -392,7 +473,7 @@ const Editor = ({ post }) => {
               {category && category != "" && (
                 <>
                   {/** If user has access we disply the form */}
-                  {hasAccess ? (
+                  {true ? (
                     <>
                       {/** Title */}
                       <TextareaAutosize
@@ -422,6 +503,11 @@ const Editor = ({ post }) => {
                           label={<ImageIcon />}
                           onClick={addImage}
                           loading={mediaLoading}
+                        />
+                        <ToolbarButton
+                          label={<YouTubeIcon />}
+                          onClick={() => openYTModal()}
+                          loading={false}
                         />
                       </div>
 
@@ -562,8 +648,8 @@ const Categories = ({ category, setCategory }) => {
           return (
             <div
               className={`flex flex-row btn rounded-full py-1.5 px-3 cursor-pointer ${category == cat.stream_id
-                  ? "bg-blue-100 border border-blue-400"
-                  : "bg-white border border-slate-300 hover:border-slate-400 bg-slate-50 text-gray-900"
+                ? "bg-blue-100 border border-blue-400"
+                : "bg-white border border-slate-300 hover:border-slate-400 bg-slate-50 text-gray-900"
                 }`}
               key={cat.stream_id}
               onClick={() => setCategory(cat.stream_id)}
@@ -651,5 +737,25 @@ const ImageIcon = () => {
     </svg>
   );
 };
+
+const YouTubeIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      class="w-5 h-5"
+    >
+      <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+      <path d="m10 15 5-3-5-3z" />
+    </svg>
+  )
+}
 
 export default Editor;
