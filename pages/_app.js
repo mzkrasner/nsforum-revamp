@@ -21,15 +21,13 @@ global.orbis_chat_context = "kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl9
 let orbis = new Orbis({
   useLit: true,
   node: "https://node2.orbis.club",
-  PINATA_GATEWAY: 'https://orbis.mypinata.cloud/ipfs/',
-  PINATA_API_KEY: process.env.NEXT_PUBLIC_PINATA_API_KEY,
-  PINATA_SECRET_API_KEY: process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY
+  PINATA_GATEWAY: process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL,
 });
 
 export default function App({ Component, pageProps }) {
-  return(
+  return (
     <OrbisProvider defaultOrbis={orbis} authMethods={["metamask", "wallet-connect", "email"]}>
-      <GlobalContext.Provider value={{orbis: orbis}}>
+      <GlobalContext.Provider value={{ orbis: orbis }}>
         <Component {...pageProps} />
       </GlobalContext.Provider>
     </OrbisProvider>
