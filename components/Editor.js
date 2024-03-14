@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import {
   useOrbis,
@@ -38,6 +38,9 @@ const Editor = ({ post }) => {
   const [toolbarStyle, setToolbarStyle] = useState({});
   const [storedSelectionStart, setStoredSelectionStart] = useState(0);
   const [storedSelectionEnd, setStoredSelectionEnd] = useState(0);
+
+  const [pinataOneTimeJWT, setPinataOneTimeJWT] = useState();
+  const [pinataJWTFetchIndex, setPinataJWTFetchIndex] = useState(0);
 
   // Youtube modal
   const [YTURL, setYTURL] = useState('');
@@ -134,11 +137,23 @@ const Editor = ({ post }) => {
     }
   }, [category, credentials]);
 
+  const getPinataOneTimeJWT = useCallback(async () => {
+    setMediaLoading(true);
+    const jwtRes = await fetch("/api/pinata/oneTimeJWT", {
+      method: "GET"
+    });
+    const oneTimeJWT = await jwtRes.text();
+    setPinataOneTimeJWT(oneTimeJWT);
+    setMediaLoading(false);
+  }, [pinataJWTFetchIndex]) // this allows us to refresh the one time JWT
+  const refreshPinataOneTimeJWT = () => setPinataJWTFetchIndex(v => v + 1);
+
   /** Triggered on component launch */
   useEffect(() => {
+    getPinataOneTimeJWT()
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [getPinataOneTimeJWT]);
 
   /** Will store the current selection and save in state to make sure we don't lose it when the textarea loses focus because of a click in the format toolbar */
   const storeSelection = () => {
@@ -282,29 +297,49 @@ const Editor = ({ post }) => {
       wrapWith("[", `](${url})`);
     }
   };
+
   /** To add a photo to the blog post */
-  const addImage = async (event) => {
-    setMediaLoading(true);
-    const file = event.target.files[0];
+  const addImage = async (e) => {
+    if (mediaLoading) return;
+    try {
+      setMediaLoading(true);
+      const file = e.target.files[0];
 
-    if (file && file.type.match(/^image\//)) {
-      let res = await orbis.uploadMedia(file);
-      if (res.status == 200) {
-        const imgTag = `![Image ALT tag](${getIpfsLink(res.result)})`;
-        const { value } = textareaRef.current;
-        setBody(
-          value.substring(0, storedSelectionStart) +
-          imgTag +
-          value.substring(storedSelectionEnd)
+      if (file && file.type.match(/^image\//)) {
+        const formData = new FormData();
+        formData.append("file", file, { filename: file.name });
+
+        const res = await fetch(
+          "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${pinataOneTimeJWT}`,
+            },
+            body: formData,
+          }
         );
-      } else {
-        alert("Error uploading image.");
+        if (res.status == 200) {
+          const json = await res.json();
+          const { IpfsHash } = json;
+          const imgTag = `![Image ALT tag](https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${IpfsHash})`;
+          const { value } = textareaRef.current;
+          setBody(
+            value.substring(0, storedSelectionStart) +
+            imgTag +
+            value.substring(storedSelectionEnd)
+          );
+        } else {
+          alert("Error uploading image.");
+        }
+        refreshPinataOneTimeJWT()
       }
-    } else {
-      console.log("There isn't any file to upload.");
+      setMediaLoading(false);
+    } catch (error) {
+      console.error(err);
+      setMediaLoading(false);
+      alert("Trouble uploading file");
     }
-
-    setMediaLoading(false);
   };
 
   /** Will edit the post to publish the new version */
@@ -473,7 +508,7 @@ const Editor = ({ post }) => {
               {category && category != "" && (
                 <>
                   {/** If user has access we disply the form */}
-                  {true ? (
+                  {hasAccess ? (
                     <>
                       {/** Title */}
                       <TextareaAutosize
@@ -750,7 +785,7 @@ const YouTubeIcon = () => {
       strokeWidth="1.2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      class="w-5 h-5"
+      className="w-5 h-5"
     >
       <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
       <path d="m10 15 5-3-5-3z" />
