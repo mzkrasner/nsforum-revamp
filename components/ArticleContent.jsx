@@ -1,13 +1,15 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { useEffect, useState, forwardRef, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ReactTimeAgo from 'react-time-ago';
 import { Orbis, Discussion, User, useOrbis } from '@orbisclub/components';
 import { shortAddress, getIpfsLink } from '../utils';
-import { ExternalLinkIcon, EditIcon } from './Icons';
+import { ExternalLinkIcon, EditIcon, LoadingCircle, BinIcon } from './Icons';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Upvote from './Upvote';
 import UrlMetadata from './UrlMetadata';
 import ProofBadge from './ProofBadge';
+import Modal from './Modal';
 
 /** For Markdown support */
 import { marked } from 'marked';
@@ -17,6 +19,12 @@ const ArticleContent = ({ post }, ref) => {
   const { orbis, user } = useOrbis();
   const [hasLiked, setHasLiked] = useState(false);
   const [updatedPost, setUpdatedPost] = useState(post);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletingPost, setDeletingPost] = useState(false);
+
+  const deleteModalRef = useRef();
+
+  const router = useRouter();
 
   /** Check if user liked this post */
   useEffect(() => {
@@ -53,7 +61,7 @@ const ArticleContent = ({ post }, ref) => {
   });
 
   /** Will like / upvote the post */
-  async function like() {
+  const like = async () => {
     if (user) {
       setHasLiked(true);
       setUpdatedPost({
@@ -65,10 +73,41 @@ const ArticleContent = ({ post }, ref) => {
     } else {
       alert('You must be connected to react to posts.');
     }
-  }
+  };
+
+  const deletePost = async () => {
+    setDeletingPost(true);
+    try {
+      const res = await orbis.deletePost(post.stream_id);
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+    }
+    setDeletingPost(false);
+  };
+
+  const openDeleteModal = () => setDeleteModalOpen(true);
+  const closeDeleteModal = () => setDeleteModalOpen(false);
 
   return (
     <>
+      {deleteModalOpen && (
+        <Modal ref={deleteModalRef} handleClose={() => closeDeleteModal()}>
+          <h3 className='text-primary'>
+            Are you sure you want to delete this post?
+          </h3>
+          <div className='flex justify-end mt-3'>
+            <button
+              className='btn-sm py-1.5 bg-red-500 text-primary'
+              onClick={() => deletePost()}
+              disabled={deletingPost}
+            >
+              {deletingPost && <LoadingCircle />}
+              Confirm delete
+            </button>
+          </div>
+        </Modal>
+      )}
       <article ref={ref} className='w-full mb-8'>
         {/* Post header */}
         <header>
@@ -107,6 +146,14 @@ const ArticleContent = ({ post }, ref) => {
                     <EditIcon style={{ marginRight: 4 }} />
                     Edit
                   </Link>
+                  <span className='text-secondary mr-2 ml-2'>·</span>
+                  <button
+                    className='btn-sm py-1.5 bg-red-500'
+                    onClick={() => openDeleteModal()}
+                  >
+                    <BinIcon className='mr-1' />
+                    Delete
+                  </button>
                 </>
               )}
             </div>
