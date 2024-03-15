@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import { ExternalLinkIcon, LinkIcon, CodeIcon, LoadingCircle } from "./Icons";
 import ArticleContent from "./ArticleContent";
 import Modal from './Modal';
-import useOutsideClick from '../hooks/useOutsideClick';
 
 const Editor = ({ post }) => {
   const { orbis, user, credentials } = useOrbis();
@@ -51,7 +50,6 @@ const Editor = ({ post }) => {
   const closeYTModal = () => setYTModalOpen(false);
 
   const YTModalRef = useRef();
-  useOutsideClick(YTModalRef, closeYTModal)
 
   /** Views:
    * 0: Editor

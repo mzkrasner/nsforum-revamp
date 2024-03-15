@@ -65,6 +65,7 @@ html {
   --brand-blue: #ff000a;
   /***/
 }
+
 body {
   background: #fff;
   font-family: 'Inter';
@@ -74,6 +75,11 @@ body {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
   --tw-gradient-to: #FFF;*/
 }
+
+button:disabled {
+  @apply opacity-50;
+}
+
 p,
 ul,
 li,

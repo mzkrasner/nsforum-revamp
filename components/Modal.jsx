@@ -1,11 +1,13 @@
 import { forwardRef } from 'react';
+import useOutsideClick from '../hooks/useOutsideClick';
 
 const Modal = ({ children, handleClose }, ref) => {
+  useOutsideClick(ref, handleClose);
   return (
     <div className='fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-40 z-[1000]'>
       <div
         ref={ref}
-        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-main h-fit p-3 min-w-[80%] sm:min-w-[50%] min-h-[100px] rounded-lg'
+        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-main h-fit p-3 min-w-[80%] sm:min-w-[50%] min-h-[100px] rounded-3xl'
       >
         <button
           className='block w-fit mb-3 ml-auto'
@@ -17,7 +19,7 @@ const Modal = ({ children, handleClose }, ref) => {
             viewBox='0 0 24 24'
             strokeWidth={1.5}
             stroke='currentColor'
-            className='w-6 h-6'
+            className='w-6 h-6 text-primary'
           >
             <path
               strokeLinecap='round'
