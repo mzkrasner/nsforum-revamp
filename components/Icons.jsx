@@ -640,3 +640,47 @@ export const BinIcon = ({ style = {}, className = '' }) => {
     </svg>
   );
 };
+
+export const Podcast = ({ style = {}, className = '' }) => {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={1.5}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      className={clsx('w-4 h-4', className)}
+      style={style}
+    >
+      <path d='M16.85 18.58a9 9 0 1 0-9.7 0' />
+      <path d='M8 14a5 5 0 1 1 8 0' />
+      <circle cx='12' cy='11' r='1' />
+      <path d='M13 17a1 1 0 1 0-2 0l.5 4.5a.5.5 0 1 0 1 0Z' />
+    </svg>
+  );
+};
+
+export const YouTubeIcon = ({ style = {}, className = '' }) => {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='1.2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      className={clsx('w-5 h-5', className)}
+      style={style}
+    >
+      <path d='M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17' />
+      <path d='m10 15 5-3-5-3z' />
+    </svg>
+  );
+};
