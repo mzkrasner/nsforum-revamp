@@ -36,14 +36,6 @@ export default function Post({ post, post_id }) {
         <Header />
         <main
           className="grow"
-        // className='bg-main'
-        // style={{
-        //   minHeight: '100vh',
-        //   width: '100%',
-        //   display: 'flex',
-        //   gap: '20px',
-        //   position: 'relative',
-        // }}
         >
           <section>
             <div className="flex max-w-6xl mx-auto px-4 sm:px-6 pt-6">
