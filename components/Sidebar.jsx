@@ -6,7 +6,7 @@ import ReactTimeAgo from 'react-time-ago';
 
 function Sidebar() {
   return (
-    <aside className='md:w-64 md:shrink-0 pt-6 pb-12 md:pb-20 border-l border-primary'>
+    <aside className='sticky top-0 left-0 h-fit min-h-screen md:w-64 md:shrink-0 pt-6 pb-12 md:pb-20 border-l border-primary'>
       <div className='md:pl-5 lg:pl-10'>
         {/* Sidebar content */}
         <div className='space-y-6'>

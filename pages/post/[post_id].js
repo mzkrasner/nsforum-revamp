@@ -34,10 +34,12 @@ export default function Post({ post, post_id }) {
       </Head>
       <div className="antialiased flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main">
         <Header />
-        <main className="grow">
+        <main
+          className="grow"
+        >
           <section>
             <div className="flex max-w-6xl mx-auto px-4 sm:px-6 pt-6">
-              <div className="md:flex md:gap-6 md:justify-between w-full">
+              <div className="relative md:flex md:gap-6 md:justify-between w-full">
                 {/* Page content*/}
                 <ArticleTableOfContent post={post} ref={articleRef} />
                 <ArticleContent post={post} ref={articleRef} />
