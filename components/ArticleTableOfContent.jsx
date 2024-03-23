@@ -4,6 +4,7 @@ import clsx from 'clsx';
 const ArticleTableOfContent = ({ post }, ref) => {
   const [headingElements, setHeadingElements] = useState([]);
   const [visibleHeadingIds, setVisibleHeadingIds] = useState([]);
+  const [activeId, setActiveId] = useState('');
   const observer = useRef();
 
   useEffect(() => {
@@ -22,7 +23,10 @@ const ArticleTableOfContent = ({ post }, ref) => {
             }
           });
         } else {
-          setVisibleHeadingIds((v = []) => v.filter((id) => id !== targetId));
+          setVisibleHeadingIds((v = []) => {
+            const newVisibleHeadingIds = v.filter((id) => id !== targetId);
+            return newVisibleHeadingIds;
+          });
         }
       });
     };
@@ -67,47 +71,47 @@ const ArticleTableOfContent = ({ post }, ref) => {
   };
 
   // Select the topmost heading
-  const activeId = visibleHeadingIds.length ? visibleHeadingIds[0] : '';
+  useEffect(() => {
+    if (visibleHeadingIds?.length) setActiveId(visibleHeadingIds[0]);
+  }, [visibleHeadingIds]);
+
   return (
-    <>
-      <div className='hidden xl:block xl:w-64 md:shrink-0 pt-6 pb-12 md:pb-20'></div>
-      <aside className='fixed top-20 h-fit hidden xl:block xl:w-64 md:shrink-0 pt-6 pb-12 md:pb-20'>
-        <div className='md:pr-6 lg:pr-10'>
-          <div className='space-y-6 text-primary'>
-            <h2 className='text-lg font-serif uppercase'>
-              {post?.content?.title}
-            </h2>
-            <ul>
-              {headingElements.map((headingElement, i) => {
-                return (
-                  <li
-                    key={`${headingElement.id}-${i}`}
-                    className={getClassName(headingElement.level)}
+    <aside className='sticky top-0 left-0 h-fit hidden xl:block xl:w-64 md:shrink-0 pt-6 pb-12 md:pb-20'>
+      <div className='md:pr-6 lg:pr-10'>
+        <div className='space-y-6 text-primary'>
+          <h2 className='text-lg font-serif uppercase'>
+            {post?.content?.title}
+          </h2>
+          <ul>
+            {headingElements.map((headingElement, i) => {
+              return (
+                <li
+                  key={`${headingElement.id}-${i}`}
+                  className={getClassName(headingElement.level)}
+                >
+                  <a
+                    href={headingElement.id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document
+                        .querySelector(`#${headingElement.id}`)
+                        .scrollIntoView({
+                          behavior: 'smooth',
+                        });
+                    }}
+                    className={clsx('block py-1', {
+                      'text-brand': headingElement.id === activeId,
+                    })}
                   >
-                    <a
-                      href={headingElement.id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        document
-                          .querySelector(`#${headingElement.id}`)
-                          .scrollIntoView({
-                            behavior: 'smooth',
-                          });
-                      }}
-                      className={clsx('block py-1', {
-                        'text-brand': headingElement.id === activeId,
-                      })}
-                    >
-                      {headingElement.text}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                    {headingElement.text}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-      </aside>
-    </>
+      </div>
+    </aside>
   );
 };
 export default forwardRef(ArticleTableOfContent);
