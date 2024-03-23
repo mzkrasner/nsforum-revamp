@@ -72,11 +72,30 @@ const ArticleTableOfContent = ({ post }, ref) => {
 
   // Select the topmost heading
   useEffect(() => {
-    if (visibleHeadingIds?.length) setActiveId(visibleHeadingIds[0]);
+    if (visibleHeadingIds?.length) {
+      const isElementVisible = (element) => {
+        const rect = element.getBoundingClientRect();
+        const windowHeight =
+          window.innerHeight || document.documentElement.clientHeight;
+        const windowWidth =
+          window.innerWidth || document.documentElement.clientWidth;
+
+        return (
+          (rect.top >= 0 && rect.top < windowHeight) ||
+          (rect.bottom > 0 && rect.bottom <= windowHeight) ||
+          rect.height > windowHeight
+        );
+      };
+
+      const newActiveId = visibleHeadingIds[0];
+      setActiveId(newActiveId);
+      const tocItem = document.querySelector(`#toc-item-${newActiveId}`);
+      if (!isElementVisible(tocItem)) tocItem.scrollIntoView();
+    }
   }, [visibleHeadingIds]);
 
   return (
-    <aside className='sticky top-0 left-0 h-fit hidden xl:block xl:w-64 md:shrink-0 pt-6 pb-12 md:pb-20'>
+    <aside className='sticky top-0 left-0 h-screen overflow-y-auto scrollbar-hide hidden border-r border-primary xl:block xl:w-64 md:shrink-0 pt-6 pb-12 md:pb-20'>
       <div className='md:pr-6 lg:pr-10'>
         <div className='space-y-6 text-primary'>
           <h2 className='text-lg font-serif uppercase'>
@@ -87,6 +106,7 @@ const ArticleTableOfContent = ({ post }, ref) => {
               return (
                 <li
                   key={`${headingElement.id}-${i}`}
+                  id={`toc-item-${headingElement.id}`}
                   className={getClassName(headingElement.level)}
                 >
                   <a

@@ -108,7 +108,7 @@ const ArticleContent = ({ post }, ref) => {
           </div>
         </Modal>
       )}
-      <article ref={ref} className='w-full mb-8'>
+      <article ref={ref} className='w-full overflow-x-hidden mb-8'>
         {/* Post header */}
         <header>
           <div className='flex flex-row items-center'>

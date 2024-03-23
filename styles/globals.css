@@ -215,6 +215,7 @@ button {
 .article-content a {
   color: #fff;
   font-weight: 600;
+  word-wrap: break-word;
 }
 .article-content a:hover {
   text-decoration: underline;
