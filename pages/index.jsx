@@ -8,15 +8,39 @@ import PostItem from '../components/PostItem';
 import Footer from '../components/Footer';
 import { LoadingCircle } from '../components/Icons';
 import { Orbis, useOrbis } from '@orbisclub/components';
+import usePosts from '../hooks/usePosts';
+import { useInView } from 'react-intersection-observer';
 
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import loadPosts from '../controllers/loadPosts';
 
-function Home({ posts = [] }) {
+function Home() {
   const { orbis, user } = useOrbis();
   const [nav, setNav] = useState('all');
-  const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+
+  const {
+    posts = [],
+    loading,
+    fetching,
+    fetchNextPage,
+    hasNextPage,
+  } = usePosts();
+
+  const {
+    ref: anchorRef,
+    inView,
+    entry,
+  } = useInView({
+    /* Optional options */
+    threshold: 0,
+    rootMargin: '0px 0px 800px 0px', // trigger refetch when the bottom is 800px away
+  });
+
+  useEffect(() => {
+    if (!inView || !hasNextPage) return;
+    fetchNextPage();
+  }, [inView, fetchNextPage, hasNextPage]);
 
   /** Load all of the categories (sub-contexts) available in this forum */
   useEffect(() => {
@@ -133,10 +157,17 @@ function Home({ posts = [] }) {
                                           />
                                         );
                                       })}
+                                      {/* An anchor element to monitor when to fetch more posts */}
+                                      <div ref={anchorRef}></div>
+                                      {fetching && (
+                                        <div className='flex w-full justify-center p-3 text-primary'>
+                                          <LoadingCircle />
+                                        </div>
+                                      )}
                                     </div>
 
                                     {/* Handle pagination */}
-                                    {posts && posts.length >= 25 && (
+                                    {/* {posts && posts.length >= 25 && (
                                       <div className='text-right'>
                                         <button
                                           className='btn-sm py-1.5 h-8 btn-secondary btn-secondary-hover'
@@ -148,7 +179,7 @@ function Home({ posts = [] }) {
                                           </span>
                                         </button>
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </>
                               ) : (
@@ -261,10 +292,22 @@ export default Home;
 
 // This function gets called at build time
 export async function getStaticProps() {
-  const posts = await loadPosts(process.env.ORBCONTEXT, true, 0);
+  const queryClient = new QueryClient();
+
+  const getPosts = async () => {
+    const posts = await loadPosts(process.env.ORBCONTEXT, false, 0);
+    return posts;
+  };
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['posts'],
+    queryFn: getPosts,
+    initialPageParam: 0,
+  });
+
   return {
     props: {
-      posts: JSON.parse(JSON.stringify(posts || [])),
+      dehydratedState: dehydrate(queryClient),
     },
   };
 }

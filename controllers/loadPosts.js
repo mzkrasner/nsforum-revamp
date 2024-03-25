@@ -1,6 +1,8 @@
 import { Orbis } from '@orbisclub/orbis-sdk';
 import getAttestationsReceived from './getAttestationsReceived';
 
+const PAGE_SIZE = 25
+
 /** Load list of posts using the Orbis SDK */
 export default async function loadPosts(context, include_child_contexts, _page) {
   const orbis = new Orbis({
@@ -11,14 +13,14 @@ export default async function loadPosts(context, include_child_contexts, _page) 
 
   let { data, error } = await orbis.api
     .rpc('get_ranked_posts', { q_context: context })
-    .range(_page * 25, (_page + 1) * 50 - 1);
+    .range(_page * PAGE_SIZE, (_page + 1) * PAGE_SIZE * 2 - 1);
 
   /*  let { data, error } = await orbis.getPosts({
     context: context,
     only_master: true,
     order_by: 'count_likes',
     include_child_contexts: include_child_contexts,
-  }, _page, 25);*/
+  }, _page, PAGE_SIZE);*/
 
   /** Save data in posts state */
   if (data) {
