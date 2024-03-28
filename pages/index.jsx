@@ -92,7 +92,7 @@ function Home() {
         <title key='title'>Network Society Forum | Silk</title>
         <meta
           property='og:title'
-          content='Network Society Forum| Secured by Silk'
+          content='Network Society Forum | Secured by Silk'
           key='og_title'
         />
 

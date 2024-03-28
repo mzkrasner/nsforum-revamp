@@ -31,8 +31,7 @@ const usePosts = (props = {}) => {
     select: (data) => ({
       ...data,
       allItems: Object.values(data.pages).flat(),
-    }),
-    staleTime: 1000 * 60 * 5
+    })
   });
 
   return {
@@ -45,4 +44,4 @@ const usePosts = (props = {}) => {
   }
 }
 
-export default usePosts
+export default usePosts;
