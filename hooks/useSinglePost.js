@@ -17,7 +17,6 @@ const useSinglePost = (props = {}) => {
 
   const getPost = async ({ queryKey }) => {
     const [_, postId] = queryKey;
-    console.log({ postId });
     if (!postId) return null;
     const post = await loadSinglePost(postId);
     return post || null;
@@ -73,6 +72,7 @@ const useSinglePost = (props = {}) => {
 
   const createPost = async (content) => {
     const res = await orbis.createPost(content);
+    await sleep(1500);
     if (res.status != 200) return null
     return res;
   }
@@ -87,12 +87,29 @@ const useSinglePost = (props = {}) => {
     }
   })
 
+  const deletePost = async () => {
+    const res = await orbis.deletePost(postId);
+    if (res.status != 200) return null;
+    return res;
+  };
+
+  const deletePostMutation = useMutation({
+    mutationKey: ['delete-post', { postId }],
+    mutationFn: deletePost,
+    onSuccess: (res) => {
+      if (!res) return;
+      queryClient.invalidateQueries({ queryKey: cloneDeep(queryKey), exact: true })
+      router.push('/');
+    }
+  })
+
   return {
     post,
     loading: isLoading,
     fetching: isFetching,
     editPostMutation,
-    createPostMutation
+    createPostMutation,
+    deletePostMutation
   }
 }
 

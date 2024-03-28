@@ -36,7 +36,7 @@ const Editor = ({ post }) => {
   const [accessRulesLoading, setAccessRulesLoading] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
   const [accessRulesModalVis, setAccessRulesModalVis] = useState(false);
-  const [status, setStatus] = useState(0);
+  // const [status, setStatus] = useState(0);
   const [toolbarStyle, setToolbarStyle] = useState({});
   const [storedSelectionStart, setStoredSelectionStart] = useState(0);
   const [storedSelectionEnd, setStoredSelectionEnd] = useState(0);
@@ -408,6 +408,8 @@ const Editor = ({ post }) => {
     }
   };
 
+  const loading = editPostMutation.isPending || createPostMutation.isPending;
+
   return (
     <div className="container mx-auto text-gray-900">
       <EditorYoutubeModal
@@ -527,7 +529,7 @@ const Editor = ({ post }) => {
                       />
 
                       {/** Default status */}
-                      {status == 0 && (
+                      {!loading && (
                         <>
                           {post && (!user || user.did != post.creator) ? (
                             <div className="flex mt-4 justify-center">
@@ -555,14 +557,14 @@ const Editor = ({ post }) => {
                       )}
 
                       {/** Loading status */}
-                      {status == 1 && (
+                      {loading && (
                         <button className="btn-sm w-full bg-brand bg-brand-hover mt-2">
                           Loading...
                         </button>
                       )}
 
                       {/** success status */}
-                      {status == 2 && (
+                      {(editPostMutation.isSuccess || createPostMutation.isSuccess) && (
                         <button className="btn-sm w-full text-slate-100 bg-green-500 mt-2">
                           Success
                         </button>
