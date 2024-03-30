@@ -14,6 +14,7 @@ import ArticleContent from "./ArticleContent";
 import Modal from './Modal';
 import EditorSpotifyModal from './EditorSpotifyModal';
 import EditorYoutubeModal from './EditorYoutubeModal';
+import useSinglePost from '../hooks/useSinglePost';
 
 const Editor = ({ post }) => {
   const { orbis, user, credentials } = useOrbis();
@@ -35,7 +36,7 @@ const Editor = ({ post }) => {
   const [accessRulesLoading, setAccessRulesLoading] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
   const [accessRulesModalVis, setAccessRulesModalVis] = useState(false);
-  const [status, setStatus] = useState(0);
+  // const [status, setStatus] = useState(0);
   const [toolbarStyle, setToolbarStyle] = useState({});
   const [storedSelectionStart, setStoredSelectionStart] = useState(0);
   const [storedSelectionEnd, setStoredSelectionEnd] = useState(0);
@@ -346,39 +347,51 @@ const Editor = ({ post }) => {
     }
   };
 
+  const {
+    editPostMutation,
+    createPostMutation
+  } = useSinglePost({ postId: post?.stream_id });
+
   /** Will edit the post to publish the new version */
   async function updateArticle() {
-    setStatus(1);
-    let res;
+    // setStatus(1);
+    // let res;
     if (post) {
-      let _content = { ...post.content };
-      let _data = { ...post.content.data };
-      _content.title = title;
-      _content.body = body;
-      _content.data = _data;
-      _content.media = media;
-      _content.context = category ? category : global.orbis_context;
-      res = await orbis.editPost(post.stream_id, _content);
-      console.log("Post updated?", res);
+      // let _content = { ...post.content };
+      // let _data = { ...post.content.data };
+      // _content.title = title;
+      // _content.body = body;
+      // _content.data = _data;
+      // _content.media = media;
+      // _content.context = category ? category : global.orbis_context;
+      // res = await orbis.editPost(post.stream_id, _content);
+      // console.log("Post updated?", res);
+      await editPostMutation.mutateAsync({
+        ...post.content,
+        title,
+        body,
+        media,
+        context: category ? category : global.orbis_context
+      })
     } else {
-      res = await orbis.createPost({
+      await createPostMutation.mutateAsync({
         title: title,
         body: body,
         context: category ? category : global.orbis_context,
         media: media,
       });
-      console.log("Post created", res);
+      // console.log("Post created", res);
     }
 
-    if (res.status == 200) {
-      setStatus(2);
-      await sleep(1500);
-      router.push("/post/" + res.doc);
-    } else {
-      setStatus(3);
-      await sleep(2500);
-      setStatus(0);
-    }
+    // if (res.status == 200) {
+    //   setStatus(2);
+    //   await sleep(1500);
+    //   router.push("/post/" + res.doc);
+    // } else {
+    //   setStatus(3);
+    //   await sleep(2500);
+    //   setStatus(0);
+    // }
   }
 
   /** Used to upload the main image to IPFS and save it in state */
@@ -394,6 +407,8 @@ const Editor = ({ post }) => {
       }
     }
   };
+
+  const loading = editPostMutation.isPending || createPostMutation.isPending;
 
   return (
     <div className="container mx-auto text-gray-900">
@@ -514,7 +529,7 @@ const Editor = ({ post }) => {
                       />
 
                       {/** Default status */}
-                      {status == 0 && (
+                      {!loading && (
                         <>
                           {post && (!user || user.did != post.creator) ? (
                             <div className="flex mt-4 justify-center">
@@ -542,14 +557,14 @@ const Editor = ({ post }) => {
                       )}
 
                       {/** Loading status */}
-                      {status == 1 && (
+                      {loading && (
                         <button className="btn-sm w-full bg-brand bg-brand-hover mt-2">
                           Loading...
                         </button>
                       )}
 
                       {/** success status */}
-                      {status == 2 && (
+                      {(editPostMutation.isSuccess || createPostMutation.isSuccess) && (
                         <button className="btn-sm w-full text-slate-100 bg-green-500 mt-2">
                           Success
                         </button>

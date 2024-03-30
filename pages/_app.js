@@ -5,6 +5,7 @@ import { Orbis, OrbisProvider } from "@orbisclub/components";
 import "@orbisclub/components/dist/index.modern.css";
 import React from 'react';
 import { GlobalContext } from "../contexts/GlobalContext";
+import { QueryClient, QueryClientProvider, HydrationBoundary } from '@tanstack/react-query';
 
 /**
  * Set the global forum context here (you can create categories using the dashboard by clicking on "Create a sub-context"
@@ -24,11 +25,21 @@ let orbis = new Orbis({
   PINATA_GATEWAY: process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL,
 });
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 1000 * 60 * 5 },
+  }
+})
+
 export default function App({ Component, pageProps }) {
   return (
     <OrbisProvider defaultOrbis={orbis} authMethods={["metamask", "wallet-connect", "email"]}>
       <GlobalContext.Provider value={{ orbis: orbis }}>
-        <Component {...pageProps} />
+        <QueryClientProvider client={queryClient}>
+          <HydrationBoundary state={pageProps.dehydratedState}>
+            <Component {...pageProps} />
+          </HydrationBoundary>
+        </QueryClientProvider>
       </GlobalContext.Provider>
     </OrbisProvider>
   )

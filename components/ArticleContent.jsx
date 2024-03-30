@@ -14,17 +14,20 @@ import Modal from './Modal';
 /** For Markdown support */
 import { marked } from 'marked';
 import parse from 'html-react-parser';
+import useSinglePost from '../hooks/useSinglePost';
 
 const ArticleContent = ({ post }, ref) => {
   const { orbis, user } = useOrbis();
   const [hasLiked, setHasLiked] = useState(false);
   const [updatedPost, setUpdatedPost] = useState(post);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deletingPost, setDeletingPost] = useState(false);
+  // const [deletingPost, setDeletingPost] = useState(false);
 
   const deleteModalRef = useRef();
 
-  const router = useRouter();
+  // const router = useRouter();
+
+  const { deletePostMutation } = useSinglePost({ postId: post?.stream_id });
 
   /** Check if user liked this post */
   useEffect(() => {
@@ -75,19 +78,21 @@ const ArticleContent = ({ post }, ref) => {
     }
   };
 
-  const deletePost = async () => {
-    setDeletingPost(true);
-    try {
-      const res = await orbis.deletePost(post.stream_id);
-      router.push('/');
-    } catch (error) {
-      console.error(error);
-    }
-    setDeletingPost(false);
-  };
+  // const deletePost = async () => {
+  //   setDeletingPost(true);
+  //   try {
+  //     const res = await orbis.deletePost(post.stream_id);
+  //     router.push('/');
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  //   setDeletingPost(false);
+  // };
 
   const openDeleteModal = () => setDeleteModalOpen(true);
   const closeDeleteModal = () => setDeleteModalOpen(false);
+
+  const deletingPost = deletePostMutation.isPending;
 
   return (
     <>
@@ -99,7 +104,7 @@ const ArticleContent = ({ post }, ref) => {
           <div className='flex justify-end mt-3'>
             <button
               className='btn-sm py-1.5 bg-red-500 text-primary'
-              onClick={() => deletePost()}
+              onClick={() => deletePostMutation.mutate()}
               disabled={deletingPost}
             >
               {deletingPost && <LoadingCircle />}
