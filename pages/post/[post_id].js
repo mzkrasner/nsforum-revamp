@@ -90,7 +90,7 @@ export async function getStaticPaths() {
     }
   }
 
-  const posts = await loadPosts(process.env.ORBCONTEXT, false, 0) || [];
+  const posts = await loadPosts('kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi', false, 0) || [];
   const paths = posts.map((post) => ({
     params: { post_id: post.stream_id },
   }))
