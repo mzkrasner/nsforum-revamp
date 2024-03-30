@@ -16,7 +16,7 @@ const useSinglePost = (props = {}) => {
   const queryKey = ['post', { postId }];
 
   const getPost = async ({ queryKey }) => {
-    const [_, postId] = queryKey;
+    const [_, { postId }] = queryKey;
     if (!postId) return null;
     const post = await loadSinglePost(postId);
     return post || null;
