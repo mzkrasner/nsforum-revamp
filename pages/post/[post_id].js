@@ -12,14 +12,10 @@ import loadPosts from '../../controllers/loadPosts';
 import { LoadingCircle } from '../../components/Icons';
 
 export default function Post({ postId, post: initialData }) {
-  const isServer = typeof window === 'undefined';
   const articleRef = useRef();
 
   const singlePost = useSinglePost({ postId, initialData });
-  let post = singlePost.post;
-  if (isServer || !post) {
-    post = initialData;
-  }
+  let post = singlePost.post || initialData;
 
   return (
     <>
@@ -49,9 +45,9 @@ export default function Post({ postId, post: initialData }) {
           <section>
             <div className="flex max-w-6xl mx-auto px-4 sm:px-6 pt-6">
               <div className="relative md:flex md:gap-6 md:justify-between w-full">
-                {(!post || singlePost.loading) ? (
-                  <div className='flex w-full justify-center my-auto text-primary'>
-                    <LoadingCircle />
+                {!post ? (
+                  <div className='flex w-full justify-center my-auto text-primary text-center'>
+                    {singlePost.loading ? <LoadingCircle /> : 'Unable to load post'}
                   </div>
                 ) : (
                   <>
