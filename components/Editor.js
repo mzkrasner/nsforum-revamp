@@ -475,7 +475,7 @@ const Editor = ({ post }) => {
               {category && category != "" && (
                 <>
                   {/** If user has access we disply the form */}
-                  {true ? (
+                  {hasAccess ? (
                     <>
                       {/** Title */}
                       <TextareaAutosize
