@@ -3,10 +3,12 @@ import Link from 'next/link';
 import { useOrbis, User } from '@orbisclub/components';
 import { LoadingCircle } from './Icons';
 import ReactTimeAgo from 'react-time-ago';
+import usePosts from '../hooks/usePosts';
+import { useInView } from 'react-intersection-observer';
 
 function Sidebar() {
   return (
-    <aside className='sticky top-0 left-0 h-fit min-h-screen md:w-64 md:shrink-0 pt-6 pb-12 md:pb-20 border-l-0 md:border-l border-primary'>
+    <aside className='sticky top-0 left-0 h-screen overflow-y-auto scrollbar-hide md:w-64 md:shrink-0 pt-6 pb-12 md:pb-20 border-l-0 md:border-l border-primary'>
       <div className='md:pl-5 lg:pl-10'>
         {/* Sidebar content */}
         <div className='space-y-6'>
@@ -28,35 +30,65 @@ function Sidebar() {
 
 /** Show recent discussions */
 const RecentDiscussions = () => {
-  const { orbis, user } = useOrbis();
-  const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
+  // const { orbis, user } = useOrbis();
+  // const [loading, setLoading] = useState(false);
+  // const [posts, setPosts] = useState([]);
+
+  const {
+    posts = [],
+    loading,
+    fetching,
+    fetchNextPage,
+    hasNextPage,
+  } = usePosts();
+
+  const {
+    ref: anchorRef,
+    inView,
+    entry,
+  } = useInView({
+    /* Optional options */
+    threshold: 0,
+    rootMargin: '0px 0px 800px 0px', // trigger refetch when the bottom is 800px away
+  });
+
+  useEffect(() => {
+    if (!inView || !hasNextPage) return;
+    fetchNextPage();
+  }, [inView, fetchNextPage, hasNextPage]);
 
   /** Load all of the categories (sub-contexts) available in this forum */
-  useEffect(() => {
-    loadPosts(global.orbis_context, true);
-    async function loadPosts(context, include_child_contexts) {
-      setLoading(true);
-      let { data, error } = await orbis.getPosts(
-        {
-          context: context,
-          only_master: true,
-          include_child_contexts: include_child_contexts,
-          order_by: 'last_reply_timestamp',
-        },
-        0,
-        5
-      );
-      setLoading(false);
+  // useEffect(() => {
+  //   loadPosts(global.orbis_context, true);
+  //   async function loadPosts(context, include_child_contexts) {
+  //     setLoading(true);
+  //     let { data, error } = await orbis.getPosts(
+  //       {
+  //         context: context,
+  //         only_master: true,
+  //         include_child_contexts: include_child_contexts,
+  //         order_by: 'last_reply_timestamp',
+  //       },
+  //       0,
+  //       5
+  //     );
+  //     setLoading(false);
 
-      if (error) {
-        console.log('error:', error);
-      }
-      if (data) {
-        setPosts(data);
-      }
-    }
-  }, []);
+  //     if (error) {
+  //       console.log('error:', error);
+  //     }
+  //     if (data) {
+  //       setPosts(data);
+  //     }
+  //   }
+  // }, []);
+
+  if (loading)
+    return (
+      <div className='flex items-center justify-center min-h-screen w-full text-primary'>
+        <LoadingCircle />
+      </div>
+    );
 
   return (
     <div>
@@ -115,6 +147,13 @@ const RecentDiscussions = () => {
           </div>
         )}
       </ul>
+      {/* An anchor element to monitor when to fetch more posts */}
+      <div ref={anchorRef}></div>
+      {fetching && (
+        <div className='flex w-full justify-center p-3 text-primary'>
+          <LoadingCircle />
+        </div>
+      )}
     </div>
   );
 };
