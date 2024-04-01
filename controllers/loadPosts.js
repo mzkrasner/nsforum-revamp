@@ -30,7 +30,7 @@ export default async function loadPosts(context, include_child_contexts, _page) 
         const account = items[i].creator_details.metadata.address.toLowerCase();
         const gotAttestations = await getAttestationsReceived(account)
         // change this to if user has more than 3 instead of greater than zero
-        if (gotAttestations.data.accountAttestationIndex.edges.length > 0) {
+        if (gotAttestations?.data?.accountAttestationIndex?.edges?.length > 0) {
           items[i].verified = true;
           items[i].attestationLength =
             gotAttestations.data.accountAttestationIndex.edges.length;

@@ -139,7 +139,7 @@ function Home() {
                           />
                           {/** Show loading state or list of posts */}
                           {loading ? (
-                            <div className='flex w-full justify-center p-3 text-primary'>
+                            <div className='flex w-full justify-center py-20 text-primary'>
                               <LoadingCircle />
                             </div>
                           ) : (

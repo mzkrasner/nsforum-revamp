@@ -8,7 +8,7 @@ import { sleep } from '../utils';
 
 const useSinglePost = (props = {}) => {
   const { postId = '' } = props;
-  const { orbis } = useOrbis();
+  const { orbis, user } = useOrbis();
 
   const router = useRouter();
 
@@ -41,7 +41,7 @@ const useSinglePost = (props = {}) => {
       } else {
         // Prefetch post
         queryClient.prefetchQuery({
-          queryKey: ['post', { postId }],
+          queryKey: cloneDeep(queryKey),
           queryFn: getPost
         })
       }
@@ -103,13 +103,71 @@ const useSinglePost = (props = {}) => {
     }
   })
 
+  const getReaction = async () => {
+    if (!user?.did) return null;
+    const res = await orbis.getReaction(postId, user.did);
+    if (res.status === 200 && !res.error) {
+      return res.data?.type || null;
+    } else {
+      throw new Error(res.error || 'An error occured while creating comments');
+    }
+  };
+
+  const reactionQuery = useQuery({
+    queryKey: ['post-reaction', { postId, userDid: user?.did }],
+    queryFn: getReaction
+  })
+
+  const reactToPost = async (reaction) => {
+    if (reaction === reactionQuery.data || !['like', 'downvote'].includes(reaction)) return;
+    let res = await orbis.react(postId, reaction);
+    if (res.status === 200 && !res.error) {
+      return reaction;
+    } else {
+      throw new Error(res.error || 'An error occured while creating comments');
+    }
+  };
+
+  // React to post
+  const reactToPostMutation = useMutation({
+    mutationKey: ['react-to-post', { postId }],
+    mutationFn: reactToPost,
+    onSuccess: (reaction) => {
+      if (post) {
+        queryClient.setQueryData(cloneDeep(queryKey), () => {
+          const lastReaction = reactionQuery.data;
+          const newPost = post;
+          if (reaction === 'like') {
+            if (lastReaction === 'downvote' && post.count_downvotes > 0) {
+              newPost.count_downvotes = post.count_downvotes - 1;
+            }
+            newPost.count_likes = post.count_likes + 1;
+          }
+          if (reaction === 'downvote') {
+            if (lastReaction === 'like' && post.count_likes > 0) {
+              newPost.count_likes = post.count_likes - 1;
+            }
+            newPost.count_downvotes = post.count_downvotes + 1;
+          }
+          return newPost;
+        });
+      }
+      queryClient.setQueryData(
+        ['post-reaction', { postId, userDid: user?.did }],
+        reaction
+      );
+    },
+  })
+
   return {
     post,
     loading: isLoading,
     fetching: isFetching,
     editPostMutation,
     createPostMutation,
-    deletePostMutation
+    deletePostMutation,
+    reactionQuery,
+    reactToPostMutation
   }
 }
 

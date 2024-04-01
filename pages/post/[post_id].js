@@ -53,7 +53,7 @@ export default function Post({ postId, post: initialData }) {
                   <>
                     {/* Page content*/}
                     <ArticleTableOfContent post={post} ref={articleRef} />
-                    <ArticleContent post={post} ref={articleRef} />
+                    <ArticleContent post={post} postId={postId} ref={articleRef} />
                   </>
                 )}
                 <Sidebar />
