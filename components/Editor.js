@@ -15,6 +15,7 @@ import Modal from './Modal';
 import EditorSpotifyModal from './EditorSpotifyModal';
 import EditorYoutubeModal from './EditorYoutubeModal';
 import useSinglePost from '../hooks/useSinglePost';
+import useContexts from '../hooks/useContexts';
 
 const Editor = ({ post }) => {
   const { orbis, user, credentials } = useOrbis();
@@ -621,29 +622,39 @@ const Editor = ({ post }) => {
 
 /** Will loop through all categories and display them */
 const Categories = ({ category, setCategory }) => {
-  const { orbis, user } = useOrbis();
-  const [loading, setLoading] = useState(false);
+  // const { orbis, user } = useOrbis();
+  // const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  /** Load all of the categories (sub-contexts) available in this forum */
-  useEffect(() => {
-    loadContexts();
-    async function loadContexts() {
-      setLoading(true);
-      let { data, error } = await orbis.api
-        .from("orbis_contexts")
-        .select()
-        .eq("context", global.orbis_context)
-        .order("created_at", { ascending: false });
-      if (data && data.length > 0) {
-        setCategories(data);
-      } else {
-        setCategory(global.orbis_context);
-      }
+  const { contexts, loading } = useContexts();
 
-      setLoading(false);
+  useEffect(() => {
+    if (contexts && contexts.length > 0) {
+      setCategories(contexts);
+    } else {
+      setCategory(global.orbis_context);
     }
-  }, []);
+  }, [contexts])
+
+  /** Load all of the categories (sub-contexts) available in this forum */
+  // useEffect(() => {
+  //   loadContexts();
+  //   async function loadContexts() {
+  //     setLoading(true);
+  //     let { data, error } = await orbis.api
+  //       .from("orbis_contexts")
+  //       .select()
+  //       .eq("context", global.orbis_context)
+  //       .order("created_at", { ascending: false });
+  //     if (data && data.length > 0) {
+  //       setCategories(data);
+  //     } else {
+  //       setCategory(global.orbis_context);
+  //     }
+
+  //     setLoading(false);
+  //   }
+  // }, []);
 
   return (
     <div className="flex flex-col mt-2 mb-4 items-center text-sm">
