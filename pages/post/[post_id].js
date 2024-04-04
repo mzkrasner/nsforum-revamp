@@ -91,6 +91,7 @@ export async function getStaticPaths() {
 
 // This function gets called at build time
 export async function getStaticProps(context) {
+  console.log('Fetching post from orbis');
   const postId = context.params.post_id;
 
   const getPost = async () => {
@@ -98,7 +99,6 @@ export async function getStaticProps(context) {
     return post || null;
   }; 
   const startTime = performance.now();
-  console.log('Fetching post from orbis');
   const post = await getPost();
   const endTime = performance.now();
   const executionTime = endTime - startTime;
