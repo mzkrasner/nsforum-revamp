@@ -93,13 +93,17 @@ export async function getStaticProps(context) {
   const getPost = async () => {
     const post = await loadSinglePost(postId);
     return post || null;
-  };
+  }; 
+  const startTime = performance.now();
   const post = await getPost();
+  const endTime = performance.now();
+  const executionTime = endTime - startTime;
+  console.log(`Function execution time: ${executionTime} milliseconds`);
 
   return {
     props: {
       postId,
-      post: post ? JSON.parse(JSON.stringify(post)): null
+      post: post ? JSON.parse(JSON.stringify(post)) : null
     },
   };
 }
