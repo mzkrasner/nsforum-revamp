@@ -47,7 +47,7 @@ export default function Post({ postId, post: initialData }) {
               <div className="relative md:flex md:gap-6 md:justify-between w-full">
                 {!post ? (
                   <div className='flex w-full justify-center my-auto text-primary text-center'>
-                    {singlePost.loading ? <LoadingCircle /> : 'Unable to load post'}
+                    {singlePost.loading ? <LoadingCircle /> : 'Post not found'}
                   </div>
                 ) : (
                   <>
@@ -69,15 +69,6 @@ export default function Post({ postId, post: initialData }) {
 }
 
 /** Load content for Blog */
-// Post.getInitialProps = async (context) => {
-//   const post = await loadSinglePost(context.query.post_id)
-//   /** Return results */
-//   return {
-//     post_id: context.query.post_id,
-//     post: post ? post : null
-//   };
-// }
-
 export async function getStaticPaths() {
   if (process.env.SKIP_BUILD_STATIC_GENERATION) {
     return {
@@ -99,23 +90,16 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const postId = context.params.post_id;
 
-  // const queryClient = new QueryClient();
-
   const getPost = async () => {
     const post = await loadSinglePost(postId);
     return post || null;
   };
   const post = await getPost();
 
-  // await queryClient.prefetchQuery({
-  //   queryKey: ['post', { postId }],
-  //   queryFn: getPost,
-  // });
-
   return {
     props: {
       postId,
-      post: JSON.parse(JSON.stringify(post))
+      post: post ? JSON.parse(JSON.stringify(post)): null
     },
   };
 }
