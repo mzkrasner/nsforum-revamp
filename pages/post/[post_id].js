@@ -95,6 +95,7 @@ export async function getStaticProps(context) {
     return post || null;
   }; 
   const startTime = performance.now();
+  console.log('Fetching post from orbis');
   const post = await getPost();
   const endTime = performance.now();
   const executionTime = endTime - startTime;
