@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation';
 import Header from '../../components/Header';
 import ArticleContent from '../../components/ArticleContent';
 import ArticleTableOfContent from '../../components/ArticleTableOfContent';
@@ -13,6 +14,8 @@ import { LoadingCircle } from '../../components/Icons';
 
 export default function Post({ postId, post: initialData }) {
   const articleRef = useRef();
+
+  const router = useRouter();
 
   const singlePost = useSinglePost({ postId, initialData });
   let post = singlePost.post || initialData;
@@ -47,7 +50,7 @@ export default function Post({ postId, post: initialData }) {
               <div className="relative md:flex md:gap-6 md:justify-between w-full">
                 {!post ? (
                   <div className='flex w-full justify-center my-auto text-primary text-center'>
-                    {singlePost.loading ? <LoadingCircle /> : 'Post not found'}
+                    {(isFallback && singlePost.loading) ? <LoadingCircle /> : 'Post not found'}
                   </div>
                 ) : (
                   <>
@@ -83,7 +86,7 @@ export async function getStaticPaths() {
   }))
 
   // { fallback: false } means other routes should 404
-  return { paths, fallback: true }
+  return { paths, fallback: 'blocking' }
 }
 
 // This function gets called at build time
