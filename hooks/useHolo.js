@@ -5,20 +5,21 @@ import { cloneDeep } from "lodash-es";
 
 const useHolo = () => {
   const { user } = useOrbis();
+  console.log({address: user?.metadata?.address});
 
   const queryClient = useQueryClient();
   const queryKey = ["proof-of-personhood", user?.did];
 
-  const checkHolo = async (address) => {
+  const checkHolo = async () => {
+    if (!user?.metadata?.address) return; 
     const resp = await fetch(
-      `https://api.holonym.io/sybil-resistance/gov-id/optimism?user=${address}&action-id=123456789`
+      `https://api.holonym.io/sybil-resistance/gov-id/optimism?user=${user.metadata.address}&action-id=123456789`
     );
     const res = await resp.json();
     const { result: isUnique } = res;
     return !!isUnique;
   };
-
-  /** Will load the details of the context and check if user has access to it  */
+  
   const { data: isUnique, isFetching: fetching } = useQuery({
     queryKey,
     queryFn: checkHolo,

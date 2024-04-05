@@ -15,20 +15,26 @@ const NoAttestationModal = ({
     <Modal ref={modalRef} handleClose={closeModal}>
       <div className="w-full text-center bg-white/10 rounded-2xl border border-[#619575] p-6">
         <h3>Proof of Personhood</h3>
-        <p className="text-base text-secondary text-sm my-5">
-          To react to posts, users must verify their identity using a government
-          ID. This is to ansure fairness and prevent multiple reactions from a
-          single user. The button below will open a new tab where you can verify
-          yourself, afterwhich you should return here and click the refresh
-          button if this modal is still open.
-        </p>
+        <div className="text-base text-secondary text-sm my-5">
+          <p className="mb-2">
+            To react to posts, users must verify their identity by showing their
+            government ID and by paying ~$10. This is done in a way that
+            respects your privacy as the data about your ID is stored with zero
+            knowledge cryptography which no one, including the forum team, can
+            actually see. THis is to ensure fairness and prevent multiple
+            accounts.
+          </p>
+          <p>
+            Click the button to become a verified user then return and click the refresh button
+          </p>
+        </div>
         <div className="mb-3">
           <a
             target="_blank"
             href="https://silksecure.net/holonym/silk/gov-id/issuance/prereqs"
             className="flex-1 btn btn-secondary block w-full"
           >
-            Prove
+            Verify
           </a>
         </div>
         <div className="flex gap-2 justify-center text-secondary text-sm">
@@ -41,7 +47,7 @@ const NoAttestationModal = ({
               recheck();
             }}
           >
-            {checking ? <LoadingCircle /> : "Recheck"}
+            {checking ? <LoadingCircle /> : "Refresh"}
           </button>
         </div>
         {!isUnique && rechecked && !checking ? (
