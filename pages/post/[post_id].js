@@ -93,13 +93,13 @@ export async function getStaticProps(context) {
   const getPost = async () => {
     const post = await loadSinglePost(postId);
     return post || null;
-  };
+  }; 
   const post = await getPost();
 
   return {
     props: {
       postId,
-      post: post ? JSON.parse(JSON.stringify(post)): null
+      post: post ? JSON.parse(JSON.stringify(post)) : null
     },
   };
 }
