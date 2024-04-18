@@ -26,6 +26,7 @@
     "@didtools/cacao": "2.0.0",
     "@didtools/pkh-ethereum": "^0.4.1",
     "@ethereum-attestation-service/eas-sdk": "^0.29.0",
+    "@hookform/resolvers": "^3.3.4",
     "@orbisclub/components": "^0.2.11",
     "@orbisclub/orbis-sdk": "^0.4.89",
     "@react-oauth/google": "^0.11.0",
@@ -47,6 +48,7 @@
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
     "marked": "^4.2.12",
+    "mongoose": "^8.3.2",
     "next": "13.2.4",
     "node": "^21.6.2",
     "notificationapi-node-server-sdk": "^0.20.0",
@@ -54,6 +56,7 @@
     "prompt": "^1.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.51.3",
     "react-intersection-observer": "^9.8.1",
     "react-loader-spinner": "^5.4.5",
     "react-syntax-highlighter": "^15.5.0",
@@ -64,7 +67,9 @@
     "survey-react-ui": "^1.9.121",
     "tailwind-scrollbar-hide": "^1.1.7",
     "tiny-invariant": "^1.3.1",
+    "twitter-api-v2": "^1.16.1",
     "web3-provider": "^1.0.0",
+    "yup": "^1.4.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
