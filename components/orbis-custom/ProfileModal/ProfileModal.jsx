@@ -121,7 +121,9 @@ function ListNFTs({ chainSelected, address, callback }) {
 	if (nfts && nfts.length == 0) {
 		return (
 			<div className={styles.nftsEmptyState}>
-				<p style={{ fontSize: 13 }}>You don't have any NFT on this network.</p>
+				<p style={{ fontSize: 13 }}>
+					You don{"'"}t have any NFT on this network.
+				</p>
 			</div>
 		);
 	}
