@@ -2,6 +2,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useOrbis } from "@orbisclub/components";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import useGetUsername from "./useGetUsername";
 
 const useUserProfile = (props = {}) => {
 	const { oauth_verifier, oauth_token } = props;
@@ -13,10 +14,15 @@ const useUserProfile = (props = {}) => {
 
 	const queryClient = useQueryClient();
 
+	const { verifyUsernames } = useGetUsername();
+
 	const getXOauthLink = async (username) => {
 		if (!did) return null;
 		if (username !== user.username) await orbis.updateProfile({ username });
-		const { data } = await axios.post("/api/x-oauth/link", { did, pathname });
+		const { data } = await axios.post(
+			"https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/x-oauth/link",
+			{ did, pathname }
+		);
 		return data?.url || null;
 	};
 
@@ -24,33 +30,23 @@ const useUserProfile = (props = {}) => {
 		mutationKey: ["x-oauth-link", did],
 		mutationFn: getXOauthLink,
 		onSuccess: (url) => {
-			window.open(url, "_blank");
+			window.location = url;
 		},
-	});
-
-	const getVerifiedUsername = async () => {
-		if (!did) return null;
-		const { data } = await axios.post("/api/profile/verified-username", {
-			did,
-		});
-		return data;
-	};
-
-	const verifiedUsernameQuery = useQuery({
-		queryKey: ["verified-username", did],
-		queryFn: getVerifiedUsername,
 	});
 
 	const XOauthCallbackApiCall = async () => {
 		if (!did || !oauth_verifier || !oauth_token) return null;
 		const username = profile?.username;
 		if (!oauth_token || !oauth_verifier || !username || !did) return;
-		const res = await axios.post("/api/x-oauth/callback", {
-			oauth_token,
-			oauth_verifier,
-			username,
-			did,
-		});
+		const res = await axios.post(
+			"https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/x-oauth/callback",
+			{
+				oauth_token,
+				oauth_verifier,
+				username,
+				did,
+			}
+		);
 		const { data = {} } = res;
 		const { success, pathname, error } = data;
 		if (success) {
@@ -58,6 +54,7 @@ const useUserProfile = (props = {}) => {
 			queryClient.invalidateQueries({
 				queryKey: ["verified-username", did],
 			});
+			verifyUsernames([{ username, did }], true);
 			router.push(pathname);
 		}
 		return data || null;
@@ -72,7 +69,6 @@ const useUserProfile = (props = {}) => {
 		profile,
 		XOauthLinkMutation,
 		XOauthCallbackQuery,
-		verifiedUsernameQuery,
 	};
 };
 

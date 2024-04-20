@@ -1,16 +1,16 @@
-import React, { useEffect, useState, forwardRef, useRef } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, forwardRef, useRef } from "react";
 import Link from "next/link";
 import ReactTimeAgo from "react-time-ago";
-import { Orbis, Discussion, useOrbis } from "@orbisclub/components";
+import { useOrbis } from "@orbisclub/components";
 import User from "./orbis-custom/User";
-import { shortAddress, getIpfsLink } from "../utils";
-import { ExternalLinkIcon, EditIcon, LoadingCircle, BinIcon } from "./Icons";
+import { getIpfsLink } from "../utils";
+import { EditIcon, LoadingCircle, BinIcon } from "./Icons";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import Upvote from "./Upvote";
 import UrlMetadata from "./UrlMetadata";
 import ProofBadge from "./ProofBadge";
 import Modal from "./Modal";
+import Comments from "./orbis-custom/Comments";
 
 /** For Markdown support */
 import { marked } from "marked";
@@ -219,10 +219,7 @@ const ArticleContent = ({ postId, post: initialPost }, ref) => {
 				{/** Show commenting feed only if not new post  */}
 				{post.stream_id && (
 					<div className="mt-8 comments-section">
-						<Discussion
-							context={post.content.context}
-							master={post.stream_id}
-						/>
+						<Comments context={post.content.context} master={post.stream_id} />
 					</div>
 				)}
 			</article>

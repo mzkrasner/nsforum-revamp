@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { GlobalContext } from "../contexts/GlobalContext";
-import { defaultTheme, getThemeValue } from "../utils";
+import { defaultTheme, getThemeValue } from "../utils/themes";
 import clsx from "clsx";
 
 export const Logo = ({ color = "#000", className }) => {

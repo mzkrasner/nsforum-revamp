@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { GlobalContext } from "../../../contexts/GlobalContext";
+import React, { useState, useEffect } from "react";
 import { shortAddress, sleep } from "../../../utils";
-import {
-	decryptString,
-	generateAccessControlConditionsForDMs,
-} from "@orbisclub/orbis-sdk";
+import { decryptString } from "@orbisclub/orbis-sdk";
+import { Badge as VerificationBadge, Check } from "lucide-react";
 
 /** Internal components */
 import ConnectButton from "../ConnectButton";
@@ -18,8 +15,6 @@ import {
 	LoadingCircle,
 	CheckIcon,
 	EditIcon,
-	ErrorIcon,
-	LockIcon,
 	LogoutIcon,
 	TwitterIcon,
 	GithubIcon,
@@ -49,7 +44,7 @@ import { useOrbis } from "@orbisclub/components";
 import { defaultTheme, getThemeValue, getStyle } from "../../../utils/themes";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { userProfileSchema } from "../../../contexts/schema";
+import { userProfileSchema } from "../../../constants/schema";
 
 /** Import CSS */
 import styles from "./User.module.css";
@@ -65,7 +60,12 @@ const User = ({
 	hover = false,
 }) => {
 	const [userDetails, setUserDetails] = useState(details);
-	const { user, theme, orbis } = useOrbis();
+	const { user, orbis } = useOrbis();
+	const { verified: usernameVerified } = useGetUsername({
+		profile: user?.profile,
+		address: user?.metadata?.address,
+		did: user?.did,
+	});
 
 	/** This will retrieve user details in case a did is passed instead of the full user details */
 	useEffect(() => {
@@ -88,7 +88,10 @@ const User = ({
 			/>
 			<div className={styles.userUsernameContainer}>
 				<div style={{ display: "flex" }}>
-					<Username details={connected ? user : userDetails} />
+					<Username
+						details={connected ? user : userDetails}
+						verified={usernameVerified}
+					/>
 				</div>
 			</div>
 		</div>
@@ -190,11 +193,30 @@ export const UserPfp = ({
 	);
 };
 
+export const UsernameVerificationBadge = () => (
+	<span className="relative inline-block h-fit w-fit">
+		<VerificationBadge className="w-5 h-5 stroke-0 fill-blue-500" />
+		<Check className="h-3 w-2 stroke-[4px] stroke-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+	</span>
+);
+
 /** Export only the Username */
 export const Username = ({ details }) => {
-	const { address, chain } = useDidToAddress(details?.did);
-	const username = useGetUsername(details?.profile, address, details?.did);
+	const { address } = useDidToAddress(details?.did);
+	const { username, verified } = useGetUsername({
+		profile: details?.profile,
+		address,
+		did: details?.did,
+	});
 
+	if (verified) {
+		return (
+			<span className="flex gap-1 items-center w-fit">
+				{username}
+				<UsernameVerificationBadge />
+			</span>
+		);
+	}
 	return username;
 };
 
@@ -232,6 +254,12 @@ export const UserPopup = ({ details, visible, position = "absolute" }) => {
 	const [pfpNftDetails, setPfpNftDetails] = useState(
 		details?.profile?.pfpIsNft
 	);
+
+	const { verified: usernameVerified } = useGetUsername({
+		profile: user?.profile,
+		address: user?.metadata?.address,
+		did: user?.did,
+	});
 
 	useEffect(() => {
 		if (locked == false) {
@@ -292,7 +320,7 @@ export const UserPopup = ({ details, visible, position = "absolute" }) => {
 										...getThemeValue("font", theme, "main"),
 									}}
 								>
-									<Username details={details} />
+									<Username details={details} verified={usernameVerified} />
 								</span>
 								<span className={styles.userPopupDetailsBadgeContainer}>
 									<UserBadge details={details} />
@@ -1222,8 +1250,14 @@ function UserEditProfile({
 	// );
 	const [status, setStatus] = useState(0);
 
-	const { XOauthLinkMutation, verifiedUsernameQuery } = useUserProfile();
-	const verifiedUsername = verifiedUsernameQuery.data?.username;
+	const { XOauthLinkMutation } = useUserProfile();
+
+	const { verified: usernameVerified, verifying: verifyingUsername } =
+		useGetUsername({
+			profile: user?.profile,
+			address: user?.metadata?.address,
+			did: user?.did,
+		});
 
 	const {
 		control,
@@ -1380,10 +1414,8 @@ function UserEditProfile({
 					control={control}
 					name="username"
 					render={({ field: { name, value = "", onChange } }) => {
-						const usernameLocked =
-							value?.toLowerCase() === verifiedUsername?.toLowerCase();
 						const verificationLoading =
-							XOauthLinkMutation.isPending || verifiedUsernameQuery.isLoading;
+							XOauthLinkMutation.isPending || verifyingUsername;
 						return (
 							<div className="w-full mb-3">
 								<Input
@@ -1400,13 +1432,13 @@ function UserEditProfile({
 										target="_blank"
 										className={clsx("mt-2 flex justify-end", {
 											"pointer-events-none opacity-50":
-												verificationLoading || usernameLocked,
+												verificationLoading || usernameVerified,
 										})}
 									>
 										<Button
 											type="button"
 											color={
-												XOauthLinkMutation.data?.success || usernameLocked
+												XOauthLinkMutation.data?.success || usernameVerified
 													? "green"
 													: "primary"
 											}
@@ -1417,10 +1449,10 @@ function UserEditProfile({
 												<>
 													<LoadingCircle /> Loading
 												</>
-											) : usernameLocked ? (
+											) : usernameVerified ? (
 												<>
 													<Lock className="mr-2" />
-													Username locked with X
+													Username verified with X
 												</>
 											) : (
 												<>

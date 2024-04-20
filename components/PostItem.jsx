@@ -65,7 +65,13 @@ export default function PostItem({ post }) {
 	return (
 		<div className="[&:nth-child(-n+4)]:-order-1 alte">
 			<div className="relative p-5 pl-0 flex flex-row items-start">
-				<Upvote like={like} active={hasLiked} count={updatedPost.count_likes} />
+				<div className="mr-3">
+					<Upvote
+						like={like}
+						active={hasLiked}
+						count={updatedPost.count_likes}
+					/>
+				</div>
 				<div className="sm:flex items-center space-y-6 sm:space-y-0 sm:space-x-5">
 					<div className="grow text-primary lg:flex items-center justify-between space-y-5 lg:space-x-6 lg:space-y-0">
 						<div>
