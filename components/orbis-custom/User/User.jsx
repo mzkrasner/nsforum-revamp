@@ -50,6 +50,7 @@ import { userProfileSchema } from "../../../constants/schema";
 import styles from "./User.module.css";
 import useUserProfile from "../../../hooks/useUserProfile";
 import clsx from "clsx";
+import Error from "../../Error";
 
 /** Full component for a user */
 const User = ({
@@ -1240,17 +1241,18 @@ function UserEditProfile({
 	pfp,
 	pfpNftDetails,
 }) {
-	const { orbis, user, setUser, theme } = useOrbis();
-	// const [username, setUsername] = useState(
-	// 	user?.profile?.username ? user.profile.username : ""
-	// );
+	const { user, theme } = useOrbis();
 	const [email, setEmail] = useState("");
-	// const [description, setDescription] = useState(
-	// 	user?.profile?.description ? user.profile.description : ""
-	// );
-	const [status, setStatus] = useState(0);
 
-	const { XOauthLinkMutation } = useUserProfile();
+	const { XOauthLinkMutation, saveProfileMutation } = useUserProfile();
+	const {
+		mutate: save,
+		isPending: saving,
+		error: saveError,
+	} = saveProfileMutation;
+	const saved = !!saveProfileMutation.data;
+	const errorMessage =
+		saveError instanceof Error ? saveError.message : String(saveError);
 
 	const { verified: usernameVerified, verifying: verifyingUsername } =
 		useGetUsername({
@@ -1263,7 +1265,7 @@ function UserEditProfile({
 		control,
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors: formErrors, dirtyFields },
 		watch,
 	} = useForm({
 		resolver: yupResolver(userProfileSchema),
@@ -1272,8 +1274,8 @@ function UserEditProfile({
 			description: user?.profile?.description ? user.profile.description : "",
 		},
 	});
-	const username = watch("username");
-	const description = watch("description");
+	const touched = !!Object.keys(dirtyFields).length;
+	const formHasErrors = !!Object.keys(formErrors).length;
 
 	useEffect(() => {
 		if (user?.encrypted_email) {
@@ -1297,83 +1299,11 @@ function UserEditProfile({
 		}
 	}, [user]);
 
-	async function save() {
-		if (status != 0) {
-			console.log("Already saving.");
-			return;
-		}
-		setStatus(1);
-
-		/** Update profile using the Orbis SDK */
-		let profile = { ...user.profile };
-		profile.username = username;
-		profile.description = description;
-		profile.pfp = pfp ? pfp : null;
-
-		/** Add pfp nft details if any */
-		if (pfpNftDetails) {
-			profile.pfpIsNft = pfpNftDetails;
-		}
-
-		/** Update profile using Orbis SDK */
-		let res = await orbis.updateProfile(profile);
-		if (res.status == 200) {
-			setStatus(2);
-			let _user = { ...user };
-			_user.profile = profile;
-			console.log("Updating user to: ", _user);
-
-			setUser(_user);
-			await sleep(1500);
-			setIsEditing(false);
-			setStatus(0);
-		} else {
-			setStatus(3);
-		}
-	}
-
-	const updateProfile = (v) => null;
-
-	const SaveButton = (props = {}) => {
-		switch (status) {
-			/** Submit state */
-			case 0:
-				return (
-					<Button
-						color="primary"
-						className="flex justify-center w-full mt-4"
-						onClick={() => save()}
-						{...props}
-					>
-						Save
-					</Button>
-				);
-
-			/** Loading state */
-			case 1:
-				return (
-					<Button color="primary" className="w-full" {...props}>
-						<LoadingCircle /> Saving
-					</Button>
-				);
-			/** Success state */
-			case 2:
-				return (
-					<Button color="green" className="w-full" {...props}>
-						Saved
-					</Button>
-				);
-			/** Error state */
-			case 3:
-				return (
-					<Button color="red" className="w-full" {...props}>
-						Error
-					</Button>
-				);
-			default:
-				return null;
-		}
-	};
+	const updateProfile = (v) =>
+		save({
+			data: { ...v, pfpNftDetails, pfp },
+			onSave: () => setIsEditing(false),
+		});
 
 	return (
 		<>
@@ -1413,7 +1343,7 @@ function UserEditProfile({
 				<Controller
 					control={control}
 					name="username"
-					render={({ field: { name, value = "", onChange } }) => {
+					render={({ field: { name, value = "", onChange, onBlur } }) => {
 						const verificationLoading =
 							XOauthLinkMutation.isPending || verifyingUsername;
 						return (
@@ -1423,10 +1353,13 @@ function UserEditProfile({
 									name={name}
 									value={value}
 									onChange={onChange}
+									onBlur={onBlur}
 									// onChange={(e) => setUsername(e.target.value)}
 									placeholder="Your username"
-									style={getStyle("input", theme, status == 1)}
+									style={getStyle("input", theme, saving)}
+									className="lowercase"
 								/>
+								<Error message={formErrors[name]?.message} />
 								{value && (
 									<div
 										target="_blank"
@@ -1470,17 +1403,18 @@ function UserEditProfile({
 				<Controller
 					control={control}
 					name="description"
-					render={({ field: { name, value = "", onChange } }) => {
+					render={({ field: { name, value = "", onChange, onBlur } }) => {
 						return (
 							<Input
 								type="textarea"
 								name={name}
 								value={value}
 								onChange={onChange}
+								onBlur={onBlur}
 								// onChange={(e) => setDescription(e.target.value)}
 								placeholder="Enter your description"
 								style={{
-									...getStyle("input", theme, status == 1),
+									...getStyle("input", theme, saving),
 									marginTop: "0.5rem",
 								}}
 							/>
@@ -1517,10 +1451,31 @@ function UserEditProfile({
 						)}
 					</p>
 				)}
+				<div className={styles.userFieldsSaveContainer}>
+					{/* <SaveButton /> */}
+					<Button
+						color={saved || !touched ? "green" : "primary"}
+						className={clsx("w-full flex items-center justify-center", {
+							"cursor-not-allowed": formHasErrors,
+						})}
+						disabled={formHasErrors || !touched}
+					>
+						{saving ? (
+							<>
+								<LoadingCircle />
+								Saving
+							</>
+						) : saved || !touched ? (
+							"Saved"
+						) : (
+							"Save"
+						)}
+					</Button>
+				</div>
+				{saveError && (
+					<div className="text-center mt-2 text-red-500">{errorMessage}</div>
+				)}
 			</form>
-			<div className={styles.userFieldsSaveContainer}>
-				<SaveButton />
-			</div>
 		</>
 	);
 }
