@@ -5,6 +5,7 @@ import { useOrbis } from "@orbisclub/components";
 
 /** Import CSS */
 import styles from "./Input.module.css";
+import clsx from "clsx";
 
 const Input = ({
 	type,
@@ -18,6 +19,7 @@ const Input = ({
 	onChange,
 	autofocus = false,
 	icon = null,
+	className = "",
 }) => {
 	const { orbis, user, theme } = useOrbis();
 	const inputRef = useRef(null);
@@ -38,7 +40,7 @@ const Input = ({
 					placeholder={placeholder}
 					value={value}
 					onChange={onChange}
-					className={styles.input}
+					className={clsx(styles.input, className)}
 					style={{
 						...getThemeValue("font", theme, "input"),
 						borderColor: getThemeValue("border", theme, "main"),
@@ -57,7 +59,7 @@ const Input = ({
 					placeholder={placeholder}
 					value={value}
 					onChange={onChange}
-					className={styles.textarea}
+					className={clsx(styles.textarea, className)}
 					style={{
 						...getThemeValue("font", theme, "input"),
 						borderColor: getThemeValue("border", theme, "main"),
