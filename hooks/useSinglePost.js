@@ -8,8 +8,8 @@ import { sleep } from "../utils";
 
 const useSinglePost = (props = {}) => {
 	const { postId = "" } = props;
-	const { orbis, user = {} } = useOrbis();
-	const { did = "" } = user;
+	const { orbis, user } = useOrbis();
+	const { did = "" } = user || {};
 
 	const router = useRouter();
 
