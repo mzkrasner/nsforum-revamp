@@ -6,7 +6,6 @@ import ArticleTableOfContent from "../../components/ArticleTableOfContent";
 import Sidebar from "../../components/Sidebar";
 import Footer from "../../components/Footer";
 
-import loadSinglePost from "../../controllers/loadSinglePost";
 import useSinglePost from "../../hooks/useSinglePost";
 import loadPosts from "../../controllers/loadPosts";
 import { LoadingCircle } from "../../components/Icons";
@@ -119,7 +118,9 @@ export async function getStaticProps(context) {
 	const postId = context.params.post_id;
 
 	const getPost = async () => {
+		console.log("Preloading post");
 		const post = await preloadPost(postId);
+		console.log("Preloading post successful");
 		return post || null;
 	};
 	const post = await getPost();

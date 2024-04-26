@@ -12,7 +12,6 @@ import usePosts from "../hooks/usePosts";
 import { useInView } from "react-intersection-observer";
 
 import { QueryClient, dehydrate } from "@tanstack/react-query";
-import loadPosts from "../controllers/loadPosts";
 import preloadPosts from "../controllers/preloadPosts";
 
 function Home() {
@@ -296,15 +295,12 @@ export async function getStaticProps() {
 	const queryClient = new QueryClient();
 
 	const getPosts = async () => {
-		const posts = await loadPosts(
+		console.log("Preloading posts");
+		const posts = await preloadPosts(
 			"kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
-			false,
 			0
 		);
-		// const posts = await preloadPosts(
-		// 	"kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
-		// 	0
-		// );
+		console.log("Preloading posts successful");
 		return posts;
 	};
 
