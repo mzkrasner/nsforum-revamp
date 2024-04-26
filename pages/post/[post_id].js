@@ -10,6 +10,7 @@ import loadSinglePost from "../../controllers/loadSinglePost";
 import useSinglePost from "../../hooks/useSinglePost";
 import loadPosts from "../../controllers/loadPosts";
 import { LoadingCircle } from "../../components/Icons";
+import { preloadPost } from "../../controllers/preloadPost";
 
 export default function Post({ postId, post: initialData }) {
 	const articleRef = useRef();
@@ -118,7 +119,7 @@ export async function getStaticProps(context) {
 	const postId = context.params.post_id;
 
 	const getPost = async () => {
-		const post = await loadSinglePost(postId);
+		const post = await preloadPost(postId);
 		return post || null;
 	};
 	const post = await getPost();

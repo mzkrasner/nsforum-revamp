@@ -13,6 +13,7 @@ import { useInView } from "react-intersection-observer";
 
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 import loadPosts from "../controllers/loadPosts";
+import preloadPosts from "../controllers/preloadPosts";
 
 function Home() {
 	const { orbis, user } = useOrbis();
@@ -167,7 +168,7 @@ function Home() {
 																		</div>
 
 																		{/* Handle pagination */}
-																		{/* {posts && posts.length >= 25 && (
+																		{/* {posts && posts.length >= 10 && (
                                       <div className='text-right'>
                                         <button
                                           className='btn-sm py-1.5 h-8 btn-secondary btn-secondary-hover'
@@ -300,6 +301,10 @@ export async function getStaticProps() {
 			false,
 			0
 		);
+		// const posts = await preloadPosts(
+		// 	"kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
+		// 	0
+		// );
 		return posts;
 	};
 

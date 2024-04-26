@@ -28,21 +28,6 @@ export default function PostItem({ post }) {
 		}
 	}, [user]);
 
-	/** Will like / upvote the post */
-	async function like() {
-		if (user) {
-			setHasLiked(true);
-			setUpdatedPost({
-				...updatedPost,
-				count_likes: post.count_likes + 1,
-			});
-			let res = await orbis.react(post.stream_id, "like");
-			console.log("res:", res);
-		} else {
-			alert("You must be connected to react to posts.");
-		}
-	}
-
 	/** Will clean description by shortening it and remove some markdown structure */
 	function cleanDescription() {
 		if (post.content.body) {
@@ -66,11 +51,7 @@ export default function PostItem({ post }) {
 		<div className="[&:nth-child(-n+4)]:-order-1 alte">
 			<div className="relative p-5 pl-0 flex flex-row items-start">
 				<div className="mr-3">
-					<Upvote
-						like={like}
-						active={hasLiked}
-						count={updatedPost.count_likes}
-					/>
+					<Upvote postId={post.stream_id} />
 				</div>
 				<div className="sm:flex items-center space-y-6 sm:space-y-0 sm:space-x-5">
 					<div className="grow text-primary lg:flex items-center justify-between space-y-5 lg:space-x-6 lg:space-y-0">
