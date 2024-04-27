@@ -212,7 +212,7 @@ export const Username = ({ details }) => {
 
 	if (verified) {
 		return (
-			<span className="flex gap-1 items-center w-fit">
+			<span className="flex gap-1 items-center w-fit lowercase">
 				{username}
 				<UsernameVerificationBadge />
 			</span>

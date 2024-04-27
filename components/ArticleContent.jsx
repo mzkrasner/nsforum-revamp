@@ -18,35 +18,18 @@ import parse from "html-react-parser";
 import useSinglePost from "../hooks/useSinglePost";
 
 const ArticleContent = ({ postId, post: initialPost }, ref) => {
-	const { orbis, user } = useOrbis();
-	// const [hasLiked, setHasLiked] = useState(false);
-	// const [updatedPost, setUpdatedPost] = useState(post);
+	const { user } = useOrbis();
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-	// const [deletingPost, setDeletingPost] = useState(false);
 
 	const deleteModalRef = useRef();
-
-	// const router = useRouter();
 
 	const singlePost = useSinglePost({
 		postId,
 	});
-	const { deletePostMutation, reactionQuery, reactToPostMutation } = singlePost;
+	const { deletePostMutation } = singlePost;
 	const post = singlePost.post || initialPost;
 
-	/** Check if user liked this post */
-	// useEffect(() => {
-	//   if (user) {
-	//     getReaction();
-	//   }
-
-	//   async function getReaction() {
-	//     let { data, error } = await orbis.getReaction(post.stream_id, user.did);
-	//     if (data && data.type && data.type == 'like') {
-	//       setHasLiked(true);
-	//     }
-	//   }
-	// }, [user]);
+	if (!post?.content) return null;
 
 	/** Will replace classic code <pre> support with a more advanced integration */
 	const replacePreWithSyntaxHighlighter = (node) => {
@@ -62,40 +45,11 @@ const ArticleContent = ({ postId, post: initialPost }, ref) => {
 		}
 	};
 
-	const markdownContent = post.content.body.replace(/\n/g, "  \n");
+	const markdownContent = post?.content?.body?.replace(/\n/g, "  \n");
 	const htmlContent = marked(markdownContent);
 	const reactComponent = parse(htmlContent, {
 		replace: replacePreWithSyntaxHighlighter,
 	});
-
-	/** Will like / upvote the post */
-	// const like = () => {
-	// if (user) {
-	//   setHasLiked(true);
-	//   setUpdatedPost({
-	//     ...updatedPost,
-	//     count_likes: post.count_likes + 1,
-	//   });
-	//   let res = await orbis.react(post.stream_id, 'like');
-	//   console.log('res:', res);
-	// } else {
-	//   alert('You must be connected to react to posts.');
-	// }
-	// };
-
-	const like = () => reactToPostMutation.mutate("like");
-	const downvote = () => reactToPostMutation.mutate("downvote");
-
-	// const deletePost = async () => {
-	//   setDeletingPost(true);
-	//   try {
-	//     const res = await orbis.deletePost(post.stream_id);
-	//     router.push('/');
-	//   } catch (error) {
-	//     console.error(error);
-	//   }
-	//   setDeletingPost(false);
-	// };
 
 	const openDeleteModal = () => setDeleteModalOpen(true);
 	const closeDeleteModal = () => setDeleteModalOpen(false);
@@ -124,23 +78,11 @@ const ArticleContent = ({ postId, post: initialPost }, ref) => {
 			<article ref={ref} className="w-full overflow-x-hidden mb-8">
 				{/* Post header */}
 				<header>
-					<div className="flex flex-row items-top">
+					<div className="flex flex-row items-top justify-between">
 						<h1 className="text-6xl text-primary mb-4 valverde">
 							{post.content.title}
 						</h1>
-						<Upvote
-							loading={
-								reactionQuery.isLoading ||
-								reactToPostMutation.isPending ||
-								singlePost.loading
-							}
-							like={like}
-							downvote={downvote}
-							reacting={reactToPostMutation.isPending}
-							liked={reactionQuery.data === "like"}
-							downvoted={reactionQuery.data === "downvote"}
-							count={post.count_likes}
-						/>
+						<Upvote postId={postId} />
 					</div>
 
 					{/** Article Metadata */}
@@ -201,19 +143,7 @@ const ArticleContent = ({ postId, post: initialPost }, ref) => {
 				)}
 
 				<div className="flex items-center justify-center my-10">
-					<Upvote
-						loading={
-							reactionQuery.isLoading ||
-							reactToPostMutation.isPending ||
-							singlePost.loading
-						}
-						like={like}
-						downvote={downvote}
-						reacting={reactToPostMutation.isPending}
-						liked={reactionQuery.data === "like"}
-						downvoted={reactionQuery.data === "downvote"}
-						count={post.count_likes}
-					/>
+					<Upvote postId={postId} />
 				</div>
 
 				{/** Show commenting feed only if not new post  */}

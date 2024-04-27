@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { UsernameVerificationContext } from "../contexts/UsernameVerificationContext";
@@ -6,67 +6,49 @@ import { shortAddress } from "../utils";
 
 export default function useGetUsername(props = {}) {
 	const { profile, address, did } = props;
-	const [usernameVerification = {}, setUsernameVerification] = useContext(
+	const { usernameVerificationRef: verificationsRef, updateState } = useContext(
 		UsernameVerificationContext
 	);
-	const { verifications = {}, verifyingDids } = usernameVerification;
 
-	const addDidsToVerifyingDids = (dids) => {
-		setUsernameVerification((usernameVerification = {}) => {
-			const { verifyingDids = [] } = usernameVerification;
-			return {
-				...usernameVerification,
-				verifyingDids: [
-					...new Set([...verifyingDids, ...dids].filter((v) => !!v)),
-				],
-			};
+	const updateVerifications = (dids = [], value) => {
+		dids.forEach((did) => {
+			verificationsRef.current[did] = value;
 		});
+		updateState((v) => v + 1);
 	};
 
-	const removeDidsFromVerifyingDids = (dids = []) => {
-		setUsernameVerification((usernameVerification = {}) => {
-			const { verifyingDids = [] } = usernameVerification;
-			return {
-				...usernameVerification,
-				verifyingDids: verifyingDids.filter((v) => !dids.includes(v)),
-			};
-		});
-	};
-
-	const updateVerifications = (newVerifications) => {
-		setUsernameVerification((usernameVerification = {}) => {
-			const { verifications = {} } = usernameVerification;
-			return {
-				...usernameVerification,
-				verifications: { ...verifications, ...newVerifications },
-			};
-		});
+	const addNewVerifications = (newVerifications) => {
+		verificationsRef.current = {
+			...verificationsRef.current,
+			...newVerifications,
+		};
+		updateState((v) => v + 1);
 	};
 
 	const getUsernameVerification = async (
-		verificationData,
+		_verificationData,
 		forceUpdate = false
 	) => {
-		const newVerifyingDids = verificationData.map((d) => d?.did);
+		// Dont repeat verification requests unless forceUpdate is true
+		const verificationData = forceUpdate
+			? _verificationData
+			: _verificationData.filter(
+					({ did }) => !(did in verificationsRef.current)
+			  );
+
+		if (!verificationData?.length) return;
+
+		const verificationDids = verificationData.map(({ did }) => did);
 		try {
-			const checkedDids = Object.keys(verifications || {});
-			if (!forceUpdate) {
-				// prune verificatData of all users that have been checked
-				checkedDids.forEach((checkedDid) => {
-					delete verificationData[checkedDid];
-				});
-			}
-
-			if (!verificationData?.length) return;
-
-			addDidsToVerifyingDids(newVerifyingDids);
+			updateVerifications(verificationDids, "loading");
 			const { data: newVerifications } = await axios.post(
 				"https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/verify-usernames",
 				{ verificationData }
 			);
 			return newVerifications;
 		} catch (error) {
-			removeDidsFromVerifyingDids(newVerifyingDids);
+			console.log(error);
+			updateVerifications(verificationDids, "failed");
 			throw new Error(error);
 		}
 	};
@@ -76,8 +58,7 @@ export default function useGetUsername(props = {}) {
 		mutationFn: getUsernameVerification,
 		onSuccess: (newVerifications) => {
 			if (!newVerifications) return;
-			removeDidsFromVerifyingDids(Object.keys(newVerifications));
-			updateVerifications(newVerifications);
+			addNewVerifications(newVerifications);
 		},
 	});
 
@@ -97,10 +78,14 @@ export default function useGetUsername(props = {}) {
 	} else {
 		username = shortAddress(did);
 	}
+
+	const verified = verificationsRef.current[did] === true;
+	const verifying = verificationsRef.current[did] === "loading";
+
 	return {
 		username,
-		verified: did && verifications && verifications[did],
-		verifying: did && verifyingDids?.length && verifyingDids.includes(did),
+		verified,
+		verifying,
 		verifyUsernames: mutate,
 	};
 }

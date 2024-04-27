@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import "../styles/globals.css";
 import "../styles/survey.css";
 import { Orbis, OrbisProvider } from "@orbisclub/components";
@@ -38,10 +38,9 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }) {
-	const usernameVerificationState = useState({
-		verifyingDids: [],
-		verifications: {},
-	});
+	const [_, updateState] = useState(0);
+	const usernameVerificationRef = useRef({});
+
 	return (
 		<OrbisProvider
 			defaultOrbis={orbis}
@@ -51,7 +50,7 @@ export default function App({ Component, pageProps }) {
 				<QueryClientProvider client={queryClient}>
 					<HydrationBoundary state={pageProps.dehydratedState}>
 						<UsernameVerificationContext.Provider
-							value={usernameVerificationState}
+							value={{ usernameVerificationRef, updateState }}
 						>
 							<Component {...pageProps} />
 						</UsernameVerificationContext.Provider>
