@@ -183,13 +183,19 @@ const useSinglePost = () => {
 
 	const reactToPost = async (reaction) => {
 		if (
+			!user?.metadata?.address ||
 			reaction === reactionQuery.data ||
 			!["like", "downvote"].includes(reaction)
 		)
 			return;
 		const res = await axios.post(
 			`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/${postId}/react`,
-			{ userId: did, postId, type: reaction }
+			{
+				userId: did,
+				postId,
+				type: reaction,
+				userAddress: user.metadata.address,
+			}
 		);
 		if (res.status === 200 && !res.error) {
 			return reaction;
