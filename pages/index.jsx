@@ -291,28 +291,26 @@ const NavItem = ({ selected, category, onClick }) => {
 export default Home;
 
 // This function gets called at build time
-export async function getStaticProps() {
-	const queryClient = new QueryClient();
+// export async function getStaticProps() {
+// 	const queryClient = new QueryClient();
 
-	const getPosts = async () => {
-		console.log("Preloading posts");
-		const posts = await preloadPosts(
-			"kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
-			0
-		);
-		console.log("Preloading posts successful");
-		return posts;
-	};
+// 	const getPosts = async () => {
+// 		const posts = await preloadPosts(
+// 			"kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
+// 			0
+// 		);
+// 		return posts;
+// 	};
 
-	await queryClient.prefetchInfiniteQuery({
-		queryKey: ["posts"],
-		queryFn: getPosts,
-		initialPageParam: 0,
-	});
+// 	await queryClient.prefetchInfiniteQuery({
+// 		queryKey: ["posts"],
+// 		queryFn: getPosts,
+// 		initialPageParam: 0,
+// 	});
 
-	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
-	};
-}
+// 	return {
+// 		props: {
+// 			dehydratedState: dehydrate(queryClient),
+// 		},
+// 	};
+// }
