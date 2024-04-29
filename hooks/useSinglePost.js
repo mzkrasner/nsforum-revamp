@@ -6,13 +6,13 @@ import axios from "axios";
 import { cloneDeep } from "lodash-es";
 import { sleep } from "../utils";
 
-const useSinglePost = () => {
+const useSinglePost = (props = {}) => {
 	const { orbis, user } = useOrbis();
 	const { did = "" } = user || {};
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const postId = searchParams.get("post_id");
+	const postId = props.postId || searchParams.get("post_id");
 
 	const queryClient = useQueryClient();
 	const queryKey = ["post", { postId }];

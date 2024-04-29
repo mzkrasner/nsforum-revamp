@@ -20,7 +20,7 @@ const SORT_OPTIONS = [
 	{
 		name: "Most upvoted",
 		field: "count_likes",
-		order: 1,
+		order: -1,
 		key: 2,
 	},
 ];
@@ -31,7 +31,6 @@ const usePosts = (props = {}) => {
 	const { initialPage = 0 } = props;
 
 	const getPosts = async ({ pageParam }) => {
-		console.log("Fetching for page: ", pageParam);
 		// const posts = await loadPosts(global.orbis_context, false, pageParam);
 		const { field: sortField, order: sortOrder } = sortOption;
 		const posts = await preloadPosts({
