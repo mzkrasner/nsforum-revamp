@@ -26,7 +26,7 @@ const SORT_OPTIONS = [
 ];
 
 const usePosts = (props = {}) => {
-	const [sortOption, setSortOption] = useState(SORT_OPTIONS[1]);
+	const [sortOption, setSortOption] = useState(SORT_OPTIONS[0]);
 
 	const { initialPage = 0 } = props;
 
