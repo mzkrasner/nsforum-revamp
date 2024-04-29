@@ -7,7 +7,6 @@ const PostsQueryOptions = (props = {}) => {
 		const { name, key } = s;
 		return { name, value: key };
 	});
-	console.log(options);
 
 	const selectedOption = sortOption && {
 		name: sortOption.name,
