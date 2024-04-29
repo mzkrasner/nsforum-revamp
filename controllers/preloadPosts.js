@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
-export default async function preloadPosts(context, page = 0) {
+export default async function preloadPosts(payload = {}) {
+	const { page = 0, pageSize = DEFAULT_PAGE_SIZE } = payload;
 	const { data } = await axios.get(
 		`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/posts`,
-		{ params: { context, page, pageSize: PAGE_SIZE } }
+		{ params: { ...payload, page, pageSize } }
 	);
 	return data?.docs || [];
 }
