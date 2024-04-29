@@ -7,12 +7,13 @@ import Sidebar from "../components/Sidebar";
 import PostItem from "../components/PostItem";
 import Footer from "../components/Footer";
 import { LoadingCircle } from "../components/Icons";
-import { Orbis, useOrbis } from "@orbisclub/components";
+import { useOrbis } from "@orbisclub/components";
 import usePosts from "../hooks/usePosts";
 import { useInView } from "react-intersection-observer";
+import PostsQueryOptions from "../components/PostsQueryOptions";
 
-import { QueryClient, dehydrate } from "@tanstack/react-query";
-import preloadPosts from "../controllers/preloadPosts";
+// import { QueryClient, dehydrate } from "@tanstack/react-query";
+// import preloadPosts from "../controllers/preloadPosts";
 
 function Home() {
 	const { orbis, user } = useOrbis();
@@ -25,6 +26,9 @@ function Home() {
 		fetching,
 		fetchNextPage,
 		hasNextPage,
+		sortOptions,
+		sortOption,
+		setSortOption,
 	} = usePosts();
 
 	const {
@@ -116,13 +120,11 @@ function Home() {
 						<main className="grow overflow-hidden">
 							{/*  Site header */}
 							<Header />
-
 							{/* Hero section with main title and description */}
 							<Hero
 								title="Network Society Forum"
 								description="A composable coordination platform and discussion forum"
 							/>
-
 							{/* Page content */}
 							<section>
 								{/** Render categories and list of posts if context has already been created otherwise display Dashboard CTA */}
@@ -136,6 +138,11 @@ function Home() {
 														categories={categories}
 														nav={nav}
 														setNav={setNav}
+													/>
+													<PostsQueryOptions
+														sortOptions={sortOptions}
+														sortOption={sortOption}
+														setSortOption={setSortOption}
 													/>
 													{/** Show loading state or list of posts */}
 													{loading ? (
@@ -255,7 +262,7 @@ const CategoriesNavigation = ({ categories, nav, setNav }) => {
 						category={{ stream_id: "all", content: { displayName: "All" } }}
 						onClick={setNav}
 					/>
-					{categories.map((category, key) => {
+					{categories?.map((category, key) => {
 						return (
 							<NavItem
 								key={key}
@@ -296,8 +303,8 @@ export default Home;
 
 // 	const getPosts = async () => {
 // 		const posts = await preloadPosts(
-// 			"kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
-// 			0
+// 			{context: "kjzl6cwe1jw148u8qk0m6b8tukb7rw7as9123dbkeutx3mc3kl96hf0g7e81opi",
+// 			page: 0}
 // 		);
 // 		return posts;
 // 	};
