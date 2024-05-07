@@ -136,34 +136,24 @@ const useSinglePost = (props = {}) => {
 		},
 	});
 
-	const deletePost = async () => {
-		const res = await orbis.deletePost(postId);
-		await axios.delete(
-			`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/${postId}`
-		);
-		if (res.status != 200) return null;
-		return res;
+	const deletePost = async (postId) => {
+		let res;
+		try {
+			res = await orbis.deletePost(postId);
+			await axios.delete(
+				`https://t25ubql6ra.execute-api.us-east-1.amazonaws.com/post/${postId}`
+			);
+			await sleep(1500);
+		} catch (error) {
+			console.log(error);
+		}
+		queryClient.invalidateQueries({ queryKey: ["posts"] });
+		router.push("/");
 	};
 
 	const deletePostMutation = useMutation({
 		mutationKey: ["delete-post", { postId }],
 		mutationFn: deletePost,
-		onSuccess: (res) => {
-			if (!res) return;
-			queryClient.invalidateQueries({
-				queryKey: cloneDeep(queryKey),
-				exact: true,
-			});
-			queryClient.setQueriesData(["posts", { sortOption }], (data) => {
-				return {
-					...data,
-					pages: data?.pages.map((page) => {
-						return page.filter((post) => post.stream_id !== postId);
-					}),
-				};
-			});
-			router.push("/");
-		},
 	});
 
 	const getReaction = async () => {
