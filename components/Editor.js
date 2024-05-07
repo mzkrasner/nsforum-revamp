@@ -364,6 +364,7 @@ const Editor = ({ post }) => {
 
 	/** Will edit the post to publish the new version */
 	async function updateArticle() {
+		if (!title || !body) return null;
 		// setStatus(1);
 		// let res;
 		if (post) {
@@ -559,6 +560,7 @@ const Editor = ({ post }) => {
 														<button
 															className="btn-sm w-full btn-brand btn-brand-hover mt-2"
 															onClick={() => updateArticle()}
+															disabled={!title || !body}
 														>
 															{post ? "Update" : "Share"}
 														</button>

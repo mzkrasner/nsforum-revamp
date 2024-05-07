@@ -5,6 +5,7 @@ import loadSinglePost from "../controllers/loadSinglePost";
 import axios from "axios";
 import { cloneDeep } from "lodash-es";
 import { sleep } from "../utils";
+import usePosts from "./usePosts";
 
 const useSinglePost = (props = {}) => {
 	const { orbis, user } = useOrbis();
@@ -13,6 +14,8 @@ const useSinglePost = (props = {}) => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const postId = props.postId || searchParams.get("post_id");
+
+	const { sortOption } = usePosts();
 
 	const queryClient = useQueryClient();
 	const queryKey = ["post", { postId }];
@@ -36,21 +39,10 @@ const useSinglePost = (props = {}) => {
 	const onPostChangeMutation = useMutation({
 		mutationKey: ["revalidate-post", { postId }],
 		mutationFn: async ({ postId, isUpdate } = { postId, isUpdate: true }) => {
-			// await axios.get(
-			// 	`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/posts/${postId}`,
-			// 	{
-			// 		params: { _preawaken: true },
-			// 	}
-			// );
-			// await axios.get(
-			// 	`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/posts`,
-			// 	{
-			// 		params: { _preawaken: true },
-			// 	}
-			// );
-			// Regenerate the post page
-			// const res = await axios.post(`/api/revalidate/post/${postId}`);
-			await sleep(1500);
+			queryClient.invalidateQueries({
+				predicate: (query) =>
+					query.queryKey[0] === "posts" && !!query.queryKey[1]?.sortOption,
+			});
 			if (isUpdate) {
 				// Refetch post
 				queryClient.invalidateQueries({
@@ -73,12 +65,12 @@ const useSinglePost = (props = {}) => {
 		const content = { ...post.content, ...newContent };
 		const res = await orbis.editPost(postId, content);
 		await sleep(1500);
-		// await axios.post(
-		// 	`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/sync`,
-		// 	{
-		// 		postId,
-		// 	}
-		// );
+		await axios.post(
+			`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/sync`,
+			{
+				postId,
+			}
+		);
 		if (res.status != 200) return null;
 		await onPostChangeMutation.mutateAsync({ postId, isUpdate: true });
 		return newContent;
@@ -90,10 +82,24 @@ const useSinglePost = (props = {}) => {
 		onSuccess: (newContent) => {
 			if (!newContent) return null;
 			// Optimistic update
+			const newPost = cloneDeep({ ...post, content: newContent });
+			queryClient.setQueryData(cloneDeep(queryKey), newPost);
+
 			queryClient.setQueryData(
-				cloneDeep(queryKey),
-				cloneDeep({ ...post, content: newContent })
+				["posts", { sortOption }, { sortOption }],
+				(data) => {
+					return {
+						...data,
+						pages: data?.pages.map((page) => {
+							return page.map((post) => {
+								if (post.stream_id === postId) return newPost;
+								return post;
+							});
+						}),
+					};
+				}
 			);
+			queryClient.setQueryData;
 			router.push(`/post/${postId}`);
 		},
 	});
@@ -103,13 +109,12 @@ const useSinglePost = (props = {}) => {
 		const res = await orbis.createPost(content);
 		const postId = res.doc;
 		await sleep(1500);
-		// await axios.post(
-		// 	`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/sync`,
-		// 	{
-		// 		postId,
-		// 	}
-		// );
-		await sleep(1500);
+		await axios.post(
+			`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/sync`,
+			{
+				postId,
+			}
+		);
 		if (res.status != 200) return null;
 		await onPostChangeMutation.mutateAsync({
 			postId,
@@ -124,7 +129,7 @@ const useSinglePost = (props = {}) => {
 		onSuccess: (res) => {
 			if (!res) return;
 			queryClient.invalidateQueries({
-				queryKey: ["posts"],
+				queryKey: ["posts", { sortOption }],
 				exact: true,
 			});
 			router.push(`/post/${res.doc}`);
@@ -149,7 +154,7 @@ const useSinglePost = (props = {}) => {
 				queryKey: cloneDeep(queryKey),
 				exact: true,
 			});
-			queryClient.setQueryData(["posts"], (data) => {
+			queryClient.setQueriesData(["posts", { sortOption }], (data) => {
 				return {
 					...data,
 					pages: data?.pages.map((page) => {
