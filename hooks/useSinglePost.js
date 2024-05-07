@@ -141,7 +141,7 @@ const useSinglePost = (props = {}) => {
 		try {
 			res = await orbis.deletePost(postId);
 			await axios.delete(
-				`https://t25ubql6ra.execute-api.us-east-1.amazonaws.com/post/${postId}`
+				`https://s5n3r9eg8h.execute-api.us-east-1.amazonaws.com/post/${postId}`
 			);
 			await sleep(1500);
 		} catch (error) {
