@@ -66,7 +66,7 @@ const ArticleContent = ({ postId, post: initialPost }, ref) => {
 					<div className="flex justify-end mt-3">
 						<button
 							className="btn-sm py-1.5 bg-red-500 text-primary"
-							onClick={() => deletePostMutation.mutate()}
+							onClick={() => deletePostMutation.mutate(post?.stream_id)}
 							disabled={deletingPost}
 						>
 							{deletingPost && <LoadingCircle />}
