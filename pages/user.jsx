@@ -49,7 +49,7 @@ export default function Create() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
                   <div className="md:flex md:justify-between">
                     {/* Show post editor or connect button */}
-                    <div className="md:grow pt-0 pb-12 pr-10">
+                    <div className="md:grow pt-0 pb-12 md:pr-10">
                       {user ? (
                         <>
                           <Person />

@@ -26,7 +26,7 @@ export default function Edit({post}) {
                 <div className="md:flex md:justify-between">
 
                   {/* Show post editor or connect button */}
-                  <div className="md:grow pt-0 pb-12 pr-10">
+                  <div className="md:grow pt-0 pb-12 md:pr-10">
                     {user ?
                       <Editor post={post} />
                     :
