@@ -8,7 +8,12 @@ import { cn } from "../../utils/tailwind";
 import { forwardRef, useState } from "react";
 import Iframe from "./plugins/iframe";
 
-const Tiptap = forwardRef(({ className = '', onChange }, forwardedRef) => {
+const Tiptap = forwardRef(({ 
+	className = '', 
+	onChange, 
+	initialContent,
+	uploadImage
+}, forwardedRef) => {
 	const [focused, setFocused] = useState(false);
 
 	const editor = useEditor({
@@ -33,6 +38,7 @@ const Tiptap = forwardRef(({ className = '', onChange }, forwardedRef) => {
 				}
 			}),
 		],
+		content: initialContent || undefined,
 		editorProps: {
 			attributes: {
 				class: "min-h-40 p-3 pb-6 outline-none focus:border-gray-500",
@@ -44,7 +50,7 @@ const Tiptap = forwardRef(({ className = '', onChange }, forwardedRef) => {
 	});
 
 	return (
-		<EditorContext.Provider value={{ editor }}>
+		<EditorContext.Provider value={{ editor, uploadImage }}>
 			<div
 			tabIndex={0}
 			ref={(e) => {
@@ -53,8 +59,8 @@ const Tiptap = forwardRef(({ className = '', onChange }, forwardedRef) => {
 				}
 			}}
 				className={cn(
-					"relative h-fit rounded-md border border-gray-500/50",
-					{ "border-gray-500": focused },
+					"relative h-fit rounded-md border border-gray-500/50 text-[var(--primary-color)]",
+					{ "ring-1 ring-blue-500": focused },
 					className
 				)}
 			>

@@ -133,7 +133,7 @@ const ArticleContent = ({ postId, post: initialPost }, ref) => {
 				)}
 
 				{/* Post content */}
-				<div className="text-slate-500 space-y-8 article-content">
+				<div className="text-slate-500 space-y-8 tiptap">
 					{reactComponent}
 				</div>
 

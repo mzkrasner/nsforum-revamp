@@ -29,7 +29,7 @@ global.orbis_chat_context =
 let orbis = new Orbis({
 	useLit: true,
 	node: "https://node2.orbis.club",
-	PINATA_GATEWAY: process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL,
+	PINATA_GATEWAY: 'violet-deliberate-marten-707.mypinata.cloud',
 });
 
 const queryClient = new QueryClient({

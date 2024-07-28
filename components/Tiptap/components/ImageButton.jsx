@@ -5,24 +5,29 @@ import { useCurrentEditor } from "@tiptap/react";
 
 const ImageButton = ({ onClick, ...props }) => {
   const [file, setFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const inputRef = useRef(null);
 
-  const { editor } = useCurrentEditor();
+  const { editor, uploadImage } = useCurrentEditor();
 
   useEffect(() => {
-    if (file && editor) {
-      const previewUrl = URL.createObjectURL(file);
-      if (previewUrl) {
-        editor.chain().focus().setImage({ src: previewUrl }).run();
-        // Save position in ref
-        // Upload image
-        // Replace image in position with uploaded image url
-        // console.log(editor.$pos)
-        // editor.commands.setImage({ src: 'https://example.com/foobar.png' })
+    const handleImageFile = async () => {
+      if (file && editor) {
+        setIsUploading(true);
+        try {
+          const url = await uploadImage(file);
+          if (!url) throw new Error();
+          console.log(url);
+          editor.chain().focus().setImage({ src: url }).run();
+        } catch (error) {
+          alert('An error occurred while uploading image')
+        }
+        setIsUploading(false);
       }
     }
-  }, [file, editor])
+    handleImageFile()
+  }, [file, editor, setIsUploading])
 
   const onInputChange = (e) => {
     const file = e.target.files?.length && e.target.files[0];

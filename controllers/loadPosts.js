@@ -12,7 +12,7 @@ export default async function loadPosts(
 	const orbis = new Orbis({
 		useLit: true,
 		node: "https://node2.orbis.club",
-		PINATA_GATEWAY: process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL,
+		PINATA_GATEWAY: 'violet-deliberate-marten-707.mypinata.cloud',
 	});
 
 	let { data, error } = await orbis.api

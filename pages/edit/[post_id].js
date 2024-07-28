@@ -1,12 +1,12 @@
-import Editor from "../../components/Editor";
 import Header from '../../components/Header';
 import Hero from '../../components/Hero';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
-import { Orbis, useOrbis, User } from "@orbisclub/components";
+import { Orbis, useOrbis } from "@orbisclub/components";
+import NewEditor from '../../components/NewEditor';
 
 export default function Edit({post}) {
-  const { orbis, user, setConnectModalVis } = useOrbis();
+  const { user, setConnectModalVis } = useOrbis();
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main">
@@ -28,7 +28,8 @@ export default function Edit({post}) {
                   {/* Show post editor or connect button */}
                   <div className="md:grow pt-0 pb-12 md:pr-10">
                     {user ?
-                      <Editor post={post} />
+                      // <Editor post={post} />
+                      <NewEditor post={post} />
                     :
                       <div className="w-full text-center bg-slate-50 rounded border border-primary p-6">
                         <p className="text-base text-secondary mb-2">You must be connected to share a post in this forum.</p>

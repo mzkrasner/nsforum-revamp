@@ -336,7 +336,7 @@ const Editor = ({ post }) => {
 				if (res.status == 200) {
 					const json = await res.json();
 					const { IpfsHash } = json;
-					const imgTag = `![Image ALT tag](https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${IpfsHash})`;
+					const imgTag = `![Image ALT tag](https://${'violet-deliberate-marten-707.mypinata.cloud'}/ipfs/${IpfsHash})`;
 					const { value } = textareaRef.current;
 					setBody(
 						value.substring(0, storedSelectionStart) +
