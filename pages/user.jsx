@@ -1,12 +1,10 @@
-import React, { use, useEffect, useState } from "react";
+import { useOrbis } from "@orbisclub/components";
 import Head from "next/head";
-import Editor from "../components/Editor";
-import Person from "../components/User";
+import { useEffect, useState } from "react";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
-import { useOrbis, User } from "@orbisclub/components";
+import Person from "../components/User";
 
 export default function Create() {
   const { orbis, user, setConnectModalVis } = useOrbis();
@@ -15,7 +13,7 @@ export default function Create() {
   useEffect(() => {
     if (user) {
     }
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -31,9 +29,9 @@ export default function Create() {
         {/** Description */}
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <div className="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main">
+      <div className="bg-main flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
         <div className="antialiased">
-          <div className="min-h-screen flex">
+          <div className="flex min-h-screen">
             {/*  Page content */}
             <main className="grow overflow-hidden">
               {/*  Site header */}
@@ -46,21 +44,21 @@ export default function Create() {
 
               {/* Page content */}
               <section>
-                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                <div className="mx-auto max-w-6xl px-4 sm:px-6">
                   <div className="md:flex md:justify-between">
                     {/* Show post editor or connect button */}
-                    <div className="md:grow pt-0 pb-12 md:pr-10">
+                    <div className="pb-12 pt-0 md:grow md:pr-10">
                       {user ? (
                         <>
                           <Person />
                         </>
                       ) : (
-                        <div className="w-full text-center bg-slate-50 rounded border border-primary bg-secondary p-6">
-                          <p className="text-base text-secondary mb-2">
+                        <div className="border-primary bg-secondary w-full rounded border bg-slate-50 p-6 text-center">
+                          <p className="text-secondary mb-2 text-base">
                             You must be connected to share a post in this forum.
                           </p>
                           <button
-                            className="btn-sm py-1.5 btn-main"
+                            className="btn-sm btn-main py-1.5"
                             onClick={() => setConnectModalVis(true)}
                           >
                             Connect

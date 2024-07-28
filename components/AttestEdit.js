@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import TextareaAutosize from "react-textarea-autosize";
-import { useOrbis } from "@orbisclub/components";
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
-import { EASContractAddress, CUSTOM_SCHEMAS } from "../utils/utils";
+import { useOrbis } from "@orbisclub/components";
 import { ethers } from "ethers";
-import { shortAddress } from "../utils";
+import { useEffect, useRef, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
+import TextareaAutosize from "react-textarea-autosize";
+import { shortAddress } from "../utils";
+import { CUSTOM_SCHEMAS, EASContractAddress } from "../utils/utils";
 
 const AttestEditor = ({ context }) => {
   const eas = new EAS(EASContractAddress);
@@ -20,11 +20,23 @@ const AttestEditor = ({ context }) => {
   /** Will load the details of the context and check if user has access to it  */
   useEffect(() => {
     if (user) {
+      async function checkHolo(address) {
+        const resp = await fetch(
+          `https://api.holonym.io/sybil-resistance/phone/optimism?user=${address}&action-id=123456789`,
+        );
+        const { result: isUnique } = await resp.json();
+        if (isUnique) {
+          setIsUnique(1);
+        } else {
+          setIsUnique(2);
+        }
+      }
+
       checkHolo(user.metadata.address);
     }
     setChecked(true);
     grabAttestations();
-  }, []);
+  }, [grabAttestations, user]);
 
   const switchNetwork = async () => {
     if (window.ethereum) {
@@ -56,18 +68,6 @@ const AttestEditor = ({ context }) => {
     }
   };
 
-  async function checkHolo(address) {
-    const resp = await fetch(
-      `https://api.holonym.io/sybil-resistance/phone/optimism?user=${address}&action-id=123456789`
-    );
-    const { result: isUnique } = await resp.json();
-    if (isUnique) {
-      setIsUnique(1);
-    } else {
-      setIsUnique(2);
-    }
-  }
-
   async function grabAttestations() {
     const requestBody = {
       account: user.metadata.address.toLowerCase(),
@@ -79,7 +79,7 @@ const AttestEditor = ({ context }) => {
     };
     const gotAttestations = await fetch(
       "/api/getattestations",
-      requestOptions
+      requestOptions,
     ).then((response) => response.json());
     if (gotAttestations.data.accountAttestationIndex === null) {
       console.log(gotAttestations.data);
@@ -153,7 +153,7 @@ const AttestEditor = ({ context }) => {
           "0x0000000000000000000000000000000000000000000000000000000000000000",
         data: encoded,
       },
-      signer
+      signer,
     );
     // un-comment the below to process an on-chain timestamp
     // const transaction = await eas.timestamp(offchainAttestation.uid);
@@ -191,19 +191,19 @@ const AttestEditor = ({ context }) => {
             <div>
               <TextareaAutosize
                 ref={textareaRef}
-                className="resize-none w-full h-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                className="h-full w-full resize-none rounded-md border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Recipient Eth address here"
                 value={recipient}
                 onChange={handleAddressChange}
               />
               <button
-                className="btn-sm py-1.5 btn-brand"
+                className="btn-sm btn-brand py-1.5"
                 onClick={() => attest(recipient)}
               >
                 Attest
               </button>
-              <div className="w-full text-center bg-white/10 rounded border border-[#619575] p-6 mt-5">
-                <p className="text-base text-secondary mb-2">
+              <div className="mt-5 w-full rounded border border-[#619575] bg-white/10 p-6 text-center">
+                <p className="text-secondary mb-2 text-base">
                   Current Attestations:
                 </p>
                 {loaded && attestations.length ? (
@@ -212,18 +212,18 @@ const AttestEditor = ({ context }) => {
                       // eslint-disable-next-line react/jsx-key
                       <div key={i} className="flex flex-row justify-between">
                         <div className="flex flex-row">
-                          <p className="text-base text-secondary mb-2">
+                          <p className="text-secondary mb-2 text-base">
                             {shortAddress(a.attester)}&nbsp;
                           </p>
-                          <p className="text-base text-secondary mb-2">
+                          <p className="text-secondary mb-2 text-base">
                             {a.given ? "gave to " : "received from "}&nbsp;
                           </p>
-                          <p className="text-base text-secondary mb-2">
+                          <p className="text-secondary mb-2 text-base">
                             {shortAddress(a.recipient)}
                           </p>
                         </div>
                         <div className="flex flex-row">
-                          <p className="text-base text-secondary mb-2 text-right">
+                          <p className="text-secondary mb-2 text-right text-base">
                             <a
                               href={`https://ceramic-arcanumsci-mainnet.hirenodes.io/api/v0/streams/${a.id}`}
                               target="_blank"
@@ -238,7 +238,7 @@ const AttestEditor = ({ context }) => {
                     );
                   })
                 ) : loaded && !attestations.length ? (
-                  <p className="text-base text-secondary mb-2">
+                  <p className="text-secondary mb-2 text-base">
                     No attestations yet
                   </p>
                 ) : (
@@ -256,15 +256,17 @@ const AttestEditor = ({ context }) => {
             </div>
           )}
           {unique === 2 && (
-            <div className="w-full text-center bg-white/10 rounded border border-[#619575] p-6">
-              <p className="text-base text-secondary mb-2">
+            <div className="w-full rounded border border-[#619575] bg-white/10 p-6 text-center">
+              <p className="text-secondary mb-2 text-base">
                 {/* eslint-disable-next-line react/no-unescaped-entities */}
                 You can't create attestations yet. Click the button below and
                 create a unique identity using your phone number to get started.
               </p>
               <button
-                className="btn-sm py-1.5 btn-brand"
-                onClick={() => window.open("https://silksecure.net/holonym/silk")}
+                className="btn-sm btn-brand py-1.5"
+                onClick={() =>
+                  window.open("https://silksecure.net/holonym/silk")
+                }
               >
                 Visit Silk
               </button>

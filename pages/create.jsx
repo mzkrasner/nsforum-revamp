@@ -1,12 +1,12 @@
-import React, { use, useEffect, useState } from 'react';
-import Head from 'next/head';
-import NewEditor from '../components/NewEditor';
-import AttestEditor from '../components/AttestEdit';
-import Header from '../components/Header';
-import Hero from '../components/Hero';
-import Sidebar from '../components/Sidebar';
-import Footer from '../components/Footer';
-import { useOrbis } from '@orbisclub/components';
+import { useOrbis } from "@orbisclub/components";
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import AttestEditor from "../components/AttestEdit";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+import Hero from "../components/Hero";
+import NewEditor from "../components/NewEditor";
+import Sidebar from "../components/Sidebar";
 
 export default function Create() {
   const { orbis, user, setConnectModalVis } = useOrbis();
@@ -18,58 +18,58 @@ export default function Create() {
     }
     if (user) {
     }
-  }, []);
+  }, [user]);
 
   return (
     <>
       <Head>
         {/** Title */}
-        <title key='title'>Share a new post | Network Society Forum</title>
+        <title key="title">Share a new post | Network Society Forum</title>
         <meta
-          property='og:title'
-          content='Share a new post | Network Society Forum'
-          key='og_title'
+          property="og:title"
+          content="Share a new post | Network Society Forum"
+          key="og_title"
         />
 
         {/** Description */}
         <meta
-          name='description'
-          content='Discuss the future of Network Societies'
-          key='description'
+          name="description"
+          content="Discuss the future of Network Societies"
+          key="description"
         ></meta>
         <meta
-          property='og:description'
-          content='Discuss the future of Network Societies'
-          key='og_description'
+          property="og:description"
+          content="Discuss the future of Network Societies"
+          key="og_description"
         />
-        <link rel='icon' href='/favicon.png' />
+        <link rel="icon" href="/favicon.png" />
       </Head>
-      <div className='flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main'>
-        <div className='antialiased'>
-          <div className='min-h-screen flex'>
+      <div className="bg-main flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
+        <div className="antialiased">
+          <div className="flex min-h-screen">
             {/*  Page content */}
-            <main className='grow overflow-hidden'>
+            <main className="grow overflow-hidden">
               {/*  Site header */}
               <Header />
               <Hero
-                title='Sharing a new post on the Network Society Forum'
-                description='You are about to share a new post. Make sure to read our rules before doing so.'
+                title="Sharing a new post on the Network Society Forum"
+                description="You are about to share a new post. Make sure to read our rules before doing so."
                 image
               />
 
               {/* Page content */}
               <section>
-                <div className='max-w-6xl mx-auto px-4 sm:px-6'>
-                  <div className='md:flex md:justify-between'>
+                <div className="mx-auto max-w-6xl px-4 sm:px-6">
+                  <div className="md:flex md:justify-between">
                     {/* Show post editor or connect button */}
-                    <div className='md:grow pt-0 pb-12 pr-10'>
+                    <div className="pb-12 pr-10 pt-0 md:grow">
                       {user ? (
                         <>
                           {create ? (
                             <>
                               <AttestEditor context={global.orbis_context} />
                               <button
-                                className='btn-sm py-1.5 btn-secondary mt-3'
+                                className="btn-sm btn-secondary mt-3 py-1.5"
                                 onClick={() => setCreate(false)}
                               >
                                 Back
@@ -90,12 +90,12 @@ export default function Create() {
                           )}
                         </>
                       ) : (
-                        <div className='w-full text-center bg-slate-50 rounded border border-primary bg-secondary p-6'>
-                          <p className='text-base text-secondary mb-2'>
+                        <div className="border-primary bg-secondary w-full rounded border bg-slate-50 p-6 text-center">
+                          <p className="text-secondary mb-2 text-base">
                             You must be connected to share a post in this forum.
                           </p>
                           <button
-                            className='btn-sm py-1.5 btn-main'
+                            className="btn-sm btn-main py-1.5"
                             onClick={() => setConnectModalVis(true)}
                           >
                             Connect

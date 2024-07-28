@@ -1,17 +1,15 @@
-import React, { use, useEffect, useState, useRef } from "react";
+import { Web3Provider } from "@ethersproject/providers";
+import { useOrbis } from "@orbisclub/components";
+import snapshot from "@snapshot-labs/snapshot.js";
 import Head from "next/head";
-import { Survey } from "survey-react-ui";
+import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Model } from "survey-core";
-import snapshot from "@snapshot-labs/snapshot.js";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
-import { useOrbis, User } from "@orbisclub/components";
-import { Web3Provider } from "@ethersproject/providers";
 import { getActiveProposals, getSingleProposal } from "../utils/snapshot";
-import { set } from "zod";
 
 const surveyJson = {
   elements: [
@@ -152,12 +150,12 @@ export default function Create() {
         setChoice("");
         setType("single-choice");
       }
-      setCreate(false)
+      setCreate(false);
     } catch (err) {
       // Temporary error handling
       console.error(err);
       alert("Error creating proposal. Check the console for details.");
-      setCreate(false)
+      setCreate(false);
     }
   };
 
@@ -261,7 +259,7 @@ export default function Create() {
         }
       })
       .catch(console.error);
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -287,9 +285,9 @@ export default function Create() {
         />
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <div className="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip bg-main">
+      <div className="bg-main flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
         <div className="antialiased">
-          <div className="min-h-screen flex">
+          <div className="flex min-h-screen">
             {/*  Page content */}
             <main className="grow overflow-hidden">
               {/*  Site header */}
@@ -302,10 +300,10 @@ export default function Create() {
 
               {/* Page content */}
               <section>
-                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                <div className="mx-auto max-w-6xl px-4 sm:px-6">
                   <div className="md:flex md:justify-between">
                     {/* Show post editor or connect button */}
-                    <div className="md:grow pt-0 pb-12 md:pr-10">
+                    <div className="pb-12 pt-0 md:grow md:pr-10">
                       {user && !voting ? (
                         <>
                           {create ? (
@@ -313,7 +311,7 @@ export default function Create() {
                               <>
                                 {/** Title */}
                                 <TextareaAutosize
-                                  className="resize-none w-full h-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                  className="h-full w-full resize-none rounded-md border border-gray-300 p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
                                   placeholder="Type your proposal title here"
                                   value={title}
                                   onChange={(e) => setTitle(e.target.value)}
@@ -321,20 +319,20 @@ export default function Create() {
 
                                 {/** Formatting toolbar container */}
                                 <div
-                                  className="flex -mb-px mt-4 space-x-2 items-center z-10 bg-gray-50 rounded-t-md border border-gray-300 p-1"
+                                  className="z-10 -mb-px mt-4 flex items-center space-x-2 rounded-t-md border border-gray-300 bg-gray-50 p-1"
                                   style={toolbarStyle}
                                 ></div>
 
                                 {/** Actual content of the blog post */}
                                 <TextareaAutosize
                                   ref={textareaRef}
-                                  className="resize-none w-full h-full p-3 border border-gray-300 rounded-b-md min-height-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                  className="min-height-200 h-full w-full resize-none rounded-b-md border border-gray-300 p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
                                   placeholder="Write your proposal content here..."
                                   value={body}
                                   onChange={(e) => setBody(e.target.value)}
                                 />
                                 <div>Select Voting Type</div>
-                                <form className="px-4 py-3 m-3">
+                                <form className="m-3 px-4 py-3">
                                   <select
                                     className="text-center text-black"
                                     onChange={(e) => setType(e.target.value)}
@@ -348,7 +346,7 @@ export default function Create() {
                                 {type !== "basic" && (
                                   <TextareaAutosize
                                     ref={textareaRef}
-                                    className="resize-none w-full h-full p-3 border border-gray-300 rounded-b-md min-height-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                    className="min-height-100 h-full w-full resize-none rounded-b-md border border-gray-300 p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Enter comma-separated choices here..."
                                     value={choice}
                                     onChange={(e) => {
@@ -357,7 +355,7 @@ export default function Create() {
                                           ...choices,
                                           e.target.value.slice(
                                             0,
-                                            e.target.value.indexOf(",")
+                                            e.target.value.indexOf(","),
                                           ),
                                         ]);
                                         setChoice("");
@@ -373,27 +371,27 @@ export default function Create() {
                                   ))}
                                 </div>
                                 <button
-                                  className="btn-sm py-1.5 btn-main mr-2"
+                                  className="btn-sm btn-main mr-2 py-1.5"
                                   onClick={() => completeProposal()}
                                 >
                                   Create Proposal
                                 </button>
 
                                 {status == 1 && (
-                                  <button className="btn-sm w-full bg-brand bg-brand-hover mt-2">
+                                  <button className="btn-sm bg-brand bg-brand-hover mt-2 w-full">
                                     Loading...
                                   </button>
                                 )}
 
                                 {/** success status */}
                                 {status == 2 && (
-                                  <button className="btn-sm w-full text-slate-100 bg-green-500 mt-2">
+                                  <button className="btn-sm mt-2 w-full bg-green-500 text-slate-100">
                                     Success
                                   </button>
                                 )}
                               </>
                               <button
-                                className="btn-sm py-1.5 btn-secondary mt-3"
+                                className="btn-sm btn-secondary mt-3 py-1.5"
                                 onClick={() => setCreate(false)}
                               >
                                 Back
@@ -402,7 +400,7 @@ export default function Create() {
                           ) : (
                             <>
                               <button
-                                className="btn-sm py-1.5 btn-main"
+                                className="btn-sm btn-main py-1.5"
                                 onClick={() => setCreate(true)}
                               >
                                 Create a Proposal
@@ -417,11 +415,11 @@ export default function Create() {
                               Proposal Title: <br />
                               <span className="text-2xl">{proposal.title}</span>
                             </h2>
-                            <p className="text-base text-secondary mb-2">
+                            <p className="text-secondary mb-2 text-base">
                               Created By: <br />
                               <span className="text-xl">{proposal.author}</span>
                             </p>
-                            <p className="text-base text-secondary mb-2">
+                            <p className="text-secondary mb-2 text-base">
                               Description: <br />
                               <span className="">{proposal.body}</span>
                             </p>
@@ -429,23 +427,23 @@ export default function Create() {
                             {proposal.choices &&
                               proposal.choices.length > 0 && (
                                 <div className="flex flex-col">
-                                  <h3 className="text-lg text-secondary">
+                                  <h3 className="text-secondary text-lg">
                                     Choices
                                   </h3>
-                            
-                                    <select
-                                      className="text-center text-black mt-2 mb-2 w-1/2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                                      onChange={(e) => setVote(e.target.value)}
-                                    >
-                                      {proposal.choices.map((choice, index) => (
-                                        <option key={index} value={choice}>
-                                          {choice}
-                                        </option>
-                                      ))}
-                                    </select>
-                               
+
+                                  <select
+                                    className="mb-2 mt-2 w-1/2 rounded-md border border-gray-300 text-center text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onChange={(e) => setVote(e.target.value)}
+                                  >
+                                    {proposal.choices.map((choice, index) => (
+                                      <option key={index} value={choice}>
+                                        {choice}
+                                      </option>
+                                    ))}
+                                  </select>
+
                                   <TextareaAutosize
-                                    className="resize-none w-full h-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                    className="h-full w-full resize-none rounded-md border border-gray-300 p-4 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Reason for your choice"
                                     value={reason}
                                     onChange={(e) => setReason(e.target.value)}
@@ -455,7 +453,7 @@ export default function Create() {
                             {/* {surv && <Survey model={surv} className='sa-poll-table'/>} */}
                           </div>
                           <button
-                            className="btn-sm py-1.5 btn-main mt-2 mr-2"
+                            className="btn-sm btn-main mr-2 mt-2 py-1.5"
                             onClick={() => {
                               completeVote(proposal.id);
                             }}
@@ -463,20 +461,20 @@ export default function Create() {
                             Vote
                           </button>
                           <button
-                            className="btn-sm py-1.5 btn-secondary mt-2"
+                            className="btn-sm btn-secondary mt-2 py-1.5"
                             onClick={() => setVoting(false)}
                           >
                             Back
                           </button>
                         </>
                       ) : (
-                        <div className="w-full text-center bg-slate-50 rounded border border-primary bg-secondary p-6">
-                          <p className="text-base text-secondary mb-2">
+                        <div className="border-primary bg-secondary w-full rounded border bg-slate-50 p-6 text-center">
+                          <p className="text-secondary mb-2 text-base">
                             You must be connected to share a proposal in this
                             forum.
                           </p>
                           <button
-                            className="btn-sm py-1.5 btn-main"
+                            className="btn-sm btn-main py-1.5"
                             onClick={() => setConnectModalVis(true)}
                           >
                             Connect
@@ -487,10 +485,10 @@ export default function Create() {
                       {!voting &&
                         proposals.map((proposal) => (
                           <div className="mt-8 text-white" key={proposal.id}>
-                            <div className="flex justify-between items-center">
+                            <div className="flex items-center justify-between">
                               <h2>{proposal.title}</h2>
                               <button
-                                className="btn-sm py-1.5 btn-brand"
+                                className="btn-sm btn-brand py-1.5"
                                 onClick={async () => {
                                   // window.open(
                                   //   `https://snapshot.org/#/majac.eth/proposal/${proposal.id}`
