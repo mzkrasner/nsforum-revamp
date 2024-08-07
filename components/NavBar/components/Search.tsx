@@ -1,15 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { BadgeCheckIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import PostCard from "@/components/PostCard";
 import {
   CommandDialog,
   CommandEmpty,
@@ -27,13 +21,13 @@ const Search = () => {
   return (
     <>
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
-        className="flex w-full max-w-[300px] items-center justify-start gap-2 text-sm text-neutral-500"
+        className="ml-auto flex items-center justify-between gap-2 text-sm text-gray-500 md:w-full md:max-w-[200px] md:bg-gray-100 lg:max-w-[300px]"
         onClick={() => setOpen(true)}
       >
+        <span className="hidden md:inline">Search...</span>
         <SearchIcon className="w-4" />
-        Search...
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Search..." />
@@ -44,30 +38,7 @@ const Search = () => {
               {[...Array(3)].map((_, i) => {
                 return (
                   <CommandItem key={i}>
-                    <Card onClick={() => console.log("clicked")}>
-                      <CardHeader className="p-3">
-                        <CardTitle className="text-base">
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Dignissimos doloremque commodi, porro officiis
-                          voluptatem eius.
-                        </CardTitle>
-                        <CardDescription className="text-neutral-800">
-                          <div className="relative inline-flex h-8 items-center gap-2 rounded-full p-1 hover:bg-transparent">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage
-                                src="/avatars/01.png"
-                                alt="@shadcn"
-                              />
-                              <AvatarFallback>JD</AvatarFallback>
-                            </Avatar>
-                            <span className="inline-flex items-center gap-1 text-xs leading-none text-muted-foreground">
-                              john_doe
-                              <BadgeCheckIcon className="w-5 fill-neutral-700 stroke-white" />
-                            </span>
-                          </div>
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
+                    <PostCard />
                   </CommandItem>
                 );
               })}
@@ -77,27 +48,6 @@ const Search = () => {
       </CommandDialog>
     </>
   );
-  // return (
-  // <Button
-  //   variant="outline"
-  //   size="sm"
-  //   className="w-40 items-center justify-start gap-2 text-sm text-neutral-500"
-  // >
-  //   <SearchIcon className="w-4" />
-  //   Search...
-  // </Button>
-  //   <CommandDialog open={open} onOpenChange={setOpen}>
-  //   <CommandInput placeholder="Type a command or search..." />
-  //   <CommandList>
-  //     <CommandEmpty>No results found.</CommandEmpty>
-  //     <CommandGroup heading="Suggestions">
-  //       <CommandItem>Calendar</CommandItem>
-  //       <CommandItem>Search Emoji</CommandItem>
-  //       <CommandItem>Calculator</CommandItem>
-  //     </CommandGroup>
-  //   </CommandList>
-  // </CommandDialog>
-  // );
 };
 
 export default Search;

@@ -24,7 +24,7 @@ const User = () => {
           </Avatar>
           <span className="inline-flex items-center gap-1 text-xs leading-none text-muted-foreground">
             john_doe
-            <BadgeCheckIcon className="w-5 fill-neutral-700 stroke-white" />
+            <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
           </span>
         </Button>
       </DropdownMenuTrigger>

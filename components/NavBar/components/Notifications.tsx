@@ -18,7 +18,7 @@ const Notifications = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuGroup>
-          <DropdownMenuItem className="text-neutral-500">
+          <DropdownMenuItem className="text-gray-500">
             Nothing new for now.
           </DropdownMenuItem>
         </DropdownMenuGroup>
