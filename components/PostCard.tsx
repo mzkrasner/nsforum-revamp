@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BadgeCheckIcon, ExternalLinkIcon } from "lucide-react";
+import Link from "next/link";
 import { Button } from "./ui/button";
 
 type Props = {};
@@ -10,8 +11,10 @@ const PostCard = (props: Props) => {
     <Card onClick={() => console.log("clicked")}>
       <CardHeader className="space-y-0 p-3">
         <CardTitle className="text-base font-medium">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
-          doloremque commodi, porro officiis voluptatem eius.
+          <Link href="/posts/1" className="link inline-block">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
+            doloremque commodi, porro officiis voluptatem eius.
+          </Link>
         </CardTitle>
         <CardContent className="m-0 p-0">
           <div className="relative flex h-8 flex-row items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
