@@ -14,12 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import useAuth from "@/shared/hooks/useAuth";
 import { usePrivy } from "@privy-io/react-auth";
 import { BadgeCheckIcon } from "lucide-react";
 
 const User = () => {
-  const { ready, authenticated, login, user } = usePrivy();
-  console.log(user);
+  const { ready, authenticated } = usePrivy();
+  const { login, logout } = useAuth();
 
   if (!ready) return null; // TODO: Add loading UI
 
@@ -52,7 +53,7 @@ const User = () => {
           <DropdownMenuItem>Profile</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,5 +1,5 @@
+import { Button } from "@/shared/components/ui/button";
 import { MenuIcon } from "lucide-react";
-import { Button } from "../ui/button";
 import Notifications from "./components/Notifications";
 import Search from "./components/Search";
 import User from "./components/User";
