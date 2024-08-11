@@ -1,4 +1,4 @@
-import { BadgeCheckIcon, DotIcon, ExternalLinkIcon } from "lucide-react";
+import { BadgeCheckIcon, ExternalLinkIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
 type Props = {};
@@ -10,7 +10,6 @@ const PostInfo = (props: Props) => {
         john_doe
         <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
       </span>
-      <DotIcon />
       <span>1st Aug 2024</span>
       <Button
         variant="ghost"
