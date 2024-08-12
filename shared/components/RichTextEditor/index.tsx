@@ -12,7 +12,7 @@ import {
   useEditor,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { FieldError, RefCallBack } from "react-hook-form";
 import TableMenu from "./components/TableMenu";
 import Toolbar from "./components/Toolbar";
@@ -81,6 +81,13 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       },
       immediatelyRender: false,
     });
+
+    // Update the editor's content when the state changes
+    useEffect(() => {
+      if (editor && editor.getHTML() !== value) {
+        editor.commands.setContent(value);
+      }
+    }, [value, editor]);
 
     const charsLeft = hasLimit
       ? limit! - editor?.storage.characterCount.characters()

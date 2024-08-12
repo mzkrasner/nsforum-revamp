@@ -1,3 +1,5 @@
+"use client";
+
 import htmlToReact from "@/shared/lib/htmlToReact";
 import usePost from "../_hooks/usePost";
 

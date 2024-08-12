@@ -23,7 +23,13 @@ const usePost = () => {
     if (error) throw new Error(`Error while fetching post: ${error}`);
     if (!result?.rows.length)
       throw new Error(`Error while fetching post: Post not found`);
-    return result.rows[0] as Post & CeramicDocument["content"];
+    const { tags, authors, ...rest } = result.rows[0];
+    const post = {
+      ...rest,
+      tags: tags ? JSON.parse(tags) : [],
+      authors: JSON.parse(authors),
+    };
+    return post as Post & CeramicDocument["content"];
   };
 
   const postQuery = useQuery({

@@ -10,6 +10,7 @@ import { CeramicDocument } from "@useorbis/db-sdk";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import usePost from "../../_hooks/usePost";
 
 type Props = { postId?: string };
 const usePostForm = ({ postId }: Props) => {
@@ -23,15 +24,30 @@ const usePostForm = ({ postId }: Props) => {
   const form = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      title: "Post title",
-      body: "Post body",
-      category: "1",
-      tags: ["0", "1"] as string[],
+      title: "",
+      body: "",
+      category: undefined as undefined | string,
+      tags: [] as string[],
       authors: [] as string[],
     },
   });
   const { watch, setValue } = form;
   const authors = watch("authors");
+
+  const {
+    postQuery: { data: post, isLoading: isLoadingPost },
+  } = usePost();
+
+  // Initialize form with post
+  useEffect(() => {
+    if (!postId || isLoadingPost || !post) return;
+    const { title, body, category, authors, tags } = post;
+    setValue("title", title);
+    setValue("body", body);
+    setValue("category", category);
+    setValue("authors", authors!);
+    setValue("tags", tags || []);
+  }, [postId, post, setValue, isLoadingPost]);
 
   // Get author from orbis
   useEffect(() => {
@@ -59,20 +75,29 @@ const usePostForm = ({ postId }: Props) => {
       values.authors = [did];
     }
     const { title, body, category, authors, tags } = values;
-    const insertStatement = orbis
-      .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
-      .value({
-        title,
-        body,
-        category,
-        tags: JSON.stringify(tags),
-        authors: JSON.stringify(authors),
-      });
-    const validation = await insertStatement.validate();
-    if (!validation.valid) {
-      throw new Error(
-        `Error during create post validation: ${validation.error}`,
-      );
+    const insertValue = {
+      title,
+      body,
+      category,
+      tags: JSON.stringify(tags),
+      authors: JSON.stringify(authors),
+    };
+    let insertStatement;
+    if (postId) {
+      // Update existing post
+      insertStatement = orbis.update(postId).set(insertValue);
+    } else {
+      // Create new post
+      insertStatement = orbis
+        .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
+        .value(insertValue);
+
+      const validation = await insertStatement.validate();
+      if (!validation.valid) {
+        throw new Error(
+          `Error during create post validation: ${validation.error}`,
+        );
+      }
     }
     const [result, error] = await catchError(() => insertStatement.run());
     if (error) throw new Error(`Error during create post query: ${error}`);

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/shared/components/ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";

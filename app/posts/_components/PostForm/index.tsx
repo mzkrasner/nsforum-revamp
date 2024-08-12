@@ -13,12 +13,14 @@ import {
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { usePrivy } from "@privy-io/react-auth";
+import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
 
 type Props = { postId?: string };
 const PostForm = ({ postId }: Props) => {
   const { authenticated, ready } = usePrivy();
+  const { postQuery } = usePost();
   const { form, categories, submitMutation } = usePostForm({ postId });
   const { handleSubmit, control } = form;
 
@@ -29,6 +31,8 @@ const PostForm = ({ postId }: Props) => {
         {ready && <SignInButton variant="outline" className="mx-auto block" />}
       </div>
     );
+
+  if (postQuery.isLoading) return "Loading...";
 
   return (
     <Form {...form}>
@@ -123,9 +127,9 @@ const PostForm = ({ postId }: Props) => {
           type="submit"
           className="ml-auto flex"
           loading={submitMutation.isPending}
-          loadingText="Creating post..."
+          loadingText={`${postId ? "Editing" : "Creating"} post...`}
         >
-          Create Post
+          {postId ? "Edit" : "Create"} Post
         </Button>
       </form>
     </Form>

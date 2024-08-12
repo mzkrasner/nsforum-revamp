@@ -8,7 +8,7 @@ import {
 } from "@/shared/components/ui/card";
 import Link from "next/link";
 import PostInfo from "./PostInfo";
-import { Button } from "./ui/button";
+import PostTags from "./PostTags";
 
 type Props = {};
 const PostCard = (props: Props) => {
@@ -23,19 +23,7 @@ const PostCard = (props: Props) => {
         </CardTitle>
         <CardContent className="m-0 p-0">
           <PostInfo />
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {[...Array(5)].map((_, i) => (
-              <li key={i}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-gray-5 h-7 px-2 text-xs"
-                >
-                  Tag {i + 1}
-                </Button>
-              </li>
-            ))}
-          </ul>
+          <PostTags />
         </CardContent>
       </CardHeader>
     </Card>
