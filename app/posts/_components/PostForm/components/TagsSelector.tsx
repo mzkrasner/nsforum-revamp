@@ -115,19 +115,16 @@ const TagsSelector = ({
                   );
                 })}
               </CommandGroup>
-              {selectedTags.size > 0 && (
-                <>
-                  <CommandSeparator />
-                  <CommandGroup>
-                    <CommandItem
-                      onSelect={() => onChange?.([])}
-                      className="justify-center text-center"
-                    >
-                      Clear tags
-                    </CommandItem>
-                  </CommandGroup>
-                </>
-              )}
+              <CommandSeparator />
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => onChange?.([])}
+                  className="justify-center text-center"
+                  disabled={!selectedTags.size}
+                >
+                  Clear tags
+                </CommandItem>
+              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>

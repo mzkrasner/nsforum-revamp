@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDownIcon } from "lucide-react";
 import { forwardRef, useState } from "react";
 import { FieldError } from "react-hook-form";

@@ -6,11 +6,15 @@ import { postSchema } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useWallets } from "@privy-io/react-auth";
 import { useMutation } from "@tanstack/react-query";
+import { CeramicDocument } from "@useorbis/db-sdk";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type Props = { postId?: string };
 const usePostForm = ({ postId }: Props) => {
+  const router = useRouter();
+
   const orbis = useOrbis();
   const { categories } = useCategories();
   const { wallets } = useWallets();
@@ -19,10 +23,10 @@ const usePostForm = ({ postId }: Props) => {
   const form = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      title: "",
-      body: "",
-      category: undefined,
-      tags: [] as string[],
+      title: "Post title",
+      body: "Post body",
+      category: "1",
+      tags: ["0", "1"] as string[],
       authors: [] as string[],
     },
   });
@@ -42,10 +46,9 @@ const usePostForm = ({ postId }: Props) => {
   }, [orbis, authors, watch, setValue]);
 
   const submitFn = async (values: any) => {
-    if (!orbis) return;
+    if (!orbis || !values) return;
     try {
-      const { authors } = values;
-      if (!authors?.length) {
+      if (!values?.authors?.length) {
         // This will only run if user is not connected to orbis
         const wallet = wallets.find((w) => !w.imported);
         if (!wallet) throw new Error("No wallet found");
@@ -56,17 +59,23 @@ const usePostForm = ({ postId }: Props) => {
         if (!did) throw new Error("Unable to connect");
         values.authors = [did];
       }
+      const { title, body, category, authors, tags } = values;
       const insertStatement = orbis
-        .insert(
-          "kjzl6hvfrbw6cavxnkej30g3lroka708z25pfud1ei93x5rgc00hif4s7x1he18",
-        )
-        .value(values);
+        .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
+        .value({
+          title,
+          body,
+          category,
+          tags: JSON.stringify(tags),
+          authors: JSON.stringify(authors),
+        });
       const validation = await insertStatement.validate();
       if (!validation.valid) {
         throw new Error(`Error during validation: ${validation.error}`);
       }
       const [result, error] = await catchError(() => insertStatement.run());
       if (error) throw new Error(`Error during query: ${error}`);
+      if (!result) throw new Error("No result was returned from orbis");
       return result;
     } catch (error) {
       console.error(error);
@@ -76,7 +85,10 @@ const usePostForm = ({ postId }: Props) => {
   const submitMutation = useMutation({
     mutationKey: ["create-post"],
     mutationFn: submitFn,
-    onSuccess: console.log,
+    onSuccess: (result?: CeramicDocument) => {
+      if (!result) return;
+      router.push(`/posts/${result.id}`);
+    },
   });
 
   return { form, orbis, categories, submitMutation };
