@@ -2,9 +2,8 @@ import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { catchError } from "@/shared/lib/orbis/utils";
-import { postSchema } from "@/shared/schema/post";
+import { Post, postSchema } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWallets } from "@privy-io/react-auth";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
 import { useRouter } from "next/navigation";
@@ -18,7 +17,6 @@ const usePostForm = ({ postId }: Props) => {
 
   const orbis = useOrbis();
   const { categories } = useCategories();
-  const { wallets } = useWallets();
   const { connectOrbis } = useAuth();
 
   const form = useForm({
@@ -26,13 +24,12 @@ const usePostForm = ({ postId }: Props) => {
     defaultValues: {
       title: "",
       body: "",
-      category: undefined as undefined | string,
-      tags: [] as string[],
-      authors: [] as string[],
-    },
+      category: undefined,
+      tags: [],
+      status: "published",
+    } as Partial<Post>,
   });
-  const { watch, setValue } = form;
-  const authors = watch("authors");
+  const { setValue } = form;
 
   const {
     postQuery: { data: post, isLoading: isLoadingPost },
@@ -41,46 +38,40 @@ const usePostForm = ({ postId }: Props) => {
   // Initialize form with post
   useEffect(() => {
     if (!postId || isLoadingPost || !post) return;
-    const { title, body, category, authors, tags } = post;
+    const { title, body, category, status, tags } = post;
     setValue("title", title);
     setValue("body", body);
     setValue("category", category);
-    setValue("authors", authors!);
+    setValue("status", status);
     setValue("tags", tags || []);
   }, [postId, post, setValue, isLoadingPost]);
 
-  // Get author from orbis
-  useEffect(() => {
-    const addAuthor = async () => {
-      const orbisUser = (await orbis?.getConnectedUser()) as
-        | { user: { did: string } }
-        | undefined;
-      const did = orbisUser?.user?.did;
-      if (did && !authors.includes(did)) setValue("authors", [...authors, did]);
-    };
-    addAuthor();
-  }, [orbis, authors, watch, setValue]);
+  // This is done automatically but I have to ensure it can be queried
+  // // Get author from orbis
+  // useEffect(() => {
+  //   const addAuthor = async () => {
+  //     const orbisUser = (await orbis?.getConnectedUser()) as
+  //       | { user: { did: string } }
+  //       | undefined;
+  //     const did = orbisUser?.user?.did;
+  //     if (did && !authors.includes(did)) setValue("authors", [...authors, did]);
+  //   };
+  //   addAuthor();
+  // }, [orbis, authors, watch, setValue]);
 
   const submitFn = async (values: any) => {
     if (!orbis || !values) return;
-    if (!values?.authors?.length) {
-      // This will only run if user is not connected to orbis
-      const wallet = wallets.find((w) => !w.imported);
-      if (!wallet) throw new Error("No wallet found");
-      const authResult = (await connectOrbis(wallet)) as
-        | { user: { did: string } }
-        | undefined;
-      const did = authResult?.user?.did;
-      if (!did) throw new Error("Unable to connect");
-      values.authors = [did];
+    await connectOrbis(); // Does nothing if user is already connected
+    if (!orbis.getConnectedUser()) {
+      throw new Error("Cannot create a post without connection to orbis");
     }
-    const { title, body, category, authors, tags } = values;
+    const { title, body, category, status, tags } = values;
     const insertValue = {
       title,
       body,
       category,
       tags: JSON.stringify(tags),
-      authors: JSON.stringify(authors),
+      status,
     };
     let insertStatement;
     if (postId) {

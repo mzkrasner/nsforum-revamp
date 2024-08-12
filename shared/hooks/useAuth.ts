@@ -1,4 +1,4 @@
-import { ConnectedWallet, usePrivy, useWallets } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { useCallback, useEffect } from "react";
 import useOrbis from "./useOrbis";
@@ -10,12 +10,25 @@ const useAuth = () => {
   const { wallets } = useWallets();
   const orbis = useOrbis();
 
-  const connectOrbis = useCallback(async (connectedWallet: ConnectedWallet) => {
+  const connectOrbis = useCallback(async () => {
     try {
+      if (!privy.ready)
+        return console.warn("Cannot connect to orbis when wallet is not ready");
+      if (!privy.authenticated)
+        return console.warn(
+          "Cannot connect to orbis when wallet is not authenticated",
+        );
+
+      const connectedWallet = wallets.find((wallet) => !wallet.imported);
+      if (!connectedWallet)
+        throw new Error("No privy wallet is connected to your account");
+
       const connected = await orbis?.isUserConnected(connectedWallet.address);
       if (connected) return;
+
       const provider = await connectedWallet.getEthereumProvider();
       if (!provider) throw new Error("Unable to fetch provider");
+
       const auth = new OrbisEVMAuth(provider);
       const authResult = await orbis?.connectUser({ auth });
       if (!authResult)
@@ -24,13 +37,11 @@ const useAuth = () => {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [wallets, privy.ready, privy.authenticated]);
 
   useEffect(() => {
-    const privyWallet = wallets.find((wallet) => !wallet.imported);
-    if (!privyWallet || !privy.ready || !privy.authenticated) return;
-    connectOrbis(privyWallet);
-  }, [wallets, privy.ready, privy.authenticated, connectOrbis]);
+    connectOrbis();
+  }, [connectOrbis]);
 
   const logout = async () => {
     privy.logout();

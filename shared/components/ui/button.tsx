@@ -49,6 +49,7 @@ export interface ButtonProps
   asChild?: boolean;
   loading?: boolean;
   loadingText?: string;
+  loaderProps?: React.SVGProps<SVGSVGElement>;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -62,6 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       size,
       asChild = false,
       loadingText = "Loading...",
+      loaderProps,
       ...props
     },
     ref,
@@ -75,7 +77,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && (
-          <LoaderIcon className="mr-2 h-5 w-5 animate-spin text-muted" />
+          <LoaderIcon
+            {...loaderProps}
+            className={cn(
+              "mr-2 h-5 w-5 animate-spin text-muted",
+              loaderProps?.className,
+            )}
+          />
         )}
         <Slottable>{loading ? loadingText : children}</Slottable>
       </Comp>

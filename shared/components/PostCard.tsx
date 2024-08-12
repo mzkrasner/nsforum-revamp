@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import Link from "next/link";
-import PostInfo from "./PostInfo";
-import PostTags from "./PostTags";
+// import PostInfo from "./PostInfo";
+// import PostTags from "./PostTags";
 
 type Props = {};
 const PostCard = (props: Props) => {
@@ -22,8 +22,8 @@ const PostCard = (props: Props) => {
           </Link>
         </CardTitle>
         <CardContent className="m-0 p-0">
-          <PostInfo />
-          <PostTags />
+          {/* <PostInfo  />
+          <PostTags /> */}
         </CardContent>
       </CardHeader>
     </Card>
