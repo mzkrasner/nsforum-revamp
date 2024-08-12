@@ -1,8 +1,14 @@
+import { CeramicDocument } from "@useorbis/db-sdk";
+import { format } from "date-fns";
 import { BadgeCheckIcon, ExternalLinkIcon } from "lucide-react";
+import { Post } from "../schema/post";
 import { Button } from "./ui/button";
 
-type Props = {};
-const PostInfo = (props: Props) => {
+type Props = { post: Post & CeramicDocument["content"] };
+const PostInfo = ({ post }: Props) => {
+  const { indexed_at } = post;
+  let formattedDate;
+  if (indexed_at) formattedDate = format(new Date(indexed_at), "do MMM yyyy");
   return (
     <div className="relative flex h-8 flex-row items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
       By
@@ -10,7 +16,7 @@ const PostInfo = (props: Props) => {
         john_doe
         <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
       </span>
-      <span>1st Aug 2024</span>
+      <span>{formattedDate}</span>
       <Button
         variant="ghost"
         size="sm"

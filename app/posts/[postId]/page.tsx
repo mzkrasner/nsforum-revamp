@@ -1,23 +1,21 @@
-import PostInfo from "@/shared/components/PostInfo";
+"use client";
+
+import PostActions from "../_components/PostActions";
+import PostBody from "../_components/PostBody";
+import PostHeading from "../_components/PostHeading";
+import usePost from "../_hooks/usePost";
 
 const PostPage = () => {
+  usePost();
   return (
-    <>
-      <div className="mb-5">
-        <h2 className="font-serif text-3xl font-medium">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </h2>
-        <PostInfo />
-      </div>
+    <div className="container pb-10 pt-5 md:grid md:grid-cols-[280px_1fr]">
+      <div></div>
       <div>
-        <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum
-          officiis ducimus autem ipsum ea sapiente temporibus, corrupti
-          laudantium architecto assumenda cum eius aliquid numquam deleniti
-          alias enim commodi natus. Asperiores.
-        </p>
+        <PostActions />
+        <PostHeading />
+        <PostBody />
       </div>
-    </>
+    </div>
   );
 };
 export default PostPage;

@@ -47,39 +47,37 @@ const usePostForm = ({ postId }: Props) => {
 
   const submitFn = async (values: any) => {
     if (!orbis || !values) return;
-    try {
-      if (!values?.authors?.length) {
-        // This will only run if user is not connected to orbis
-        const wallet = wallets.find((w) => !w.imported);
-        if (!wallet) throw new Error("No wallet found");
-        const authResult = (await connectOrbis(wallet)) as
-          | { user: { did: string } }
-          | undefined;
-        const did = authResult?.user?.did;
-        if (!did) throw new Error("Unable to connect");
-        values.authors = [did];
-      }
-      const { title, body, category, authors, tags } = values;
-      const insertStatement = orbis
-        .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
-        .value({
-          title,
-          body,
-          category,
-          tags: JSON.stringify(tags),
-          authors: JSON.stringify(authors),
-        });
-      const validation = await insertStatement.validate();
-      if (!validation.valid) {
-        throw new Error(`Error during validation: ${validation.error}`);
-      }
-      const [result, error] = await catchError(() => insertStatement.run());
-      if (error) throw new Error(`Error during query: ${error}`);
-      if (!result) throw new Error("No result was returned from orbis");
-      return result;
-    } catch (error) {
-      console.error(error);
+    if (!values?.authors?.length) {
+      // This will only run if user is not connected to orbis
+      const wallet = wallets.find((w) => !w.imported);
+      if (!wallet) throw new Error("No wallet found");
+      const authResult = (await connectOrbis(wallet)) as
+        | { user: { did: string } }
+        | undefined;
+      const did = authResult?.user?.did;
+      if (!did) throw new Error("Unable to connect");
+      values.authors = [did];
     }
+    const { title, body, category, authors, tags } = values;
+    const insertStatement = orbis
+      .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
+      .value({
+        title,
+        body,
+        category,
+        tags: JSON.stringify(tags),
+        authors: JSON.stringify(authors),
+      });
+    const validation = await insertStatement.validate();
+    if (!validation.valid) {
+      throw new Error(
+        `Error during create post validation: ${validation.error}`,
+      );
+    }
+    const [result, error] = await catchError(() => insertStatement.run());
+    if (error) throw new Error(`Error during create post query: ${error}`);
+    if (!result) throw new Error("No result was returned from orbis");
+    return result;
   };
 
   const submitMutation = useMutation({
@@ -89,6 +87,7 @@ const usePostForm = ({ postId }: Props) => {
       if (!result) return;
       router.push(`/posts/${result.id}`);
     },
+    onError: console.log,
   });
 
   return { form, orbis, categories, submitMutation };
