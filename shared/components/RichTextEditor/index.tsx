@@ -13,7 +13,7 @@ import {
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { forwardRef, useState } from "react";
-import { RefCallBack } from "react-hook-form";
+import { FieldError, RefCallBack } from "react-hook-form";
 import TableMenu from "./components/TableMenu";
 import Toolbar from "./components/Toolbar";
 
@@ -24,6 +24,7 @@ type Props = {
   limit?: number;
   hideToolbar?: boolean;
   placeholder?: string;
+  error?: FieldError;
 };
 const RichTextEditor = forwardRef<HTMLDivElement, Props>(
   (
@@ -34,6 +35,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       limit,
       hideToolbar = false,
       placeholder = "",
+      error,
     }: Props,
     forwardedRef,
   ) => {
@@ -68,7 +70,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
             })
           : null,
       ].filter((v) => !!v) as AnyExtension[],
-      content: value,
+      content: value || "",
       editorProps: {
         attributes: {
           class: "min-h-40 p-3 pb-6 outline-none focus:border-gray-9",
@@ -77,6 +79,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       onUpdate({ editor }) {
         onChange && onChange(editor.getHTML());
       },
+      immediatelyRender: false,
     });
 
     const charsLeft = hasLimit
@@ -94,7 +97,11 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
           }}
           className={cn(
             "border-gray-1 relative h-fit min-h-52 rounded-md border",
-            { "border-black": focused },
+            {
+              "border-black outline-none ring-2 ring-ring ring-offset-2":
+                focused,
+              ["border-destructive"]: !!error,
+            },
             className,
           )}
         >

@@ -1,5 +1,6 @@
 "use client";
 
+import SignInButton from "@/shared/components/SignInButton";
 import {
   Avatar,
   AvatarFallback,
@@ -20,16 +21,11 @@ import { BadgeCheckIcon } from "lucide-react";
 
 const User = () => {
   const { ready, authenticated } = usePrivy();
-  const { login, logout } = useAuth();
+  const { logout } = useAuth();
 
   if (!ready) return null; // TODO: Add loading UI
 
-  if (!authenticated)
-    return (
-      <Button variant="ghost" onClick={login}>
-        Sign In
-      </Button>
-    );
+  if (!authenticated) return <SignInButton />;
 
   return (
     <DropdownMenu>

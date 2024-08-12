@@ -1,5 +1,5 @@
-import { CheckIcon, PlusCircleIcon } from "lucide-react";
-import * as React from "react";
+import { CheckIcon, PlusCircleIcon, XCircleIcon } from "lucide-react";
+import { useState } from "react";
 
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -17,41 +17,62 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
+import useTags from "@/shared/hooks/useTags";
 import { cn } from "@/shared/lib/utils";
+import { FieldError } from "react-hook-form";
 
 type Props = {
-  options: {
-    label: string;
-    value: string;
-    icon?: React.ComponentType<{ className?: string }>;
-  }[];
+  selectedTags?: string[];
+  error?: FieldError;
+  onChange?: (tagIds: string[]) => void;
 };
 
-const TagsSelector = ({ options }: Props) => {
-  const selectedTags = new Set([] as string[]);
+const TagsSelector = ({
+  selectedTags: _selectedTags = [],
+  onChange,
+  error,
+}: Props) => {
+  const [open, setOpen] = useState(false);
+  const { tags } = useTags();
 
+  const selectTag = (id: string) => onChange?.([..._selectedTags, id]);
+
+  const deselectTag = (id: string) =>
+    onChange?.(_selectedTags.filter((tagId) => tagId !== id));
+
+  const selectedTags = new Set(_selectedTags);
   const isEmpty = !selectedTags.size;
 
   return (
-    <div className="rounded-md border border-neutral-200 p-3">
+    <div
+      className={cn("rounded-md border border-neutral-200 p-3", {
+        ["border-destructive"]: !!error,
+      })}
+    >
       {isEmpty ? (
         <span className="text-sm text-neutral-500">No tags selected</span>
       ) : (
-        <ul className="min-h-8">
-          {options
-            .filter((option) => selectedTags.has(option.value))
-            .map((option) => (
+        <div className="flex min-h-8 flex-wrap gap-3">
+          {tags
+            .filter((tag) => selectedTags.has(tag.id))
+            .map((tag) => (
               <Badge
                 variant="secondary"
-                key={option.value}
-                className="rounded-sm px-1 font-normal"
+                key={tag.id}
+                className="flex h-6 items-center gap-2 rounded-sm px-1 font-normal"
               >
-                {option.label}
+                {tag.name}
+                <Button size="sm" variant="secondary" className="h-4 w-4 p-0">
+                  <XCircleIcon
+                    className="h-3.5 w-3.5 text-neutral-500"
+                    onClick={() => deselectTag(tag.id)}
+                  />
+                </Button>
               </Badge>
             ))}
-        </ul>
+        </div>
       )}
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="mt-3 flex h-8">
             <PlusCircleIcon className="mr-2 h-4 w-4" />
@@ -64,21 +85,19 @@ const TagsSelector = ({ options }: Props) => {
             <CommandList>
               <CommandEmpty>No tags found.</CommandEmpty>
               <CommandGroup>
-                {options.map((option) => {
-                  const isSelected = selectedTags.has(option.value);
+                {tags.map((tag) => {
+                  const { id, name } = tag;
+                  const isSelected = selectedTags.has(id);
                   return (
                     <CommandItem
-                      key={option.value}
+                      key={id}
+                      value={id}
                       onSelect={() => {
                         if (isSelected) {
-                          selectedTags.delete(option.value);
+                          deselectTag(id);
                         } else {
-                          selectedTags.add(option.value);
+                          selectTag(id);
                         }
-                        const filterValues = Array.from(selectedTags);
-                        // column?.setFilterValue(
-                        //   filterValues.length ? filterValues : undefined,
-                        // );
                       }}
                     >
                       <div
@@ -91,16 +110,7 @@ const TagsSelector = ({ options }: Props) => {
                       >
                         <CheckIcon className={cn("h-4 w-4")} />
                       </div>
-                      {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                      )}
-                      <span>{option.label}</span>
-                      {/* {facets?.get(option.value) && (
-                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                        {facets.get(option.value)}
-                      </span>
-                    )} */}
-                      Facet label
+                      {name}
                     </CommandItem>
                   );
                 })}
@@ -110,10 +120,10 @@ const TagsSelector = ({ options }: Props) => {
                   <CommandSeparator />
                   <CommandGroup>
                     <CommandItem
-                      // onSelect={() => column?.setFilterValue(undefined)}
+                      onSelect={() => onChange?.([])}
                       className="justify-center text-center"
                     >
-                      Clear filters
+                      Clear tags
                     </CommandItem>
                   </CommandGroup>
                 </>
