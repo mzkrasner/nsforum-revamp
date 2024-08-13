@@ -1,6 +1,6 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
-import { catchError } from "@/shared/lib/orbis/utils";
+import { catchError } from "@/shared/orbis/utils";
 import { Post, PostStatus } from "@/shared/schema/post";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";

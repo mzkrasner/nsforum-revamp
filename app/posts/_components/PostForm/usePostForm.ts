@@ -1,7 +1,7 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
-import { catchError } from "@/shared/lib/orbis/utils";
+import { catchError } from "@/shared/orbis/utils";
 import { Post, postSchema } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";

@@ -10,7 +10,6 @@ const PostBody = () => {
   if (isLoading) return "Loading...";
   if (!data) return "No data found...";
   const { body } = data;
-  console.log(data);
   return <div>{htmlToReact(body)}</div>;
 };
 export default PostBody;

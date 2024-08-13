@@ -1,11 +1,15 @@
+"use client";
+
 import PostCard from "@/shared/components/PostCard";
 import { Button } from "@/shared/components/ui/button";
-import { Post } from "@/shared/schema/post";
 import Link from "next/link";
-import PostFilters from "./PostFilters";
+import PostFilters from "./components/PostFilters";
+import usePostList from "./usePostList";
 
-type Props = { posts: Post[] };
-const PostList = ({ posts }: Props) => {
+const PostList = () => {
+  const { postListQuery } = usePostList();
+  const posts = postListQuery.data?.pages.map((page) => page).flat() || [];
+  console.log(posts);
   return (
     <section className="container">
       <div className="mb-5 flex items-center justify-between">

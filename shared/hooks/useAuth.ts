@@ -40,7 +40,7 @@ const useAuth = () => {
   }, [wallets, privy.ready, privy.authenticated]);
 
   useEffect(() => {
-    connectOrbis();
+    // connectOrbis();
   }, [connectOrbis]);
 
   const logout = async () => {

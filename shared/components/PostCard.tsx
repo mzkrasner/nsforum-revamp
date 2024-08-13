@@ -15,7 +15,7 @@ type Props = { post: Post };
 const PostCard = ({ post }: Props) => {
   const { title, stream_id } = post;
   return (
-    <Card onClick={() => console.log("clicked")}>
+    <Card>
       <CardHeader className="space-y-0 p-3">
         <CardTitle className="text-base font-medium">
           <Link href={`/posts/${stream_id}`} className="link inline-block">
