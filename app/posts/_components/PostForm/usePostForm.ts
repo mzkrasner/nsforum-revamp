@@ -73,24 +73,24 @@ const usePostForm = ({ postId }: Props) => {
       tags: JSON.stringify(tags),
       status,
     };
-    let insertStatement;
+    let statement;
     if (postId) {
       // Update existing post
-      insertStatement = orbis.update(postId).set(insertValue);
+      statement = orbis.update(postId).set(insertValue);
     } else {
       // Create new post
-      insertStatement = orbis
+      statement = orbis
         .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
         .value(insertValue);
 
-      const validation = await insertStatement.validate();
+      const validation = await statement.validate();
       if (!validation.valid) {
         throw new Error(
           `Error during create post validation: ${validation.error}`,
         );
       }
     }
-    const [result, error] = await catchError(() => insertStatement.run());
+    const [result, error] = await catchError(() => statement.run());
     if (error) throw new Error(`Error during create post query: ${error}`);
     if (!result) throw new Error("No result was returned from orbis");
     return result;

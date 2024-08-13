@@ -1,9 +1,11 @@
 import PostCard from "@/shared/components/PostCard";
 import { Button } from "@/shared/components/ui/button";
+import { Post } from "@/shared/schema/post";
 import Link from "next/link";
 import PostFilters from "./PostFilters";
 
-const PostList = () => {
+type Props = { posts: Post[] };
+const PostList = ({ posts }: Props) => {
   return (
     <section className="container">
       <div className="mb-5 flex items-center justify-between">
@@ -13,14 +15,17 @@ const PostList = () => {
         </Button>
       </div>
       <ul>
-        {[...Array(5)].map((_, i) => {
+        {posts.map((post, i) => {
           return (
             <li key={i} className="mb-5">
-              <PostCard />
+              <PostCard post={post} />
             </li>
           );
         })}
       </ul>
+      {!posts.length && (
+        <div className="py-10 text-center text-neutral-500">No post found</div>
+      )}
     </section>
   );
 };

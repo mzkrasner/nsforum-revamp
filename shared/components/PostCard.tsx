@@ -7,23 +7,26 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import Link from "next/link";
-// import PostInfo from "./PostInfo";
-// import PostTags from "./PostTags";
+import { Post } from "../schema/post";
+import PostInfo from "./PostInfo";
+import PostTags from "./PostTags";
 
-type Props = {};
-const PostCard = (props: Props) => {
+type Props = { post: Post };
+const PostCard = ({ post }: Props) => {
+  const { title, stream_id } = post;
   return (
     <Card onClick={() => console.log("clicked")}>
       <CardHeader className="space-y-0 p-3">
         <CardTitle className="text-base font-medium">
-          <Link href="/posts/1" className="link inline-block">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
-            doloremque commodi, porro officiis voluptatem eius.
+          <Link href={`/posts/${stream_id}`} className="link inline-block">
+            {title}
           </Link>
         </CardTitle>
         <CardContent className="m-0 p-0">
-          {/* <PostInfo  />
-          <PostTags /> */}
+          <PostInfo post={post} />
+          <PostTags
+            tags={[{ name: "Example Tag", description: "", id: "0" }]}
+          />
         </CardContent>
       </CardHeader>
     </Card>

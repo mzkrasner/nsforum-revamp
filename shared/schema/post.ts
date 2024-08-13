@@ -13,6 +13,7 @@ export const postSchema = z.object({
   category: z.string({ message: "Post category is required" }),
   tags: z.array(z.string()),
   status: z.enum([...POST_STATUSES]),
+  stream_id: z.string().optional().nullable(),
 });
 
 export type Post = z.infer<typeof postSchema>;
