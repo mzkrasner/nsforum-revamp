@@ -1,4 +1,3 @@
-import { fetchPosts } from "@/shared/orbis/posts";
 import {
   dehydrate,
   HydrationBoundary,
@@ -6,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import Header from "./_components/Header";
 import PostList from "./_components/PostList";
+import { fetchPostList } from "./_components/PostList/usePostList";
 
 const HomePage = async () => {
   const queryClient = new QueryClient();
@@ -13,12 +13,12 @@ const HomePage = async () => {
   await queryClient.prefetchInfiniteQuery({
     initialPageParam: 0,
     queryKey: ["posts"],
-    queryFn: fetchPosts,
+    queryFn: fetchPostList,
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <main>
+      <main className="mb-10">
         <Header />
         <div className="md:grid md:grid-cols-[1fr_320px]">
           <PostList />

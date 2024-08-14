@@ -103,7 +103,7 @@ const usePostForm = ({ postId }: Props) => {
       if (!result) return;
       router.push(`/posts/${result.id}`);
     },
-    onError: console.log,
+    onError: console.error,
   });
 
   return { form, orbis, categories, submitMutation };

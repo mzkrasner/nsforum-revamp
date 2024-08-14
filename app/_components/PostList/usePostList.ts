@@ -1,12 +1,21 @@
 import { fetchPosts } from "@/shared/orbis/posts";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
+export const fetchPostList = async ({ pageParam }: { pageParam: number }) => {
+  return await fetchPosts(
+    { page: pageParam },
+    { fields: ["title", "category", "tags", "controller", "indexed_at"] },
+  );
+};
+
 const usePostList = () => {
   const postListQuery = useInfiniteQuery({
     queryKey: ["posts"],
-    queryFn: fetchPosts,
+    queryFn: fetchPostList,
     initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) => undefined,
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.length ? pages.length : undefined;
+    },
   });
 
   return { postListQuery };
