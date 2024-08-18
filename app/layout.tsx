@@ -1,3 +1,4 @@
+import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NavBar from "./_components/NavBar";
@@ -21,10 +22,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppContextProvider>
-          <NavBar />
-          <main className="flex h-full min-h-[calc(100vh_-_80px)] flex-col">
-            {children}
-          </main>
+          <TooltipProvider>
+            <NavBar />
+            <main className="flex h-full min-h-[calc(100vh_-_80px)] flex-col">
+              {children}
+            </main>
+          </TooltipProvider>
         </AppContextProvider>
       </body>
     </html>

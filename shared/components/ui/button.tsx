@@ -50,6 +50,7 @@ export interface ButtonProps
   loading?: boolean;
   loadingText?: string;
   loaderProps?: React.SVGProps<SVGSVGElement>;
+  startContent?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -64,6 +65,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       asChild = false,
       loadingText = "Loading...",
       loaderProps,
+      startContent = null,
       ...props
     },
     ref,
@@ -85,6 +87,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             )}
           />
         )}
+        {startContent}
         <Slottable>{loading ? loadingText : children}</Slottable>
       </Comp>
     );

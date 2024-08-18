@@ -18,6 +18,7 @@ import {
 import useAuth from "@/shared/hooks/useAuth";
 import { usePrivy } from "@privy-io/react-auth";
 import { BadgeCheckIcon } from "lucide-react";
+import Link from "next/link";
 
 const User = () => {
   const { ready, authenticated } = usePrivy();
@@ -46,7 +47,9 @@ const User = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/profile">Profile</Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
