@@ -50,6 +50,8 @@ const User = () => {
           <DropdownMenuItem asChild>
             <Link href="/profile">Profile</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem>Notifications</DropdownMenuItem>
+          <DropdownMenuItem>Subscriptions</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
