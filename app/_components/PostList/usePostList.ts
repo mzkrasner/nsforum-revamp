@@ -1,4 +1,4 @@
-import { fetchPosts } from "@/shared/orbis/posts";
+import { fetchPosts } from "@/shared/orbis/server-queries";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 export const fetchPostList = async ({ pageParam }: { pageParam: number }) => {

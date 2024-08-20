@@ -2,7 +2,7 @@ import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { catchError } from "@/shared/orbis/utils";
-import { Post, postSchema } from "@/shared/schema/post";
+import { PostFormType, postSchema } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
@@ -27,7 +27,7 @@ const usePostForm = ({ postId }: Props) => {
       category: undefined,
       tags: [],
       status: "published",
-    } as Partial<Post>,
+    } as Partial<PostFormType>,
   });
   const { setValue } = form;
 

@@ -10,16 +10,29 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
+import useProfile from "@/shared/hooks/useProfile";
+import { ProfileFormType, profileSchema } from "@/shared/schema/profile";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 const ProfileForm = () => {
-  const form = useForm();
+  const { profile, saveProfileMutation } = useProfile();
+  const { name = '', username = '', email = '' } = profile || {}
+
+  const form = useForm<ProfileFormType>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name,
+      username,
+      email,
+    }
+  });
   const { handleSubmit, control } = form;
 
   return (
     <Form {...form}>
       <form
-        onSubmit={handleSubmit(console.log)}
+        onSubmit={handleSubmit(v => saveProfileMutation.mutate(v))}
         className="mx-auto flex flex-col gap-3"
       >
         <FormField
@@ -78,7 +91,7 @@ const ProfileForm = () => {
         <Button
           type="submit"
           className="ml-auto mt-3 flex"
-          // loading={}
+          loading={saveProfileMutation.isPending}
           loadingText="Saving..."
         >
           Save

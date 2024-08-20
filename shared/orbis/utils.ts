@@ -1,3 +1,5 @@
+import * as _ from "lodash-es";
+
 /**
  *
  * Original implementation taken from Radash
@@ -39,4 +41,18 @@ export const catchError = <Return>(
       ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
       : [undefined, Error] | [Return, undefined];
   }
+};
+
+export const getAvatarInitials = (name: string): string => {
+  // Split the name into words
+  const words = _.words(name);
+
+  // Get the first letter of the first word
+  const firstLetter = _.upperFirst(_.head(words)?.charAt(0) || "");
+
+  // Get the first letter of the last word (if available)
+  const lastLetter = _.upperFirst(_.last(words)?.charAt(0) || "");
+
+  // Return the initials, combining first and last letters
+  return `${firstLetter}${lastLetter}`;
 };

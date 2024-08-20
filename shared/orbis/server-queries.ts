@@ -1,9 +1,9 @@
-import config from "@/app/_providers/orbis/config";
-import { CeramicDocument, OrbisDB } from "@useorbis/db-sdk";
+"use server";
+
+import { CeramicDocument } from "@useorbis/db-sdk";
+import { orbis } from ".";
 import { Post } from "../schema/post";
 import { catchError } from "./utils";
-
-const orbis = new OrbisDB(config);
 
 type PostResponse = Post & CeramicDocument["content"];
 

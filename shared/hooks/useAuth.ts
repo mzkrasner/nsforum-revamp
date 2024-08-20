@@ -8,7 +8,8 @@ import useOrbis from "./useOrbis";
 const useAuth = () => {
   const privy = usePrivy();
   const { wallets } = useWallets();
-  const orbis = useOrbis();
+  const connectedWallet = wallets.find((wallet) => !wallet.imported);
+  const { db, authInfo, setAuthInfo } = useOrbis();
 
   const connectOrbis = useCallback(async () => {
     try {
@@ -18,38 +19,45 @@ const useAuth = () => {
         return console.warn(
           "Cannot connect to orbis when wallet is not authenticated",
         );
-
-      const connectedWallet = wallets.find((wallet) => !wallet.imported);
       if (!connectedWallet)
         throw new Error("No privy wallet is connected to your account");
 
-      const connected = await orbis?.isUserConnected(connectedWallet.address);
-      if (connected) return;
-
-      const provider = await connectedWallet.getEthereumProvider();
-      if (!provider) throw new Error("Unable to fetch provider");
-
-      const auth = new OrbisEVMAuth(provider);
-      const authResult = await orbis?.connectUser({ auth });
-      if (!authResult)
-        throw new Error("Didn't recieve authentication result from orbis");
-      return authResult;
+      let authInfo;
+      const connected = await db?.isUserConnected(connectedWallet.address);
+      if (connected) {
+        // TODO Confirm if this gets called unneccessarily
+        authInfo = await db?.getConnectedUser();
+      } else {
+        const provider = await connectedWallet.getEthereumProvider();
+        if (!provider) throw new Error("Unable to fetch provider");
+        const auth = new OrbisEVMAuth(provider);
+        authInfo = await db?.connectUser({ auth });
+      }
+      if (!authInfo)
+        throw new Error(
+          "Could not fetch authentication information from orbis",
+        );
+      setAuthInfo(authInfo);
+      return authInfo;
     } catch (error) {
       console.error(error);
     }
-  }, [wallets, privy.ready, privy.authenticated]);
+  }, [wallets, privy.ready, privy.authenticated, connectedWallet]);
 
   useEffect(() => {
-    // connectOrbis();
-  }, [connectOrbis]);
+    if (privy.authenticated && privy.ready && connectedWallet) {
+      connectOrbis();
+    }
+  }, [connectOrbis, privy.ready, privy.authenticated, connectedWallet]);
 
   const logout = async () => {
     privy.logout();
-    await orbis?.disconnectUser();
+    await db?.disconnectUser();
   };
 
   return {
     login: privy.login,
+    isLoggedIn: !!(privy.authenticated && authInfo),
     logout,
     connectOrbis,
   };

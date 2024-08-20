@@ -16,4 +16,4 @@ export const postSchema = z.object({
   stream_id: z.string().optional().nullable(),
 });
 
-export type Post = z.infer<typeof postSchema>;
+export type PostFormType = z.infer<typeof postSchema>;
