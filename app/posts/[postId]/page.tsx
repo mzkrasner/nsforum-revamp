@@ -1,4 +1,4 @@
-import { fetchPost } from "@/shared/orbis/server-queries";
+import { fetchPost } from "@/shared/orbis/queries";
 import {
   dehydrate,
   HydrationBoundary,

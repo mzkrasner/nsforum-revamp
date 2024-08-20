@@ -4,8 +4,11 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import Header from "./_components/Header";
-import PostList from "./_components/PostList";
-import { fetchPostList } from "./_components/PostList/usePostList";
+import PostList from "@/shared/components/PostList";
+import PostFilters from "./_components/PostFilters";
+import { Button } from "@/shared/components/ui/button";
+import Link from "next/link";
+import { fetchPosts } from "@/shared/orbis/queries";
 
 const HomePage = async () => {
   const queryClient = new QueryClient();
@@ -13,7 +16,8 @@ const HomePage = async () => {
   await queryClient.prefetchInfiniteQuery({
     initialPageParam: 0,
     queryKey: ["posts"],
-    queryFn: fetchPostList,
+    queryFn: ({ pageParam }) =>
+      fetchPosts({ page: pageParam, }),
   });
 
   return (
@@ -21,7 +25,15 @@ const HomePage = async () => {
       <main className="mb-10">
         <Header />
         <div className="md:grid md:grid-cols-[1fr_320px]">
-          <PostList />
+
+          <section className="container">
+            <div className="mb-5 flex items-center justify-between">
+              <PostFilters />
+              <Button size="sm" asChild>
+                <Link href="/posts/new">Create Post</Link>
+              </Button>
+            </div>
+            <PostList /></section>
         </div>
       </main>
     </HydrationBoundary>

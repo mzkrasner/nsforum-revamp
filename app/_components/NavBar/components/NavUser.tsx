@@ -20,7 +20,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { BadgeCheckIcon } from "lucide-react";
 import Link from "next/link";
 
-const User = () => {
+const NavUser = () => {
   const { ready, authenticated } = usePrivy();
   const { logout } = useAuth();
 
@@ -59,4 +59,4 @@ const User = () => {
     </DropdownMenu>
   );
 };
-export default User;
+export default NavUser;

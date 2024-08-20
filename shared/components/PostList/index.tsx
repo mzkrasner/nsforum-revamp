@@ -3,22 +3,16 @@
 import PostCard from "@/shared/components/PostCard";
 import { Button } from "@/shared/components/ui/button";
 import { InfiniteScroll } from "@/shared/components/ui/infinite-scroll";
-import Link from "next/link";
-import PostFilters from "./components/PostFilters";
-import usePostList from "./usePostList";
+import usePostList from "@/shared/hooks/usePostList";
+import { FetchPostOptions } from "@/shared/orbis/queries";
 
-const PostList = () => {
-  const { postListQuery } = usePostList();
+type Props = { fetchPostOptions?: FetchPostOptions };
+const PostList = (props: Props) => {
+  const { postListQuery } = usePostList(props);
   const { hasNextPage, isLoading, fetchNextPage } = postListQuery;
   const posts = postListQuery.data?.pages.map((page) => page).flat() || [];
   return (
-    <section className="container">
-      <div className="mb-5 flex items-center justify-between">
-        <PostFilters />
-        <Button size="sm" asChild>
-          <Link href="/posts/new">Create Post</Link>
-        </Button>
-      </div>
+    <div>
       <ul>
         {posts.map((post, i) => {
           return (
@@ -47,7 +41,7 @@ const PostList = () => {
       {!posts.length && (
         <div className="py-10 text-center text-neutral-500">No post found</div>
       )}
-    </section>
+    </div>
   );
 };
 export default PostList;

@@ -2,7 +2,7 @@ import { Button } from "@/shared/components/ui/button";
 import { MenuIcon } from "lucide-react";
 import Notifications from "./components/Notifications";
 import Search from "./components/Search";
-import User from "./components/User";
+import NavUser from "./components/NavUser";
 
 const NavBar = () => {
   return (
@@ -20,7 +20,7 @@ const NavBar = () => {
         <nav className="flex h-full w-full items-center justify-end gap-3">
           <Search />
           <Notifications />
-          <User />
+          <NavUser />
         </nav>
       </div>
     </div>

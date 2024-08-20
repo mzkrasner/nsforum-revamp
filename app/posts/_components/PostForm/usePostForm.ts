@@ -1,8 +1,9 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
+import { models } from "@/shared/orbis";
 import { catchError } from "@/shared/orbis/utils";
-import { PostFormType, postSchema } from "@/shared/schema/post";
+import { PostFormType, postSchema, PostStatus } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
@@ -15,7 +16,7 @@ type Props = { postId?: string };
 const usePostForm = ({ postId }: Props) => {
   const router = useRouter();
 
-  const orbis = useOrbis();
+  const { db } = useOrbis();
   const { categories } = useCategories();
   const { connectOrbis } = useAuth();
 
@@ -59,29 +60,22 @@ const usePostForm = ({ postId }: Props) => {
   //   addAuthor();
   // }, [orbis, authors, watch, setValue]);
 
-  const submitFn = async (values: any) => {
-    if (!orbis || !values) return;
+  const saveFn = async (
+    values: PostFormType,
+    status: PostStatus = "published",
+  ) => {
+    if (!db || !values) return;
     await connectOrbis(); // Does nothing if user is already connected
-    if (!orbis.getConnectedUser()) {
+    if (!db.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
     }
-    const { title, body, category, status, tags } = values;
-    const insertValue = {
-      title,
-      body,
-      category,
-      tags: JSON.stringify(tags),
-      status,
-    };
     let statement;
     if (postId) {
       // Update existing post
-      statement = orbis.update(postId).set(insertValue);
+      statement = db.update(postId).set({ ...values, status });
     } else {
       // Create new post
-      statement = orbis
-        .insert(process.env.NEXT_PUBLIC_POSTS_MODEL!)
-        .value(insertValue);
+      statement = db.insert(models.posts).value({ ...values, status });
 
       const validation = await statement.validate();
       if (!validation.valid) {
@@ -96,9 +90,9 @@ const usePostForm = ({ postId }: Props) => {
     return result;
   };
 
-  const submitMutation = useMutation({
-    mutationKey: ["create-post"],
-    mutationFn: submitFn,
+  const publishMutation = useMutation({
+    mutationKey: ["publish-post"],
+    mutationFn: saveFn,
     onSuccess: (result?: CeramicDocument) => {
       if (!result) return;
       router.push(`/posts/${result.id}`);
@@ -106,7 +100,19 @@ const usePostForm = ({ postId }: Props) => {
     onError: console.error,
   });
 
-  return { form, orbis, categories, submitMutation };
+  const draftFn = async (values: PostFormType) => await saveFn(values, "draft");
+
+  const draftMutation = useMutation({
+    mutationKey: ["draft-post"],
+    mutationFn: draftFn,
+    onSuccess: (result?: CeramicDocument) => {
+      if (!result) return;
+      router.push("/profile");
+    },
+    onError: console.error,
+  });
+
+  return { form, db, categories, publishMutation, draftMutation };
 };
 
 export default usePostForm;

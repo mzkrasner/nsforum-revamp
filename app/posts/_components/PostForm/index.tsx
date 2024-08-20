@@ -16,12 +16,13 @@ import { usePrivy } from "@privy-io/react-auth";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
+import { PostFormType } from "@/shared/schema/post";
 
 type Props = { postId?: string };
 const PostForm = ({ postId }: Props) => {
   const { authenticated, ready } = usePrivy();
   const { postQuery } = usePost();
-  const { form, categories, submitMutation } = usePostForm({ postId });
+  const { form, categories, publishMutation, draftMutation } = usePostForm({ postId });
   const { handleSubmit, control } = form;
 
   if (!authenticated)
@@ -38,7 +39,7 @@ const PostForm = ({ postId }: Props) => {
     <Form {...form}>
       <form
         className="mx-auto w-full max-w-[640px] space-y-5"
-        onSubmit={handleSubmit((v: any) => submitMutation.mutate(v))}
+        onSubmit={handleSubmit((v: any) => publishMutation.mutate(v))} // TODO: Fix type error
       >
         <FormField
           control={control}
@@ -123,14 +124,23 @@ const PostForm = ({ postId }: Props) => {
             );
           }}
         />
-        <Button
-          type="submit"
-          className="ml-auto flex"
-          loading={submitMutation.isPending}
-          loadingText={`${postId ? "Editing" : "Creating"} post...`}
-        >
-          {postId ? "Edit" : "Create"} Post
-        </Button>
+        <div className="flex justify-end gap-3">
+          <Button
+            variant='outline'
+            onClick={handleSubmit((v: any) => draftMutation.mutate(v))}
+            loading={draftMutation.isPending}
+            loadingText={`${postId ? "Converting to" : "Saving as"} draft...`}
+          >
+            {postId ? "Save as" : "Convert to"} Draft
+          </Button>
+          <Button
+            type="submit"
+            loading={publishMutation.isPending}
+            loadingText={`${postId ? "Editing" : "Creating"} post...`}
+          >
+            {postId ? "Edit" : "Create"} Post
+          </Button>
+        </div>
       </form>
     </Form>
   );

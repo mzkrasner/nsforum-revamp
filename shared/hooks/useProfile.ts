@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CeramicDocument } from "@useorbis/db-sdk";
 import { useRouter } from "next/navigation";
 import { models } from "../orbis";
 import { catchError } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
+import { GenericCeramicDocument, OrbisDBRow } from "../types";
 import { Profile } from "../types/profile";
 import useOrbis from "./useOrbis";
 
@@ -16,7 +16,6 @@ const useProfile = () => {
 
   const fetchProfile = async (did?: string) => {
     if (!did || !db) return null;
-    // console.log("Users table: ", models.profiles);
     const selectStatement = db
       .select()
       .from(models.profiles)
@@ -24,7 +23,7 @@ const useProfile = () => {
     const [result, error] = await catchError(() => selectStatement?.run());
     if (error) throw new Error(`Error while fetching profile: ${error}`);
     if (!result?.rows.length) return null;
-    const profile = result.rows[0] as Profile & CeramicDocument;
+    const profile = result.rows[0] as OrbisDBRow<Profile>;
     return profile;
   };
 
@@ -37,19 +36,16 @@ const useProfile = () => {
   });
 
   const saveProfile = async (values: ProfileFormType) => {
-    if (!db || !authInfo) {
-      // console.log(query.isSuccess, orbis, authInfo);
-      return;
-    }
+    if (!db || !authInfo) return;
 
     const did = authInfo.user.did;
     let statement;
     const existingProfile = await fetchProfile(did);
     // console.log("Existing profile: ", existingProfile);
-    if (existingProfile?.id) {
+    if (existingProfile?.stream_id) {
       // console.log("Updating profile");
       // Update
-      statement = db.update(existingProfile.id).set(values);
+      statement = db.update(existingProfile.stream_id).set(values);
     } else {
       // console.log("Creating new profile");
       // Create new
@@ -73,7 +69,7 @@ const useProfile = () => {
     // console.log("Error", error);
     if (error) throw new Error(`Error during create profile query: ${error}`);
     if (!result) throw new Error("No result was returned from orbis");
-    return result;
+    return result as GenericCeramicDocument<Profile>;
   };
 
   const saveMutation = useMutation({
@@ -82,7 +78,16 @@ const useProfile = () => {
     onSuccess: (result) => {
       // console.log("Profile: ", result);
       if (!result) return;
-      // queryClient.setQueryData(["profile"], profile);
+      queryClient.setQueryData(
+        ["profile"],
+        (oldProfile?: OrbisDBRow<Profile>) => {
+          const newProfile = {
+            ...(oldProfile || {}),
+            ...result.content,
+          };
+          return newProfile;
+        },
+      );
       queryClient.invalidateQueries({
         queryKey: ["profile"],
       });

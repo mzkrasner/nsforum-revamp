@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 const ProfileForm = () => {
-  const { profile, saveProfileMutation } = useProfile();
+  const { profile, saveMutation } = useProfile();
   const { name = '', username = '', email = '' } = profile || {}
 
   const form = useForm<ProfileFormType>({
@@ -32,7 +32,7 @@ const ProfileForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={handleSubmit(v => saveProfileMutation.mutate(v))}
+        onSubmit={handleSubmit(v => saveMutation.mutate(v))}
         className="mx-auto flex flex-col gap-3"
       >
         <FormField
@@ -91,7 +91,7 @@ const ProfileForm = () => {
         <Button
           type="submit"
           className="ml-auto mt-3 flex"
-          loading={saveProfileMutation.isPending}
+          loading={saveMutation.isPending}
           loadingText="Saving..."
         >
           Save

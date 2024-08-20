@@ -11,7 +11,7 @@ const PostActions = () => {
   const { postId } = params;
   if (!postId) return null;
   return (
-    <div className="mb-2 flex justify-end gap-2 border-b pb-2">
+    <div className="mb-2 flex justify-end gap-2 pb-2">
       <DeletePostButton postId={postId as string} />
       <Button size="sm" variant="ghost" className="h-8 text-sm" asChild>
         <Link href={`/posts/${postId}/edit`}>

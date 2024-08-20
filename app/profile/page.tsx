@@ -10,6 +10,8 @@ import Link from "next/link";
 import useAuth from "@/shared/hooks/useAuth";
 import SignInButton from "@/shared/components/SignInButton";
 import { usePrivy } from "@privy-io/react-auth";
+import Drafts from "./_components/Drafts";
+import Comments from "./_components/Comments";
 
 const ProfilePage = () => {
   const { profile } = useProfile();
@@ -33,7 +35,7 @@ const ProfilePage = () => {
   )
 
   return (
-    <div className="container mx-auto max-w-[600px] flex-1 py-10">
+    <div className="pt-10">
       <ProfileInfo />
       <section className="mt-10">
         <Tabs className="mb-5" defaultValue="drafts">
@@ -43,13 +45,13 @@ const ProfilePage = () => {
             <TabsTrigger value="comments">Comments</TabsTrigger>
           </TabsList>
           <TabsContent value="drafts">
-            <Posts />
+            <Drafts />
           </TabsContent>
           <TabsContent value="posts">
             <Posts />
           </TabsContent>
           <TabsContent value="comments">
-            <Posts />
+            <Comments />
           </TabsContent>
         </Tabs>
       </section>
