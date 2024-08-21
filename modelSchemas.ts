@@ -186,3 +186,48 @@ export const post = {
     additionalProperties: false,
   },
 };
+
+export const comment = {
+  name: "dev_comment",
+  version: "2.0",
+  interface: false,
+  immutableFields: [],
+  implements: [],
+  accountRelation: {
+    type: "list",
+  },
+  schema: {
+    type: "object",
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    properties: {
+      user: {
+        type: "object",
+        properties: {
+          username: {
+            type: "string",
+          },
+          did: {
+            type: "string",
+          },
+        },
+        additionalProperties: false,
+      },
+      body: {
+        type: "string",
+      },
+      postId: {
+        type: "string",
+      },
+      topParentId: {
+        type: "string",
+      },
+      parentId: {
+        type: "string",
+      },
+      status: {
+        type: "string",
+      },
+    },
+    additionalProperties: false,
+  },
+};

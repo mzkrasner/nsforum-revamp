@@ -3,7 +3,9 @@ import { z } from "zod";
 export const POST_STATUSES = ["draft", "published", "deleted"] as const;
 export type PostStatus = (typeof POST_STATUSES)[number];
 
-export const postSchema = z.object({
+export const postStatusSchema = z.enum([...POST_STATUSES]);
+
+export const postFormSchema = z.object({
   title: z
     .string({ message: "Post title is required" })
     .min(1, "Post title is required"),
@@ -12,8 +14,8 @@ export const postSchema = z.object({
     .min(1, "Post body is required"),
   category: z.string({ message: "Post category is required" }),
   tags: z.array(z.string()),
-  status: z.enum([...POST_STATUSES]),
+  status: postStatusSchema,
   stream_id: z.string().optional().nullable(),
 });
 
-export type PostFormType = z.infer<typeof postSchema>;
+export type PostFormType = z.infer<typeof postFormSchema>;

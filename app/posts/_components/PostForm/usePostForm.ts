@@ -3,7 +3,7 @@ import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { models } from "@/shared/orbis";
 import { catchError } from "@/shared/orbis/utils";
-import { PostFormType, postSchema, PostStatus } from "@/shared/schema/post";
+import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
@@ -21,7 +21,7 @@ const usePostForm = ({ postId }: Props) => {
   const { connectOrbis } = useAuth();
 
   const form = useForm({
-    resolver: zodResolver(postSchema),
+    resolver: zodResolver(postFormSchema),
     defaultValues: {
       title: "",
       body: "",
@@ -76,7 +76,6 @@ const usePostForm = ({ postId }: Props) => {
     } else {
       // Create new post
       statement = db.insert(models.posts).value({ ...values, status });
-
       const validation = await statement.validate();
       if (!validation.valid) {
         throw new Error(

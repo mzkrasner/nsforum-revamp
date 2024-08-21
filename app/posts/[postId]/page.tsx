@@ -7,6 +7,7 @@ import {
 import PostActions from "../_components/PostActions";
 import PostBody from "../_components/PostBody";
 import PostHeading from "../_components/PostHeading";
+import PostComments from "../_components/PostComments";
 
 const PostPage = async ({
   params: { postId },
@@ -28,6 +29,7 @@ const PostPage = async ({
           <PostActions />
           <PostHeading />
           <PostBody />
+          <PostComments />
         </div>
       </div>
     </HydrationBoundary>

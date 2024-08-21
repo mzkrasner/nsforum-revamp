@@ -4,9 +4,9 @@ import PostCard from "@/shared/components/PostCard";
 import { Button } from "@/shared/components/ui/button";
 import { InfiniteScroll } from "@/shared/components/ui/infinite-scroll";
 import usePostList from "@/shared/hooks/usePostList";
-import { FetchPostOptions } from "@/shared/orbis/queries";
+import { FetchPostsOptions } from "@/shared/orbis/queries";
 
-type Props = { fetchPostOptions?: FetchPostOptions };
+type Props = { fetchPostsOptions?: FetchPostsOptions };
 const PostList = (props: Props) => {
   const { postListQuery } = usePostList(props);
   const { hasNextPage, isLoading, fetchNextPage } = postListQuery;

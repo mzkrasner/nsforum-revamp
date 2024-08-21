@@ -1,14 +1,14 @@
-import { FetchPostOptions, fetchPosts } from "@/shared/orbis/queries";
+import { FetchPostsOptions, fetchPosts } from "@/shared/orbis/queries";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-type Props = { fetchPostOptions?: FetchPostOptions };
+type Props = { fetchPostsOptions?: FetchPostsOptions };
 const usePostList = (props?: Props) => {
-  const { fetchPostOptions } = props || {};
+  const { fetchPostsOptions } = props || {};
 
   const postListQuery = useInfiniteQuery({
-    queryKey: ["posts", fetchPostOptions],
+    queryKey: ["posts", fetchPostsOptions],
     queryFn: ({ pageParam }) =>
-      fetchPosts({ page: pageParam, ...fetchPostOptions }),
+      fetchPosts({ page: pageParam, ...fetchPostsOptions }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length ? pages.length : undefined;

@@ -7,9 +7,9 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import Link from "next/link";
-import { Post } from "../schema/post";
 import PostInfo from "./PostInfo";
 import PostTags from "./PostTags";
+import { Post } from "../types/post";
 
 type Props = { post: Post };
 const PostCard = ({ post }: Props) => {

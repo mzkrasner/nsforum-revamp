@@ -6,7 +6,11 @@ export const OrbisContext = createContext<{
   db: OrbisDB;
   authInfo: AuthUserInformation | null;
   setAuthInfo: (authInfo: AuthUserInformation) => void;
-} | Record<string, any>>({});
+}>({
+  db: new OrbisDB(config),
+  authInfo: null,
+  setAuthInfo: () => null
+});
 
 type Props = { children: ReactNode };
 const OrbisProvider = ({ children }: Props) => {

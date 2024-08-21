@@ -6,7 +6,7 @@ const Drafts = () => {
   if (!profile) return null;
   const { controller } = profile;
   return (
-    <PostList fetchPostOptions={{ filter: { controller, status: 'draft' } }} />
+    <PostList FetchPostsOptions={{ filter: { controller, status: 'draft' } }} />
   );
 };
 export default Drafts;

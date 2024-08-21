@@ -66,14 +66,14 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
         TableCell,
         hasLimit
           ? CharacterCount.configure({
-              limit,
-            })
+            limit,
+          })
           : null,
       ].filter((v) => !!v) as AnyExtension[],
       content: value || "",
       editorProps: {
         attributes: {
-          class: "min-h-40 p-3 pb-6 outline-none focus:border-gray-9",
+          class: "p-3 min-h-full pb-6 outline-none focus:border-gray-9",
         },
       },
       onUpdate({ editor }) {
@@ -103,7 +103,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
             }
           }}
           className={cn(
-            "border-gray-1 relative h-fit min-h-52 rounded-md border",
+            "border-gray-1 relative h-fit rounded-md border",
             {
               "border-black outline-none ring-2 ring-ring ring-offset-2":
                 focused,
