@@ -2,21 +2,13 @@ import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { catchError } from "@/shared/orbis/utils";
 import { PostStatus } from "@/shared/schema/post";
-import {
-  InfiniteData,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { produce } from "immer";
-import { isNil, omitBy } from "lodash-es";
-import { useRouter } from "next/navigation";
-import { GenericCeramicDocument, OrbisDBRow } from "../types";
+import { GenericCeramicDocument } from "../types";
 import { CommentType } from "../types/comment";
 
 type Props = { commentId: string };
 const useComment = ({ commentId }: Props) => {
-  const router = useRouter();
-
   const queryClient = useQueryClient();
 
   const { db } = useOrbis();
@@ -46,25 +38,12 @@ const useComment = ({ commentId }: Props) => {
     onSuccess: (result) => {
       // console.log("Deletion result: ", result);
       if (!result?.content) return;
-      const queryKey = [
-        "comments",
-        omitBy(
-          {
-            postId: result.content.postId,
-            parentId: result.content.parentId,
-          },
-          isNil,
-        ),
-      ];
-      const commentsQueryData =
-        queryClient.getQueryData<InfiniteData<OrbisDBRow<CommentType>[]>>(
-          queryKey,
-        );
-      // console.log("Before optimistic update: ", commentsQueryData);
-      if (commentsQueryData) {
-        queryClient.setQueryData(
-          queryKey,
-          produce(commentsQueryData, (draft) => {
+      const queryKey = ["comments"]; // All queries that have 'comments'
+      queryClient.setQueriesData({ queryKey }, (data: any) =>
+        produce(data, (draft: any) => {
+          // TODO: handle type here
+          if (draft?.pages && draft?.pageParams) {
+            // Ensures its an infinite array
             outerLoop: for (let i = 0; i < draft.pages.length; i++) {
               const commentPage = draft.pages[i];
               for (let j = 0; j < commentPage.length; j++) {
@@ -78,23 +57,15 @@ const useComment = ({ commentId }: Props) => {
                 }
               }
             }
-          }),
-        );
-      }
+          }
+        }),
+      );
       // console.log(
       //   "After optimistic update: ",
       //   queryClient.getQueryData<InfiniteData<OrbisDBRow<CommentType>[]>>(
       //     queryKey,
       //   ),
       // );
-      // queryClient.setQueryData(["comment", { commentId }], (comment: any) => ({
-      //   ...comment,
-      //   status: "deleted",
-      // }));
-      // queryClient.removeQueries({
-      //   queryKey: ["comment", { commentId }],
-      //   exact: true,
-      // });
     },
   });
 

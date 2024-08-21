@@ -10,7 +10,7 @@ const useCommentList = (props: Props) => {
   const { fetchCommentsOptions } = props;
 
   const queryKey = ["comments", omitBy(fetchCommentsOptions, isNil)];
-  // console.log("Comments query key: ", queryKey);
+  // console.log("Comments query key: ", queryKey, fetchCommentsOptions);
   const commentListQuery = useInfiniteQuery({
     queryKey,
     queryFn: ({ pageParam }) =>

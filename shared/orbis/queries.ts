@@ -22,15 +22,27 @@ export const fetchPost = async (postId: string) => {
 };
 
 export type FetchCommentsOptions = {
-  postId: string;
   parentId?: string;
   topParentId?: string;
   page?: number;
   pageSize?: number;
-};
+} & ( // Must have at least a postId or controller
+  | { postId: string; controller?: string }
+  | { postId?: string; controller: string }
+);
 export const fetchComments = async (options: FetchCommentsOptions) => {
-  const { postId, parentId, topParentId, page = 0, pageSize = 10 } = options;
-  if (!postId) throw new Error("Cannot fetch comments without postId");
+  const {
+    postId,
+    parentId,
+    topParentId,
+    page = 0,
+    pageSize = 10,
+    controller,
+  } = options;
+  if (!postId && !controller)
+    throw new Error(
+      "Cannot fetch comments without either a postId or controller",
+    );
   const offset = page * pageSize;
   const selectStatement = orbis
     .select()
@@ -41,6 +53,7 @@ export const fetchComments = async (options: FetchCommentsOptions) => {
           postId,
           parentId,
           topParentId,
+          controller,
           status: "published",
         },
         isNil,

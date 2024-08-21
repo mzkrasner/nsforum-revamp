@@ -4,17 +4,10 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
+import { config } from "./config";
 
 function makeQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        // With SSR, we usually want to set some default staleTime
-        // above 0 to avoid refetching immediately on the client
-        staleTime: 60 * 1000,
-      },
-    },
-  });
+  return new QueryClient(config);
 }
 
 let browserQueryClient: QueryClient | undefined = undefined;

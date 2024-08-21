@@ -1,27 +1,32 @@
-import { OrbisDB, AuthUserInformation } from "@useorbis/db-sdk";
+import { OrbisConnectResult, OrbisDB } from "@useorbis/db-sdk";
 import { createContext, ReactNode, useRef, useState } from "react";
 import config from "./config";
 
 export const OrbisContext = createContext<{
   db: OrbisDB;
-  authInfo: AuthUserInformation | null;
-  setAuthInfo: (authInfo: AuthUserInformation) => void;
+  authInfo: OrbisConnectResult | null;
+  setAuthInfo: (authInfo: OrbisConnectResult) => void;
 }>({
   db: new OrbisDB(config),
   authInfo: null,
-  setAuthInfo: () => null
+  setAuthInfo: () => null,
 });
 
 type Props = { children: ReactNode };
 const OrbisProvider = ({ children }: Props) => {
-  const [authInfo, setAuthInfo] = useState<AuthUserInformation | null>(null)
+  const [authInfo, setAuthInfo] = useState<OrbisConnectResult | null>(null);
   const orbisdb = useRef(new OrbisDB(config)).current;
+
   return (
-    <OrbisContext.Provider value={{
-      db: orbisdb,
-      authInfo,
-      setAuthInfo,
-    }}>{children}</OrbisContext.Provider>
+    <OrbisContext.Provider
+      value={{
+        db: orbisdb,
+        authInfo,
+        setAuthInfo,
+      }}
+    >
+      {children}
+    </OrbisContext.Provider>
   );
 };
 export default OrbisProvider;

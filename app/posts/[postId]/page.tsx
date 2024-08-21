@@ -1,3 +1,4 @@
+import { config } from "@/app/_providers/react-query/config";
 import { fetchPost } from "@/shared/orbis/queries";
 import {
   dehydrate,
@@ -6,15 +7,15 @@ import {
 } from "@tanstack/react-query";
 import PostActions from "../_components/PostActions";
 import PostBody from "../_components/PostBody";
-import PostHeading from "../_components/PostHeading";
 import PostComments from "../_components/PostComments";
+import PostHeading from "../_components/PostHeading";
 
 const PostPage = async ({
   params: { postId },
 }: {
   params: { postId: string };
 }) => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient(config);
 
   await queryClient.prefetchQuery({
     queryKey: ["post", { postId }],

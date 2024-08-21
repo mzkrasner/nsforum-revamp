@@ -6,7 +6,12 @@ const Drafts = () => {
   if (!profile) return null;
   const { controller } = profile;
   return (
-    <PostList FetchPostsOptions={{ filter: { controller, status: 'draft' } }} />
+    <PostList
+      fetchPostsOptions={{ filter: { controller, status: "draft" } }}
+      emptyContent={
+        <div className="py-10 text-center text-neutral-500">No draft found</div>
+      }
+    />
   );
 };
 export default Drafts;

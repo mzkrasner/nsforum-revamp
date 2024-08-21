@@ -6,7 +6,9 @@ const Posts = () => {
   if (!profile) return null;
   const { controller } = profile;
   return (
-    <PostList FetchPostsOptions={{ filter: { controller, status: 'published' } }} />
+    <PostList
+      fetchPostsOptions={{ filter: { controller, status: "published" } }}
+    />
   );
 };
 export default Posts;

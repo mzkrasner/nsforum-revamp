@@ -15,8 +15,8 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import User from "./User";
 
-type Props = { comment: OrbisDBRow<CommentType> };
-const CommentCard = ({ comment }: Props) => {
+type Props = { comment: OrbisDBRow<CommentType>; noReplies?: boolean };
+const CommentCard = ({ comment, noReplies = false }: Props) => {
   const [editing, setEditing] = useState(false);
   const [replying, setReplying] = useState(false);
 
@@ -40,7 +40,7 @@ const CommentCard = ({ comment }: Props) => {
           <DateDisplay dateString={indexed_at} className="text-xs" />
           {!!profile && !editing && (
             <div className="ml-auto flex flex-row items-center gap-2">
-              {!replying && (
+              {!replying && !noReplies && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -85,13 +85,15 @@ const CommentCard = ({ comment }: Props) => {
               />
             </div>
           )}
-          <CommentList
-            fetchCommentsOptions={{
-              postId: comment.postId,
-              parentId: comment.stream_id,
-            }}
-            emptyContent={<></>}
-          />
+          {!noReplies && (
+            <CommentList
+              fetchCommentsOptions={{
+                postId: comment.postId,
+                parentId: comment.stream_id,
+              }}
+              emptyContent={<></>}
+            />
+          )}
         </div>
       </CardFooter>
     </Card>

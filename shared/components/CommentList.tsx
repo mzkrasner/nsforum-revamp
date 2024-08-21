@@ -10,9 +10,13 @@ import { InfiniteScroll } from "./ui/infinite-scroll";
 type Props = {
   fetchCommentsOptions: FetchCommentsOptions;
   emptyContent?: ReactNode;
+  noReplies?: boolean;
 };
-const CommentList = (props: Props) => {
-  const { fetchCommentsOptions, emptyContent } = props;
+const CommentList = ({
+  fetchCommentsOptions,
+  emptyContent,
+  noReplies = false,
+}: Props) => {
   const { commentListQuery } = useCommentList({ fetchCommentsOptions });
   const { hasNextPage, isLoading, fetchNextPage } = commentListQuery;
   const comments =
@@ -23,7 +27,7 @@ const CommentList = (props: Props) => {
         {comments.map((comment, index) => {
           return (
             <li key={index}>
-              <CommentCard comment={comment} />
+              <CommentCard comment={comment} noReplies={noReplies} />
             </li>
           );
         })}
@@ -34,17 +38,18 @@ const CommentList = (props: Props) => {
         next={fetchNextPage}
         threshold={1}
       >
-        {hasNextPage && (
+        {isLoading && (
           <Button
             variant="ghost"
             className="mx-auto flex"
             loading={true}
-            loadingText="Loading..."
+            loadingText="Loading comments..."
             loaderProps={{ className: "text-primary" }}
           />
         )}
       </InfiniteScroll>
       {!comments.length &&
+        !isLoading &&
         (emptyContent || (
           <div className="py-10 text-center text-neutral-500">
             No comment found
