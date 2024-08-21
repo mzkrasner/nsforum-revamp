@@ -1,27 +1,31 @@
-'use client'
+"use client";
 
-import useCommentList from '../hooks/useCommentList';
-import { FetchCommentsOptions } from '../orbis/queries';
-import CommentCard from './CommentCard';
-import { Button } from './ui/button';
-import { InfiniteScroll } from './ui/infinite-scroll';
+import { ReactNode } from "react";
+import useCommentList from "../hooks/useCommentList";
+import { FetchCommentsOptions } from "../orbis/queries";
+import CommentCard from "./CommentCard";
+import { Button } from "./ui/button";
+import { InfiniteScroll } from "./ui/infinite-scroll";
 
 type Props = {
   fetchCommentsOptions: FetchCommentsOptions;
+  emptyContent?: ReactNode;
 };
 const CommentList = (props: Props) => {
-  const { commentListQuery } = useCommentList(props);
+  const { fetchCommentsOptions, emptyContent } = props;
+  const { commentListQuery } = useCommentList({ fetchCommentsOptions });
   const { hasNextPage, isLoading, fetchNextPage } = commentListQuery;
-  const comments = commentListQuery.data?.pages.map((page) => page).flat() || [];
+  const comments =
+    commentListQuery.data?.pages.map((page) => page).flat() || [];
   return (
     <div>
-      <ul className='flex flex-col gap-3'>
+      <ul className="flex flex-col gap-3">
         {comments.map((comment, index) => {
           return (
             <li key={index}>
               <CommentCard comment={comment} />
             </li>
-          )
+          );
         })}
       </ul>
       <InfiniteScroll
@@ -40,12 +44,13 @@ const CommentList = (props: Props) => {
           />
         )}
       </InfiniteScroll>
-      {
-        !comments.length && (
-          <div className="py-10 text-center text-neutral-500">No post found</div>
-        )
-      }
-    </div >
-  )
-}
-export default CommentList
+      {!comments.length &&
+        (emptyContent || (
+          <div className="py-10 text-center text-neutral-500">
+            No comment found
+          </div>
+        ))}
+    </div>
+  );
+};
+export default CommentList;

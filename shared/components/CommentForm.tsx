@@ -16,12 +16,23 @@ import { Button } from "./ui/button";
 type Props = {
   comment?: OrbisDBRow<CommentType>;
   cancel?: () => void;
+  parentIds?: {
+    parentId: string;
+    topParentId: string;
+  };
+  isReply?: boolean;
 };
 
 const CommentForm = (props?: Props) => {
-  const { comment, cancel = () => null } = props || {};
-  const { form, saveMutation } = useCommentForm({ comment, onSave: cancel });
+  const { comment, cancel = () => null, parentIds } = props || {};
+  const { form, saveMutation } = useCommentForm({
+    comment,
+    onSave: cancel,
+    parentIds,
+  });
   const { handleSubmit, control } = form;
+
+  const isReply = !!parentIds;
 
   return (
     <Form {...form}>
@@ -36,7 +47,7 @@ const CommentForm = (props?: Props) => {
               <FormItem>
                 <FormControl>
                   <RichTextEditor
-                    placeholder="Comment"
+                    placeholder={isReply ? "Reply" : "Comment"}
                     ref={ref}
                     className="min-h-40 text-sm"
                     onChange={onChange}
@@ -50,7 +61,7 @@ const CommentForm = (props?: Props) => {
           }}
         />
         <div className="mt-3 flex justify-end gap-3">
-          {comment && (
+          {(comment || parentIds) && (
             <Button variant="secondary" onClick={cancel}>
               Cancel
             </Button>
@@ -58,9 +69,9 @@ const CommentForm = (props?: Props) => {
           <Button
             type="submit"
             loading={saveMutation.isPending}
-            loadingText={`${comment ? "Editing" : "Creating"} comment...`}
+            loadingText={`${comment ? "Editing" : "Creating"} ${isReply ? "reply" : "comment"}...`}
           >
-            {comment ? "Edit" : ""} Comment
+            {comment ? "Edit" : ""} {isReply ? "Reply" : "Comment"}
           </Button>
         </div>
       </form>
