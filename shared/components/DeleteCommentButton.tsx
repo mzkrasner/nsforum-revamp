@@ -7,15 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { TrashIcon } from "lucide-react";
+import { LoaderIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
-import usePost from "../_hooks/usePost";
+import useComment from "../hooks/useComment";
 
-type Props = { postId: string };
-const DeletePostButton = ({ postId }: Props) => {
+type Props = { commentId: string };
+const DeleteCommentButton = ({ commentId }: Props) => {
   const [open, setOpen] = useState(false);
 
-  const { deletePostMutation } = usePost();
+  const { deleteCommentMutation } = useComment({ commentId });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -23,15 +24,20 @@ const DeletePostButton = ({ postId }: Props) => {
           variant="ghost"
           size="icon"
           className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
+          disabled={deleteCommentMutation.isPending}
         >
-          <TrashIcon size={14} />
+          {deleteCommentMutation.isPending ? (
+            <LoaderIcon size={14} className="animate-spin" />
+          ) : (
+            <TrashIcon size={14} />
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete this post?</DialogTitle>
           <DialogDescription>
-            This will not truly delete your post but will hide it from the
+            This will not truly delete your comment but will hide it from the
             forum.
           </DialogDescription>
           <div className="flex justify-end gap-2 pt-3">
@@ -46,12 +52,12 @@ const DeletePostButton = ({ postId }: Props) => {
             <Button
               size="sm"
               color="destructive"
-              className="w-fit"
+              className="w-fit bg-destructive-foreground text-destructive hover:bg-destructive/10"
               onClick={async () => {
-                await deletePostMutation.mutateAsync(postId);
+                await deleteCommentMutation.mutateAsync();
                 setOpen(false);
               }}
-              loading={deletePostMutation.isPending}
+              loading={deleteCommentMutation.isPending}
               loadingText="Deleting..."
               loaderProps={{ className: "text-destructive" }}
             >
@@ -63,4 +69,4 @@ const DeletePostButton = ({ postId }: Props) => {
     </Dialog>
   );
 };
-export default DeletePostButton;
+export default DeleteCommentButton;

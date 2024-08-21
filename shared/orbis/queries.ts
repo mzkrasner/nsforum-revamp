@@ -41,6 +41,7 @@ export const fetchComments = async (options: FetchCommentsOptions) => {
           postId,
           parentId,
           topParentId,
+          status: "published",
         },
         isNil,
       ),

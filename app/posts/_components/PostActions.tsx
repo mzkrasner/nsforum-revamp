@@ -13,9 +13,14 @@ const PostActions = () => {
   return (
     <div className="mb-2 flex justify-end gap-2 pb-2">
       <DeletePostButton postId={postId as string} />
-      <Button size="sm" variant="ghost" className="h-8 text-sm" asChild>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
+        asChild
+      >
         <Link href={`/posts/${postId}/edit`}>
-          <EditIcon className="mr-2 w-3" /> Edit
+          <EditIcon size={14} />
         </Link>
       </Button>
     </div>

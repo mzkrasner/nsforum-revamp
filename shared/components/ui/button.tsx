@@ -1,7 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 import { Slot, Slottable } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, LucideProps } from "lucide-react";
 import * as React from "react";
 
 const buttonVariants = cva(
@@ -49,7 +49,7 @@ export interface ButtonProps
   asChild?: boolean;
   loading?: boolean;
   loadingText?: string;
-  loaderProps?: React.SVGProps<SVGSVGElement>;
+  loaderProps?: LucideProps;
   startContent?: React.ReactNode;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { EditIcon, ReplyIcon, TrashIcon } from "lucide-react";
+import { EditIcon, ReplyIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import useProfile from "../hooks/useProfile";
@@ -10,6 +10,7 @@ import { CommentType } from "../types/comment";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 import DateDisplay from "./DateDisplay";
+import DeleteCommentButton from "./DeleteCommentButton";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import User from "./User";
@@ -50,23 +51,18 @@ const CommentCard = ({ comment }: Props) => {
                 </Button>
               )}
               {profile?.controller === controller && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
-                  onClick={() => setEditing(true)}
-                >
-                  <EditIcon size={14} />
-                </Button>
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
+                    onClick={() => setEditing(true)}
+                  >
+                    <EditIcon size={14} />
+                  </Button>
+                  <DeleteCommentButton commentId={comment.stream_id} />
+                </>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
-                onClick={() => setReplying(true)}
-              >
-                <TrashIcon size={14} />
-              </Button>
             </div>
           )}
         </div>
