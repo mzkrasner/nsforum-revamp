@@ -5,7 +5,6 @@ import { isNil } from "lodash-es";
 import { models } from "../orbis";
 import { catchError } from "../orbis/utils";
 import { OrbisDBRow } from "../types";
-import { Profile } from "../types/profile";
 import { Subscription } from "../types/subscription";
 import useOrbis from "./useOrbis";
 import useProfile from "./useProfile";
@@ -37,62 +36,77 @@ const useUser = ({ did }: Props) => {
     queryFn: fetchUser,
   });
 
-  const fetchSubscription = async () => {
-    const { data } = await axios.get<OrbisDBRow<Subscription> | null>(
-      "/api/subscription",
-      {
-        params: { author: did, reader: profile?.controller },
-      },
-    );
+  type SubscriptionData = {
+    subscription: OrbisDBRow<Subscription> | null;
+    subscribedToCount: number;
+    subscriberCount: number;
+  };
+  const fetchSubscriptionData = async () => {
+    const { data } = await axios.get<SubscriptionData>("/api/subscription", {
+      params: { author: did, reader: profile?.controller },
+    });
     // console.log("Fetch subscription data: ", data);
     return data || null;
   };
 
-  const subscriptionQuery = useQuery({
-    queryKey: ["subscription", { did }],
-    queryFn: fetchSubscription,
+  const subscriptionDataQuery = useQuery({
+    queryKey: ["subscription-data", { did }],
+    queryFn: fetchSubscriptionData,
     enabled: !!profile?.controller,
   });
 
   const updateSubscriptionFn = async (subscribed: boolean) => {
-    if (isNil(subscribed)) return;
+    if (isNil(subscribed)) return null;
+    console.log("Updating subscription");
     const { data } = await axios.post(`/api/subscription`, {
       author: did,
       reader: profile?.controller,
       subscribed,
     });
-    // console.log("Update subscription data: ", data);
+    console.log("Update subscription data: ", data);
     return data as Subscription;
   };
 
   const updateSubscriptionMutation = useMutation({
     mutationKey: ["update-subscription", { did }],
     mutationFn: updateSubscriptionFn,
-    onSuccess: (data?: Subscription) => {
+    onSuccess: (data?: Subscription | null) => {
       if (!data) return;
-      const queryKey = ["subscription", { did }];
-      queryClient.setQueryData(queryKey, data);
-      // queryClient.invalidateQueries({ queryKey });
-      queryClient.setQueryData(["user", { did }], (staleUser: Profile) =>
-        produce(staleUser, (draft) => {
-          if (data.subscribed) {
-            draft.followers = Number(draft.followers) + 1;
-          } else {
-            draft.followers = Number(draft.followers) - 1;
-          }
-        }),
-      );
-      if (profile) {
-        queryClient.setQueryData(["profile"], (staleProfile: Profile) =>
-          produce(staleProfile, (draft) => {
-            if (data.subscribed) {
-              draft.following = Number(draft.following) + 1;
-            } else {
-              draft.following = Number(draft.following) - 1;
+      const { subscribed } = data;
+      queryClient.setQueryData(
+        ["subscription-data", { did }],
+        (staleSubscriptionData: SubscriptionData | undefined) =>
+          produce(staleSubscriptionData, (draft) => {
+            if (!isNil(draft?.subscriberCount)) {
+              const { subscriberCount } = draft;
+              draft.subscriberCount = subscriberCount + (subscribed ? 1 : -1);
+            }
+            if (!isNil(draft?.subscription?.subscribed)) {
+              draft.subscription.subscribed = subscribed;
             }
           }),
-        );
-      }
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["subscription-data", { did }],
+      });
+
+      queryClient.setQueryData(
+        ["profile-subscription-data"],
+        (staleSubscriptionData: SubscriptionData | undefined) =>
+          produce(staleSubscriptionData, (draft) => {
+            if (!isNil(draft?.subscribedToCount)) {
+              const { subscribedToCount } = draft;
+              draft.subscribedToCount =
+                subscribedToCount + (subscribed ? 1 : -1);
+            }
+            if (!isNil(draft?.subscription?.subscribed)) {
+              draft.subscription.subscribed = subscribed;
+            }
+          }),
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["profile-subscription-data"],
+      });
     },
     onError: console.error,
   });
@@ -100,7 +114,10 @@ const useUser = ({ did }: Props) => {
   return {
     user: query.data,
     query,
-    subscriptionQuery,
+    isSubscribed: subscriptionDataQuery.data?.subscription?.subscribed,
+    subscribedToCount: subscriptionDataQuery.data?.subscribedToCount,
+    subscriberCount: subscriptionDataQuery.data?.subscriberCount,
+    subscriptionDataQuery,
     updateSubscriptionMutation,
   };
 };

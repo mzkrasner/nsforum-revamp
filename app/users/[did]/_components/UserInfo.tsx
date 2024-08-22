@@ -13,19 +13,21 @@ type Props = {
 };
 const UserInfo = ({ did }: Props) => {
   const { profile } = useProfile();
-  const { user, query, updateSubscriptionMutation, subscriptionQuery } =
-    useUser({ did });
+  const {
+    user,
+    query,
+    updateSubscriptionMutation,
+    subscriptionDataQuery,
+    isSubscribed,
+    subscribedToCount,
+    subscriberCount,
+  } = useUser({ did });
 
   if (query.isLoading) return <div>Loading...</div>;
 
   if (!user) return null;
 
-  const { image, name, username, followers, following } = user;
-  const isSubscribed = subscriptionQuery.data?.subscribed;
-
-  // console.log("Query data: ", subscriptionQuery.data);
-
-  // console.log("Pending: ", updateSubscriptionMutation.isPending);
+  const { image, name, username } = user;
 
   return (
     <div className="mx-auto flex w-fit items-center gap-5">
@@ -41,16 +43,22 @@ const UserInfo = ({ did }: Props) => {
           </div>
         </div>
         <div className="flex h-5 items-center space-x-4 text-sm">
-          {/* <div className="flex items-center gap-1">
-            {following}
-            <span className="text-sm text-neutral-500">Following</span>
-          </div>
-          <div className="flex items-center gap-1">
-            {followers}
-            <span className="text-sm text-neutral-500">Followers</span>
-          </div> */}
+          {subscriptionDataQuery.isSuccess && (
+            <>
+              <div className="flex items-center gap-1">
+                {subscribedToCount}
+                <span className="text-sm text-neutral-500">Following</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {subscriberCount}
+                <span className="text-sm text-neutral-500">
+                  Follower{subscriberCount !== 1 ? "s" : ""}
+                </span>
+              </div>
+            </>
+          )}
         </div>
-        {subscriptionQuery.isSuccess && !!profile && (
+        {subscriptionDataQuery.isSuccess && !!profile && (
           <Button
             size="sm"
             variant={isSubscribed ? "secondary" : "default"}

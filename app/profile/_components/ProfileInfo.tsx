@@ -14,12 +14,18 @@ import { getAvatarInitials } from "@/shared/orbis/utils";
 import Link from "next/link";
 
 const ProfileInfo = () => {
-  const { profile, query } = useProfile();
+  const {
+    profile,
+    query,
+    subscriptionDataQuery,
+    subscribedToCount,
+    subscriberCount,
+  } = useProfile();
 
   if (query.isLoading) return <div>Loading...</div>;
   if (!profile) return null;
 
-  const { image, name, username, followers, following, verified } = profile;
+  const { image, name, username, verified } = profile;
 
   return (
     <div className="mx-auto flex w-fit items-center gap-5">
@@ -50,14 +56,20 @@ const ProfileInfo = () => {
           </div>
         </div>
         <div className="flex h-5 items-center space-x-4 text-sm">
-          {/* <div className="flex items-center gap-1">
-            {following}
-            <span className="text-sm text-neutral-500">Following</span>
-          </div>
-          <div className="flex items-center gap-1">
-            {followers}
-            <span className="text-sm text-neutral-500">Followers</span>
-          </div> */}
+          {subscriptionDataQuery.isSuccess && (
+            <>
+              <div className="flex items-center gap-1">
+                {subscribedToCount}
+                <span className="text-sm text-neutral-500">Following</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {subscriberCount}
+                <span className="text-sm text-neutral-500">
+                  Follower{subscriberCount !== 1 ? "s" : ""}
+                </span>
+              </div>
+            </>
+          )}
         </div>
         <Button variant="secondary" size="sm" className="h-8 w-fit" asChild>
           <Link href="/profile/edit">Account settings</Link>

@@ -2,6 +2,7 @@ import { models, orbisdb } from "@/shared/orbis";
 import { catchError } from "@/shared/orbis/utils";
 import { OrbisDBRow } from "@/shared/types";
 import { Subscription } from "@/shared/types/subscription";
+import { count } from "@useorbis/db-sdk/operators";
 import { InsertStatement, UpdateByIdStatement } from "@useorbis/db-sdk/query";
 
 export const fetchSubscription = async (
@@ -23,7 +24,6 @@ export const fetchSubscription = async (
 };
 
 export const updateSubscription = async (subscription: Subscription) => {
-  const isNew = true;
   let statement: InsertStatement | UpdateByIdStatement | null = null;
   const { author, reader } = subscription;
   const existingSubscription = await fetchSubscription({ author, reader });
@@ -46,4 +46,34 @@ export const updateSubscription = async (subscription: Subscription) => {
   if (error) throw new Error(`Error during subscription: ${error}`);
   if (!result) throw new Error("No result was returned from orbis");
   return result;
+};
+
+export const fetchSubscribedToCount = async (did: string) => {
+  const selectStatement = orbisdb
+    .select(count("author", "count"))
+    .from(models.subscriptions)
+    .where({
+      reader: did,
+      subscribed: true,
+    });
+  const [result, error] = await catchError(() => selectStatement?.run());
+  if (error)
+    throw new Error(`Error while fetching subscribed to count: ${error}`);
+  // console.log("Subscribed to count result: ", result);
+  return Number(result.rows.length ? result.rows[0].count : 0);
+};
+
+export const fetchSubscriberCount = async (did: string) => {
+  const selectStatement = orbisdb
+    .select(count("reader", "count"))
+    .from(models.subscriptions)
+    .where({
+      author: did,
+      subscribed: true
+    });
+  const [result, error] = await catchError(() => selectStatement?.run());
+  if (error)
+    throw new Error(`Error while fetching subscribed to count: ${error}`);
+  // console.log("Subscriber count result: ", result);
+  return Number(result.rows.length ? result.rows[0].count : 0);
 };

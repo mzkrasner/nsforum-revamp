@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { models } from "../orbis";
 import { catchError } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
 import { GenericCeramicDocument, OrbisDBRow } from "../types";
 import { Profile } from "../types/profile";
+import { SubscriptionData } from "../types/subscription";
 import useOrbis from "./useOrbis";
 
 const useProfile = () => {
@@ -33,6 +35,21 @@ const useProfile = () => {
       return await fetchProfile(authInfo?.user.did);
     },
     enabled: !!authInfo?.user?.did,
+  });
+  const did = query.data?.controller;
+
+  const fetchSubscriptionData = async () => {
+    const { data } = await axios.get<SubscriptionData>("/api/subscription", {
+      params: { author: did, reader: did },
+    });
+    // console.log("Fetch subscription data: ", data);
+    return data || null;
+  };
+
+  const subscriptionDataQuery = useQuery({
+    queryKey: ["profile-subscription-data"],
+    queryFn: fetchSubscriptionData,
+    enabled: !!did,
   });
 
   const saveProfile = async (values: ProfileFormType) => {
@@ -96,7 +113,15 @@ const useProfile = () => {
     onError: console.error,
   });
 
-  return { profile: query.data, query, saveMutation };
+  return {
+    profile: query.data,
+    query,
+    isSubscribed: subscriptionDataQuery.data?.subscription?.subscribed,
+    subscribedToCount: subscriptionDataQuery.data?.subscribedToCount,
+    subscriberCount: subscriptionDataQuery.data?.subscriberCount,
+    subscriptionDataQuery,
+    saveMutation,
+  };
 };
 
 export default useProfile;

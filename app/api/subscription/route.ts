@@ -1,4 +1,6 @@
 import {
+  fetchSubscribedToCount,
+  fetchSubscriberCount,
   fetchSubscription,
   updateSubscription,
 } from "@/app/api/_orbis/queries";
@@ -22,8 +24,14 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({ error: "Invalid data", status: 400 });
 
   const subscription = await fetchSubscription(query);
+  const subscribedToCount = await fetchSubscribedToCount(author!);
+  const subscriberCount = await fetchSubscriberCount(author!);
 
-  return NextResponse.json(subscription);
+  return NextResponse.json({
+    subscription,
+    subscribedToCount,
+    subscriberCount,
+  });
 };
 
 const updateSubscriptionSchema = z.object({

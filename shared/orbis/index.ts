@@ -8,5 +8,5 @@ export const models = {
   posts: "kjzl6hvfrbw6c7cqesoii1hrb9xgzs6d9zf4yygkerzp92ff698oy9ijzpxdugn",
   comments: "kjzl6hvfrbw6c5fy0pa1j9y9dsimgb6ne0jqhneoqaf6t14gb0wbx6ct6qm11ix",
   subscriptions:
-    "kjzl6hvfrbw6c57u693c0ei288zgjszok0zdoyfz2blirf1ns3hk8fa93nahtw3",
+    "kjzl6hvfrbw6c5rb6jpq533mct4yeiyubjzf5evf8074urgbzgdwwamwu7dpgwf",
 };
