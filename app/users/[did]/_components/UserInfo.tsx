@@ -4,22 +4,28 @@ import {
   AvatarImage,
 } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/shared/components/ui/tooltip";
 import useProfile from "@/shared/hooks/useProfile";
+import useUser from "@/shared/hooks/useUser";
 import { getAvatarInitials } from "@/shared/orbis/utils";
-import Link from "next/link";
 
-const ProfileInfo = () => {
-  const { profile, query } = useProfile();
+type Props = {
+  did: string;
+};
+const UserInfo = ({ did }: Props) => {
+  const { profile } = useProfile();
+  const { user, query, updateSubscriptionMutation, subscriptionQuery } =
+    useUser({ did });
 
   if (query.isLoading) return <div>Loading...</div>;
-  if (!profile) return null;
 
-  const { image, name, username, followers, following, verified } = profile;
+  if (!user) return null;
+
+  const { image, name, username, followers, following } = user;
+  const isSubscribed = subscriptionQuery.data?.subscribed;
+
+  // console.log("Query data: ", subscriptionQuery.data);
+
+  // console.log("Pending: ", updateSubscriptionMutation.isPending);
 
   return (
     <div className="mx-auto flex w-fit items-center gap-5">
@@ -31,22 +37,7 @@ const ProfileInfo = () => {
         <div>
           <h3 className="text-2xl font-semibold">{name}</h3>
           <div className="flex items-center justify-start gap-3 text-neutral-500">
-            <span>@{username}</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 px-2 text-sm"
-                  hidden={verified}
-                >
-                  Verify
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Verify this username with your X account
-              </TooltipContent>
-            </Tooltip>
+            @{username}
           </div>
         </div>
         <div className="flex h-5 items-center space-x-4 text-sm">
@@ -59,11 +50,20 @@ const ProfileInfo = () => {
             <span className="text-sm text-neutral-500">Followers</span>
           </div> */}
         </div>
-        <Button variant="secondary" size="sm" className="h-8 w-fit" asChild>
-          <Link href="/profile/edit">Account settings</Link>
-        </Button>
+        {subscriptionQuery.isSuccess && !!profile && (
+          <Button
+            size="sm"
+            variant={isSubscribed ? "secondary" : "default"}
+            className="h-8 w-fit"
+            onClick={() => updateSubscriptionMutation.mutate(!isSubscribed)}
+            loaderProps={{ className: isSubscribed ? "text-neutral-800" : "" }}
+            loading={updateSubscriptionMutation.isPending}
+          >
+            {isSubscribed ? "Unsubscribe" : "Subscribe"}
+          </Button>
+        )}
       </div>
     </div>
   );
 };
-export default ProfileInfo;
+export default UserInfo;

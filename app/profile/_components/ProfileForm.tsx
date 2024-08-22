@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 
 const ProfileForm = () => {
   const { profile, saveMutation } = useProfile();
-  const { name = '', username = '', email = '' } = profile || {}
+  const { name = "", username = "", email = "" } = profile || {};
 
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(profileSchema),
@@ -25,15 +25,15 @@ const ProfileForm = () => {
       name,
       username,
       email,
-    }
+    },
   });
   const { handleSubmit, control } = form;
 
   return (
     <Form {...form}>
       <form
-        onSubmit={handleSubmit(v => saveMutation.mutate(v))}
-        className="mx-auto flex flex-col gap-3"
+        onSubmit={handleSubmit((v) => saveMutation.mutate(v))}
+        className="mx-auto flex w-full flex-col gap-3"
       >
         <FormField
           control={control}

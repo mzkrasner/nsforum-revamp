@@ -86,6 +86,9 @@ export const subscription = {
       reader: {
         type: "string",
       },
+      verified: {
+        type: "boolean",
+      },
     },
     additionalProperties: false,
   },

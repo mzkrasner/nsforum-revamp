@@ -16,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import useAuth from "@/shared/hooks/useAuth";
+import useProfile from "@/shared/hooks/useProfile";
+import { getAvatarInitials } from "@/shared/orbis/utils";
 import { usePrivy } from "@privy-io/react-auth";
 import { BadgeCheckIcon } from "lucide-react";
 import Link from "next/link";
@@ -23,10 +25,13 @@ import Link from "next/link";
 const NavUser = () => {
   const { ready, authenticated } = usePrivy();
   const { logout } = useAuth();
+  const { profile } = useProfile();
 
   if (!ready) return null; // TODO: Add loading UI
 
   if (!authenticated) return <SignInButton />;
+
+  if (!profile) return null;
 
   return (
     <DropdownMenu>
@@ -37,11 +42,15 @@ const NavUser = () => {
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarFallback className="text-sm">
+              {getAvatarInitials(profile.name)}
+            </AvatarFallback>
           </Avatar>
-          <span className="inline-flex items-center gap-1 text-xs leading-none text-muted-foreground">
-            john_doe
-            <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
+          <span className="inline-flex items-center gap-1 leading-none text-muted-foreground">
+            {profile.username}
+            {profile.verified && (
+              <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
+            )}
           </span>
         </Button>
       </DropdownMenuTrigger>

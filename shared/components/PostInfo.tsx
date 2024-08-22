@@ -1,7 +1,7 @@
 import { ExternalLinkIcon } from "lucide-react";
+import DateDisplay from "./DateDisplay";
 import { Button } from "./ui/button";
 import User from "./User";
-import DateDisplay from "./DateDisplay";
 
 type Props = { post: any };
 const PostInfo = ({ post }: Props) => {

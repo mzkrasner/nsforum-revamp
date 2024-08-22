@@ -1,38 +1,31 @@
-'use client'
+"use client";
 
+import NoProfileGuard from "@/shared/components/NoProfileGuard";
+import SignInButton from "@/shared/components/SignInButton";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import useAuth from "@/shared/hooks/useAuth";
+import useProfile from "@/shared/hooks/useProfile";
+import { usePrivy } from "@privy-io/react-auth";
 import { TabsContent } from "@radix-ui/react-tabs";
+import Comments from "./_components/Comments";
+import Drafts from "./_components/Drafts";
 import Posts from "./_components/Posts";
 import ProfileInfo from "./_components/ProfileInfo";
-import useProfile from "@/shared/hooks/useProfile";
-import { Button } from "@/shared/components/ui/button";
-import Link from "next/link";
-import useAuth from "@/shared/hooks/useAuth";
-import SignInButton from "@/shared/components/SignInButton";
-import { usePrivy } from "@privy-io/react-auth";
-import Drafts from "./_components/Drafts";
-import Comments from "./_components/Comments";
 
 const ProfilePage = () => {
   const { profile } = useProfile();
-  const { isLoggedIn } = useAuth()
-  const { ready } = usePrivy()
+  const { isLoggedIn } = useAuth();
+  const { ready } = usePrivy();
 
-  if (!isLoggedIn) return (
-    <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
-      <h3 className="font-medium">Sign in to view your profile</h3>
-      {ready && <SignInButton variant="outline" className="mx-auto block" />}
-    </div>
-  );
+  if (!isLoggedIn)
+    return (
+      <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
+        <h3 className="font-medium">Sign in to view your profile</h3>
+        {ready && <SignInButton variant="outline" className="mx-auto block" />}
+      </div>
+    );
 
-  if (!profile) return (
-    <div className="flex flex-col gap-5 m-auto text-center text-neutral-500">
-      You have not yet added a profile
-      <Button className="mx-auto" asChild>
-        <Link href='/profile/edit'>Add profile</Link>
-      </Button>
-    </div>
-  )
+  if (!profile) return <NoProfileGuard />;
 
   return (
     <div className="pt-10">

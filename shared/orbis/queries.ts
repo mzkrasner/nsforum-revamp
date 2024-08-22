@@ -2,7 +2,7 @@
 
 import { CeramicDocument } from "@useorbis/db-sdk";
 import { isNil, omitBy } from "lodash-es";
-import { models, orbis } from ".";
+import { models, orbisdb } from ".";
 import { OnlyStringFields, OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
@@ -10,7 +10,7 @@ import { catchError } from "./utils";
 
 export const fetchPost = async (postId: string) => {
   if (!postId) throw new Error("Cannot fetch post without postId");
-  const selectStatement = orbis?.select().from(models.posts).where({
+  const selectStatement = orbisdb.select().from(models.posts).where({
     stream_id: postId,
   });
   const [result, error] = await catchError(() => selectStatement?.run());
@@ -44,7 +44,7 @@ export const fetchComments = async (options: FetchCommentsOptions) => {
       "Cannot fetch comments without either a postId or controller",
     );
   const offset = page * pageSize;
-  const selectStatement = orbis
+  const selectStatement = orbisdb
     .select()
     .from(models.comments)
     .where(
@@ -76,7 +76,7 @@ export type FetchPostsOptions = {
 export const fetchPosts = async (options?: FetchPostsOptions) => {
   const { page = 0, pageSize = 10, fields = [], filter = {} } = options || {};
   const offset = page * pageSize;
-  const selectStatement = orbis
+  const selectStatement = orbisdb
     .select(...fields)
     .from(models.posts)
     .where({

@@ -36,6 +36,7 @@
     "@tiptap/starter-kit": "^2.5.9",
     "@useorbis/db-sdk": "^0.0.52-alpha",
     "autosize": "^6.0.1",
+    "axios": "^1.7.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { models } from "../orbis";
 import { catchError } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
-import { OrbisDBRow } from "../types";
+import { GenericCeramicDocument, OrbisDBRow } from "../types";
 import { Profile } from "../types/profile";
 import useOrbis from "./useOrbis";
 
@@ -69,7 +69,7 @@ const useProfile = () => {
     // console.log("Error", error);
     if (error) throw new Error(`Error during create profile query: ${error}`);
     if (!result) throw new Error("No result was returned from orbis");
-    return result;
+    return result as GenericCeramicDocument<Profile>;
   };
 
   const saveMutation = useMutation({

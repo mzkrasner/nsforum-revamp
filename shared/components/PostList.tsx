@@ -16,6 +16,7 @@ const PostList = (props: Props) => {
   const { postListQuery } = usePostList({ fetchPostsOptions });
   const { hasNextPage, isLoading, fetchNextPage } = postListQuery;
   const posts = postListQuery.data?.pages.map((page) => page).flat() || [];
+
   return (
     <div>
       <ul>

@@ -1,6 +1,7 @@
 "use client";
 
 import CategorySelector from "@/shared/components/CategorySelector";
+import NoProfileGuard from "@/shared/components/NoProfileGuard";
 import RichTextEditor from "@/shared/components/RichTextEditor";
 import SignInButton from "@/shared/components/SignInButton";
 import { Button } from "@/shared/components/ui/button";
@@ -12,17 +13,20 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
+import useProfile from "@/shared/hooks/useProfile";
 import { usePrivy } from "@privy-io/react-auth";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
-import { PostFormType } from "@/shared/schema/post";
 
 type Props = { postId?: string };
 const PostForm = ({ postId }: Props) => {
+  const { profile, query: profileQuery } = useProfile();
   const { authenticated, ready } = usePrivy();
   const { postQuery } = usePost();
-  const { form, categories, publishMutation, draftMutation } = usePostForm({ postId });
+  const { form, categories, publishMutation, draftMutation } = usePostForm({
+    postId,
+  });
   const { handleSubmit, control } = form;
 
   if (!authenticated)
@@ -34,6 +38,8 @@ const PostForm = ({ postId }: Props) => {
     );
 
   if (postQuery.isLoading) return "Loading...";
+
+  if (!profile && profileQuery.isSuccess) return <NoProfileGuard />;
 
   return (
     <Form {...form}>
@@ -126,7 +132,7 @@ const PostForm = ({ postId }: Props) => {
         />
         <div className="flex justify-end gap-3">
           <Button
-            variant='outline'
+            variant="outline"
             onClick={handleSubmit((v: any) => draftMutation.mutate(v))}
             loading={draftMutation.isPending}
             loadingText={`${postId ? "Converting to" : "Saving as"} draft...`}
