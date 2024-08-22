@@ -8,15 +8,17 @@ A decentralized forum built with Ceramic (OrbisDB)
 
 2. [Install orbisdb](https://github.com/OrbisWeb3/db-sdk)
 
-3. Install your dependencies:
+3. Create the models defined in the modelSchema.ts file.
+
+4. Install your dependencies:
 
 ```bash
 npm install
 ```
 
-4. Add the env variables as shown in the .env.example file. Set the env `ORBIS_SEED` field to your generated orbisdb seed.
+5. Add the env variables as shown in the .env.example file. Set the env `ORBIS_SEED` field to your generated orbisdb seed.
 
-5. Start your application:
+6. Start your application:
 
 ```bash
 nvm use 20
