@@ -1,12 +1,12 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
-import { models } from "@/shared/orbis";
-import { catchError } from "@/shared/orbis/utils";
+import { contexts, models } from "@/shared/orbis";
 import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
+import { catchError } from "@useorbis/db-sdk/util";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -75,7 +75,10 @@ const usePostForm = ({ postId }: Props) => {
       statement = db.update(postId).set({ ...values, status });
     } else {
       // Create new post
-      statement = db.insert(models.posts).value({ ...values, status });
+      statement = db
+        .insert(models.posts)
+        .value({ ...values, status })
+        .context(contexts.notifications);
       const validation = await statement.validate();
       if (!validation.valid) {
         throw new Error(

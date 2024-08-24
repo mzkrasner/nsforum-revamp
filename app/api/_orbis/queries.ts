@@ -1,9 +1,9 @@
 import { models, orbisdb } from "@/shared/orbis";
-import { catchError } from "@/shared/orbis/utils";
 import { OrbisDBRow } from "@/shared/types";
 import { Subscription } from "@/shared/types/subscription";
 import { count } from "@useorbis/db-sdk/operators";
 import { InsertStatement, UpdateByIdStatement } from "@useorbis/db-sdk/query";
+import { catchError } from "@useorbis/db-sdk/util";
 
 export const fetchSubscription = async (
   query: Omit<Subscription, "subscribed">,
@@ -69,7 +69,7 @@ export const fetchSubscriberCount = async (did: string) => {
     .from(models.subscriptions)
     .where({
       author: did,
-      subscribed: true
+      subscribed: true,
     });
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error)

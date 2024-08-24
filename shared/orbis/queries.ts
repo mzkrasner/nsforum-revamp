@@ -1,12 +1,12 @@
 "use server";
 
 import { CeramicDocument } from "@useorbis/db-sdk";
+import { catchError } from "@useorbis/db-sdk/util";
 import { isNil, omitBy } from "lodash-es";
 import { models, orbisdb } from ".";
 import { OnlyStringFields, OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
-import { catchError } from "./utils";
 
 export const fetchPost = async (postId: string) => {
   if (!postId) throw new Error("Cannot fetch post without postId");

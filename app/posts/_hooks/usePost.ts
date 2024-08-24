@@ -1,9 +1,9 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { models } from "@/shared/orbis";
-import { catchError } from "@/shared/orbis/utils";
 import { PostStatus } from "@/shared/schema/post";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { catchError } from "@useorbis/db-sdk/util";
 import { useParams, useRouter } from "next/navigation";
 
 const usePost = () => {

@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { catchError } from "@useorbis/db-sdk/util";
 import axios from "axios";
 import { produce } from "immer";
 import { isNil } from "lodash-es";
 import { models } from "../orbis";
-import { catchError } from "../orbis/utils";
 import { OrbisDBRow } from "../types";
 import { Subscription } from "../types/subscription";
 import useOrbis from "./useOrbis";

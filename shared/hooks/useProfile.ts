@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { catchError } from "@useorbis/db-sdk/util";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { models } from "../orbis";
-import { catchError } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
 import { GenericCeramicDocument, OrbisDBRow } from "../types";
 import { Profile } from "../types/profile";
@@ -23,6 +23,7 @@ const useProfile = () => {
       .from(models.profiles)
       .where({ controller: did });
     const [result, error] = await catchError(() => selectStatement?.run());
+    console.log('Profile result: ', result);
     if (error) throw new Error(`Error while fetching profile: ${error}`);
     if (!result?.rows.length) return null;
     const profile = result.rows[0] as OrbisDBRow<Profile>;

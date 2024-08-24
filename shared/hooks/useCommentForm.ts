@@ -4,13 +4,13 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { catchError } from "@useorbis/db-sdk/util";
 import { produce } from "immer";
 import { isNil, omitBy } from "lodash-es";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { models } from "../orbis";
-import { catchError } from "../orbis/utils";
 import { commentFormSchema, CommentFormType } from "../schema/comment";
 import { PostStatus } from "../schema/post";
 import { GenericCeramicDocument, OrbisDBRow } from "../types";

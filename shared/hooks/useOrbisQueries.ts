@@ -1,7 +1,7 @@
 // Orbis queries on the frontend
 
+import { catchError } from "@useorbis/db-sdk/util";
 import { models } from "../orbis";
-import { catchError } from "../orbis/utils";
 import useOrbis from "./useOrbis";
 
 const useOrbisQueries = () => {

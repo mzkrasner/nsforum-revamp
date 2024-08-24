@@ -1,8 +1,8 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
-import { catchError } from "@/shared/orbis/utils";
 import { PostStatus } from "@/shared/schema/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { catchError } from "@useorbis/db-sdk/util";
 import { produce } from "immer";
 import { GenericCeramicDocument } from "../types";
 import { CommentType } from "../types/comment";

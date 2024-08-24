@@ -19,29 +19,29 @@ const isPromise = (value: any): value is Promise<any> => {
   return true;
 };
 
-export const catchError = <Return>(
-  func: () => Return,
-): Return extends Promise<any>
-  ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
-  : [undefined, Error] | [Return, undefined] => {
-  try {
-    const result = func();
-    if (isPromise(result)) {
-      return result
-        .then((value) => [value, undefined])
-        .catch((err) => [undefined, err]) as Return extends Promise<any>
-        ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
-        : [undefined, Error] | [Return, undefined];
-    }
-    return [result, undefined] as Return extends Promise<any>
-      ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
-      : [undefined, Error] | [Return, undefined];
-  } catch (err) {
-    return [undefined, err as any] as Return extends Promise<any>
-      ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
-      : [undefined, Error] | [Return, undefined];
-  }
-};
+// export const catchError = <Return>(
+//   func: () => Return,
+// ): Return extends Promise<any>
+//   ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
+//   : [undefined, Error] | [Return, undefined] => {
+//   try {
+//     const result = func();
+//     if (isPromise(result)) {
+//       return result
+//         .then((value) => [value, undefined])
+//         .catch((err) => [undefined, err]) as Return extends Promise<any>
+//         ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
+//         : [undefined, Error] | [Return, undefined];
+//     }
+//     return [result, undefined] as Return extends Promise<any>
+//       ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
+//       : [undefined, Error] | [Return, undefined];
+//   } catch (err) {
+//     return [undefined, err as any] as Return extends Promise<any>
+//       ? Promise<[undefined, Error] | [Awaited<Return>, undefined]>
+//       : [undefined, Error] | [Return, undefined];
+//   }
+// };
 
 export const getAvatarInitials = (name: string): string => {
   // Split the name into words

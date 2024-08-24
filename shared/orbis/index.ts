@@ -10,3 +10,9 @@ export const models = {
   subscriptions:
     "kjzl6hvfrbw6c5rb6jpq533mct4yeiyubjzf5evf8074urgbzgdwwamwu7dpgwf",
 };
+
+export const contexts = {
+  notifications:
+    "kjzl6kcym7w8y76bgglzjgwm9j29u3p7j1833crclqohhif7rrknuy76xu4zh0t",
+  // "kjzl6kcym7w8y5suub27i2s18qlhtarkum7ylgme53q0uzzqn1nnj8kwv0xzq3j",
+};
