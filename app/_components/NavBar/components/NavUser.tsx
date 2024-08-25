@@ -1,11 +1,7 @@
 "use client";
 
 import SignInButton from "@/shared/components/SignInButton";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/shared/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
@@ -41,8 +37,8 @@ const NavUser = () => {
           className="relative h-8 gap-2 rounded-full p-1 hover:bg-transparent"
         >
           <Avatar className="h-8 w-8">
-            <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-            <AvatarFallback className="text-sm">
+            {/* <AvatarImage src="/avatars/01.png" alt="@shadcn" /> */}
+            <AvatarFallback className="text-[10px]">
               {getAvatarInitials(profile.name)}
             </AvatarFallback>
           </Avatar>

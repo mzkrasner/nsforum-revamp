@@ -50,7 +50,7 @@ const TableButton = () => {
       <PopoverTrigger asChild>
         <Toggle
           size="sm"
-          className="rounded-r-none"
+          className="h-8 w-8"
           pressed={editor.isActive("table")}
         >
           <TableIcon className="h-4 w-4" />

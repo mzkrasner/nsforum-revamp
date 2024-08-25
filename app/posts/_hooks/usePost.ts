@@ -3,8 +3,21 @@ import useOrbis from "@/shared/hooks/useOrbis";
 import { models } from "@/shared/orbis";
 import { PostStatus } from "@/shared/schema/post";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Level } from "@tiptap/extension-heading";
 import { catchError } from "@useorbis/db-sdk/util";
+import { produce } from "immer";
 import { useParams, useRouter } from "next/navigation";
+import { useCallback, useMemo } from "react";
+
+export type PostHeadingTagName = "h2" | "h3" | "h4" | "h5" | "h6";
+export type PostHeadingViewportPosition = "above" | "below" | "in-view";
+export type PostHeading = {
+  tagName: PostHeadingTagName;
+  level: Level;
+  textContent: string;
+  id: string;
+  viewportPosition?: PostHeadingViewportPosition;
+};
 
 const usePost = () => {
   const router = useRouter();
@@ -69,7 +82,82 @@ const usePost = () => {
     },
   });
 
-  return { postQuery, deletePostMutation };
+  const postHeadingsQuery = useQuery({
+    queryKey: ["post-headings", { postId }],
+    initialData: [] as PostHeading[],
+    enabled: false,
+  });
+
+  const addPostHeading = useCallback(
+    (postHeading: PostHeading) => {
+      const queryKey = ["post-headings", { postId }];
+      const existingHeadings: PostHeading[] | undefined =
+        queryClient.getQueryData(queryKey);
+      const alreadyAdded = !!existingHeadings?.find(
+        (h) => h.id === postHeading.id,
+      );
+      if (!alreadyAdded) {
+        queryClient.setQueryData(
+          queryKey,
+          produce((draft?: PostHeading[]) => {
+            if (Array.isArray(draft)) draft.push(postHeading);
+          }),
+        );
+      }
+    },
+    [queryClient],
+  );
+
+  const updateHeadingViewportPosition = useCallback(
+    ({
+      id,
+      viewportPosition,
+    }: {
+      id: string;
+      viewportPosition: PostHeadingViewportPosition;
+    }) => {
+      const queryKey = ["post-headings", { postId }];
+      queryClient.setQueryData(
+        queryKey,
+        produce((draft?: PostHeading[]) => {
+          if (Array.isArray(draft)) {
+            const heading = draft.find((h) => h.id === id);
+            if (heading) heading.viewportPosition = viewportPosition;
+          }
+        }),
+      );
+    },
+    [queryClient],
+  );
+
+  const postHeadings = postHeadingsQuery.data;
+  const activePostHeadingId = useMemo(() => {
+    const inViewHeading = postHeadings.find(
+      (heading) => heading.viewportPosition === "in-view",
+    );
+    if (inViewHeading) {
+      return inViewHeading.id;
+    }
+
+    const aboveHeadings = postHeadings.filter(
+      (heading) => heading.viewportPosition === "above",
+    );
+    if (aboveHeadings.length > 0) {
+      return aboveHeadings[aboveHeadings.length - 1].id;
+    }
+
+    return null; // or some fallback value if no headings match the criteria
+  }, [postHeadings]);
+
+  return {
+    postQuery,
+    deletePostMutation,
+    postHeadingsQuery,
+    postHeadings,
+    activePostHeadingId,
+    addPostHeading,
+    updateHeadingViewportPosition,
+  };
 };
 
 export default usePost;

@@ -5,10 +5,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import PostActions from "../_components/PostActions";
-import PostBody from "../_components/PostBody";
-import PostComments from "../_components/PostComments";
-import PostHeading from "../_components/PostHeading";
+import PostDetails from "../_components/PostDetails";
 
 const PostPage = async ({
   params: { postId },
@@ -24,15 +21,7 @@ const PostPage = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="container pb-10 pt-5 md:grid md:grid-cols-[280px_1fr]">
-        <div></div>
-        <div>
-          <PostActions />
-          <PostHeading />
-          <PostBody />
-          <PostComments />
-        </div>
-      </div>
+      <PostDetails />
     </HydrationBoundary>
   );
 };

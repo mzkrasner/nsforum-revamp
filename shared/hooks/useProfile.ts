@@ -23,7 +23,6 @@ const useProfile = () => {
       .from(models.profiles)
       .where({ controller: did });
     const [result, error] = await catchError(() => selectStatement?.run());
-    console.log('Profile result: ', result);
     if (error) throw new Error(`Error while fetching profile: ${error}`);
     if (!result?.rows.length) return null;
     const profile = result.rows[0] as OrbisDBRow<Profile>;

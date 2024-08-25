@@ -4,7 +4,7 @@ import PostInfo from "@/shared/components/PostInfo";
 import PostTags from "@/shared/components/PostTags";
 import usePost from "../_hooks/usePost";
 
-const PostHeading = () => {
+const PostTop = () => {
   const {
     postQuery: { isLoading, data },
   } = usePost();
@@ -19,4 +19,4 @@ const PostHeading = () => {
     </div>
   );
 };
-export default PostHeading;
+export default PostTop;

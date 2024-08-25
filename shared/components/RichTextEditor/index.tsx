@@ -45,7 +45,11 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
 
     const editor = useEditor({
       extensions: [
-        StarterKit,
+        StarterKit.configure({
+          heading: {
+            levels: [2, 3, 4, 5, 6],
+          },
+        }),
         Placeholder.configure({
           // Use a placeholder:
           placeholder,
@@ -66,8 +70,8 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
         TableCell,
         hasLimit
           ? CharacterCount.configure({
-            limit,
-          })
+              limit,
+            })
           : null,
       ].filter((v) => !!v) as AnyExtension[],
       content: value || "",
