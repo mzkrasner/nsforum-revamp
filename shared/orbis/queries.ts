@@ -71,7 +71,9 @@ export type FetchPostsOptions = {
   page?: number;
   pageSize?: 0;
   fields?: string[];
-  filter?: Partial<OnlyStringFields<Post & CeramicDocument["content"]>>;
+  filter?:
+    | Record<string, any>
+    | Partial<OnlyStringFields<Post & CeramicDocument["content"]>>;
 };
 export const fetchPosts = async (options?: FetchPostsOptions) => {
   const { page = 0, pageSize = 10, fields = [], filter = {} } = options || {};
