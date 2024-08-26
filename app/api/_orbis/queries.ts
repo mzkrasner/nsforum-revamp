@@ -77,3 +77,8 @@ export const fetchSubscriberCount = async (did: string) => {
   // console.log("Subscriber count result: ", result);
   return Number(result.rows.length ? result.rows[0].count : 0);
 };
+
+// TODO: Fix type
+export const createModel = async (model: any) => {
+  return await orbisdb.ceramic.createModel(model);
+};

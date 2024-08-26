@@ -68,8 +68,6 @@ const useProfile = () => {
       // Create new
       const newProfile: Profile = {
         ...values,
-        followers: 0,
-        following: 0,
         verified: false,
       };
       statement = db.insert(models.profiles).value(newProfile);

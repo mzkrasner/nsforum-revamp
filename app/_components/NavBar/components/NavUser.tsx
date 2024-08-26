@@ -13,7 +13,7 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import useAuth from "@/shared/hooks/useAuth";
 import useProfile from "@/shared/hooks/useProfile";
-import { getAvatarInitials } from "@/shared/orbis/utils";
+import { getAvatarInitials } from "@/shared/lib/utils";
 import { usePrivy } from "@privy-io/react-auth";
 import { BadgeCheckIcon } from "lucide-react";
 import Link from "next/link";

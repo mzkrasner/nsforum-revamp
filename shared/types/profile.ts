@@ -3,7 +3,5 @@ export type Profile = {
   name: string;
   username: string;
   email: string;
-  followers: number;
-  following: number;
   verified: boolean;
 };

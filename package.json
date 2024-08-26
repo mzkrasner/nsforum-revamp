@@ -41,6 +41,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
     "html-react-parser": "^5.1.12",
     "immer": "^10.1.1",
     "isomorphic-dompurify": "^2.14.0",
@@ -54,6 +55,7 @@
     "slugify": "^1.6.6",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.3",
     "viem": "^2.19.3",
     "wagmi": "^2.12.5",
     "zod": "^3.23.8"

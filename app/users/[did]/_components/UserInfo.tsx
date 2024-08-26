@@ -6,7 +6,7 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import useProfile from "@/shared/hooks/useProfile";
 import useUser from "@/shared/hooks/useUser";
-import { getAvatarInitials } from "@/shared/orbis/utils";
+import { getAvatarInitials } from "@/shared/lib/utils";
 
 type Props = {
   did: string;

@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
 import useProfile from "@/shared/hooks/useProfile";
-import { getAvatarInitials } from "@/shared/orbis/utils";
+import { getAvatarInitials } from "@/shared/lib/utils";
 import Link from "next/link";
 
 const ProfileInfo = () => {

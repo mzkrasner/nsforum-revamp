@@ -1,52 +1,76 @@
 "use client";
 
-import { Button } from "@/shared/components/ui/button";
-import { SearchIcon } from "lucide-react";
-
 import PostCard from "@/shared/components/PostCard";
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/shared/components/ui/command";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
-import { useState } from "react";
+import useOutsideClick from "@/shared/hooks/useOutsideClick";
+import usePostList from "@/shared/hooks/usePostList";
+import { ilike } from "@useorbis/db-sdk/operators";
+import { SearchIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { useDebounce } from "use-debounce";
 
 const Search = () => {
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+
+  const ref = useRef<HTMLDivElement | null>(null);
+  useOutsideClick(ref, () => setOpen(false));
+
+  const { postListQuery } = usePostList({
+    fetchPostsOptions: { filter: { title: ilike(`%${debouncedSearchTerm}%`) } },
+  });
+  const { data, isLoading } = postListQuery;
+  const posts = data?.pages.map((page) => page).flat() || [];
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="ml-auto flex items-center justify-between gap-2 text-sm text-gray-500 md:w-full md:max-w-[200px] md:bg-gray-100 lg:max-w-[300px]"
-        onClick={() => setOpen(true)}
-      >
-        <span className="hidden md:inline">Search...</span>
-        <SearchIcon className="w-4" />
-      </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search..." />
-        <CommandList className="h-fit">
-          <ScrollArea>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="3 posts found">
-              {[...Array(3)].map((_, i) => {
-                return (
-                  <CommandItem key={i}>
-                    <PostCard />
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
+    <div ref={ref} className="relative">
+      <SearchIcon
+        size={16}
+        strokeWidth={1.5}
+        className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-neutral-500"
+      />
+      <Input
+        className="h-9 border-0 bg-neutral-100 pl-8 pr-3"
+        placeholder="Search posts..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onFocus={() => setOpen(true)}
+      />
+      {open && searchTerm && (
+        <div className="absolute right-0 top-12 z-10 sm:min-w-80">
+          <ScrollArea className="max-h-[calc(100vh_-_80px)]">
+            <ul className="flex flex-col gap-2 rounded-md border bg-white p-2">
+              {isLoading ? (
+                <li className="flex items-center justify-center">
+                  <Button
+                    variant="ghost"
+                    loading={true}
+                    loadingText="Searching..."
+                    loaderProps={{ className: "text-neutral-700" }}
+                    className="mx-auto w-fit"
+                  />
+                </li>
+              ) : !posts.length ? (
+                <li className="text-center text-sm text-neutral-500">
+                  No post found
+                </li>
+              ) : (
+                posts.map((post, i) => {
+                  return (
+                    <li key={i}>
+                      <PostCard post={post} />
+                    </li>
+                  );
+                })
+              )}
+            </ul>
           </ScrollArea>
-        </CommandList>
-      </CommandDialog>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 
