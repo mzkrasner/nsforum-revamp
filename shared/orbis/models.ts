@@ -9,12 +9,12 @@ const models = {
     "name": "dev_comments_v2"
   },
   "subscriptions": {
-    "id": "kjzl6hvfrbw6c7pe2uwwizrfi6e80ciksbagjsgwhw1o9q4e3e88allby5n7vgx",
-    "name": "dev_subscriptions_v2"
+    "id": "kjzl6hvfrbw6cb6hi6guh4vdthquobn3dw3xiw0rbgu21tji5unqth1r4dk0p9d",
+    "name": "dev_subscriptions_v5"
   },
   "notifications": {
-    "id": "kjzl6hvfrbw6c5wchyn08hnb8f5r9xszt508f7nrvmg9cdfiwc4s3wwwx2d6a6v",
-    "name": "dev_notifications_v2"
+    "id": "kjzl6hvfrbw6c5976yti8z6ssif6qqdfegbqqt4c46m7z91sp4vvhfl9cayg2n4",
+    "name": "dev_notifications_v5"
   },
   "tags": {
     "id": "kjzl6hvfrbw6cacvffzhwch25ody3af065e90zuuwlvvu9m6890xjubq6m5nslx",

@@ -50,7 +50,7 @@ export const notifications = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
-      readerDid: {
+      reader_did: {
         type: "string",
       },
       posts: {
@@ -61,10 +61,10 @@ export const notifications = {
             stream_id: {
               type: "string",
             },
-            authorName: {
+            author_name: {
               type: "string",
             },
-            authorId: {
+            author_did: {
               type: "string",
             },
           },
@@ -98,10 +98,10 @@ export const subscriptions = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
-      authorDid: {
+      author_did: {
         type: "string",
       },
-      readerDid: {
+      reader_did: {
         type: "string",
       },
       subscribed: {

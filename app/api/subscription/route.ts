@@ -9,23 +9,25 @@ import { z } from "zod";
 import { connectDb } from "../_orbis";
 
 const fetchSubscriptionSchema = z.object({
-  author: z.string().min(1),
-  reader: z.string().min(1),
+  author_did: z.string().min(1),
+  reader_did: z.string().min(1),
 });
 
 export const GET = async (req: NextRequest) => {
   await connectDb();
   const { searchParams } = new URL(req.url);
-  const author = searchParams.get("author");
-  const reader = searchParams.get("reader");
-  const query = { author, reader } as z.infer<typeof fetchSubscriptionSchema>;
+  const author_did = searchParams.get("author");
+  const reader_did = searchParams.get("reader");
+  const query = { author_did, reader_did } as z.infer<
+    typeof fetchSubscriptionSchema
+  >;
   const isValid = fetchSubscriptionSchema.safeParse(query).success;
   if (!isValid)
     return NextResponse.json({ error: "Invalid data", status: 400 });
 
   const subscription = await fetchSubscription(query);
-  const subscribedToCount = await fetchSubscribedToCount(author!);
-  const subscriberCount = await fetchSubscriberCount(author!);
+  const subscribedToCount = await fetchSubscribedToCount(author_did!);
+  const subscriberCount = await fetchSubscriberCount(author_did!);
 
   return NextResponse.json({
     subscription,
@@ -35,8 +37,8 @@ export const GET = async (req: NextRequest) => {
 };
 
 const updateSubscriptionSchema = z.object({
-  author: z.string().min(1),
-  reader: z.string().min(1),
+  author_did: z.string().min(1),
+  reader_did: z.string().min(1),
   subscribed: z.boolean(),
 });
 

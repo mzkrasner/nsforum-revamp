@@ -8,7 +8,7 @@ import { catchError } from "@useorbis/db-sdk/util";
 export const fetchSubscription = async (
   query: Omit<Subscription, "subscribed">,
 ) => {
-  if (!query.author || !query.reader) throw new Error("Invalid query");
+  if (!query.author_did || !query.reader_did) throw new Error("Invalid query");
   const selectStatement = orbisdb
     .select()
     .from(models.subscriptions.id)
@@ -25,8 +25,11 @@ export const fetchSubscription = async (
 
 export const updateSubscription = async (subscription: Subscription) => {
   let statement: InsertStatement | UpdateByIdStatement | null = null;
-  const { author, reader } = subscription;
-  const existingSubscription = await fetchSubscription({ author, reader });
+  const { author_did, reader_did } = subscription;
+  const existingSubscription = await fetchSubscription({
+    author_did,
+    reader_did,
+  });
   if (existingSubscription) {
     // console.log("Updating subscription");
     statement = orbisdb
@@ -50,10 +53,10 @@ export const updateSubscription = async (subscription: Subscription) => {
 
 export const fetchSubscribedToCount = async (did: string) => {
   const selectStatement = orbisdb
-    .select(count("author", "count"))
+    .select(count("author_did", "count"))
     .from(models.subscriptions.id)
     .where({
-      reader: did,
+      reader_did: did,
       subscribed: true,
     });
   const [result, error] = await catchError(() => selectStatement?.run());
@@ -65,10 +68,10 @@ export const fetchSubscribedToCount = async (did: string) => {
 
 export const fetchSubscriberCount = async (did: string) => {
   const selectStatement = orbisdb
-    .select(count("reader", "count"))
+    .select(count("reader_did", "count"))
     .from(models.subscriptions.id)
     .where({
-      author: did,
+      author_did: did,
       subscribed: true,
     });
   const [result, error] = await catchError(() => selectStatement?.run());
@@ -80,7 +83,7 @@ export const fetchSubscriberCount = async (did: string) => {
 
 const fetchUserNotification = async (userId: string) => {
   const selectStatement = orbisdb.select().from(models.notifications.id).where({
-    reader: userId,
+    reader_did: userId,
   });
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error)
@@ -91,29 +94,29 @@ const fetchUserNotification = async (userId: string) => {
 type NotificationPost = {
   id: string;
   authorName: string;
-  authorId: string;
+  author_did: string;
 };
 
 type AddPostNotificationPayload = {
-  readerId: string;
-  authorId: string;
+  reader_did: string;
+  author_did: string;
   authorName: string;
   postId: string;
 };
 export const addPostNotification = async ({
-  readerId,
-  authorId,
+  reader_did,
+  author_did,
   authorName,
   postId,
 }: AddPostNotificationPayload) => {
   // Fetch existing notification
-  const existingNotification = await fetchUserNotification(readerId);
+  const existingNotification = await fetchUserNotification(reader_did);
   const existingPosts: NotificationPost[] = existingNotification?.posts || [];
 
   const newPost: NotificationPost = {
     id: postId,
     authorName,
-    authorId,
+    author_did,
   };
   let statement;
   if (existingNotification) {

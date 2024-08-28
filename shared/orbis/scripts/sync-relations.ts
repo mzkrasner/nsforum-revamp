@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { isEqual } from "lodash-es";
+import { isEqual, isNil } from "lodash-es";
 import relations, { Relation, Schema } from "../schemas/relations";
 
 const fetchOrbisDBSettings = async () => {
@@ -37,7 +37,7 @@ const createRelation = async <T extends keyof Schema, K extends keyof Schema>(
     );
     console.log("Data returned from relation creation: ", data);
     if (data?.success === true) {
-      console.log("Successfully updated creation");
+      console.log("Successfully created relation");
       return data;
     }
   } catch (error) {
@@ -89,10 +89,10 @@ const syncRelations = async () => {
       const existingRelations: Relation<any, any>[] =
         settings?.relations[relation.table];
 
-      const index = existingRelations.findIndex((r) => isEqual(r, relation));
+      const index = existingRelations?.findIndex((r) => isEqual(r, relation));
       console.log("Index: ", index);
       console.log("Relation: ", relation);
-      if (index >= 0) {
+      if (!isNil(index) && index >= 0) {
         console.log("Updating");
         await updateRelation({ ...relation, index }, relationName);
       } else {

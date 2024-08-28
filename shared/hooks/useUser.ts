@@ -59,10 +59,10 @@ const useUser = ({ did }: Props) => {
     if (isNil(subscribed)) return null;
     console.log("Updating subscription");
     const { data } = await axios.post(`/api/subscription`, {
-      author: did,
-      reader: profile?.controller,
+      author_did: did,
+      reader_did: profile?.controller,
       subscribed,
-    });
+    } as Subscription);
     console.log("Update subscription data: ", data);
     return data as Subscription;
   };

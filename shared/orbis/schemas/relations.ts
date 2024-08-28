@@ -25,7 +25,7 @@ export type Relation<T extends keyof Schema, K extends keyof Schema> = {
 export const subscriptionUserRelations: Relation<"subscriptions", "users"> = {
   referenceName: "reader",
   table: models.subscriptions.id,
-  column: "readerDid",
+  column: "reader_did",
   referencedColumn: "controller",
   referencedTable: models.users.id,
   referencedType: "single",

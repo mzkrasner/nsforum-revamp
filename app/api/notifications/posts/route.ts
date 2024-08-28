@@ -4,7 +4,7 @@
 // import { addPostNotification } from "../../_orbis/queries";
 
 // const updatePostNotificationsSchema = z.object({
-//   authorId: z.string().min(1),
+//   author_did: z.string().min(1),
 //   authorName: z.string().min(1),
 //   postId: z.string().min(1),
 // });
