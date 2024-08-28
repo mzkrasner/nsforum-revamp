@@ -35,7 +35,7 @@ export const users = {
     },
     additionalProperties: false,
   },
-};
+} as const;
 
 export const notifications = {
   name: "dev_notifications",
@@ -50,22 +50,40 @@ export const notifications = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
-      user: {
+      readerDid: {
         type: "string",
       },
-      title: {
-        type: "string",
+      posts: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            stream_id: {
+              type: "string",
+            },
+            authorName: {
+              type: "string",
+            },
+            authorId: {
+              type: "string",
+            },
+          },
+          additionalProperties: false,
+        },
       },
-      body: {
-        type: "string",
-      },
-      type: {
+      // comments: {
+      //   type: "array",
+      //   items: {
+      //     type: "string",
+      //   },
+      // },
+      status: {
         type: "string",
       },
     },
     additionalProperties: false,
   },
-};
+} as const;
 
 export const subscriptions = {
   name: "dev_subscriptions",
@@ -80,19 +98,19 @@ export const subscriptions = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
-      author: {
+      authorDid: {
         type: "string",
       },
-      reader: {
+      readerDid: {
         type: "string",
       },
-      verified: {
+      subscribed: {
         type: "boolean",
       },
     },
     additionalProperties: false,
   },
-};
+} as const;
 
 export const categories = {
   name: "dev_categories",
@@ -116,7 +134,7 @@ export const categories = {
     },
     additionalProperties: false,
   },
-};
+} as const;
 
 export const tags = {
   name: "dev_tags",
@@ -140,7 +158,7 @@ export const tags = {
     },
     additionalProperties: false,
   },
-};
+} as const;
 
 export const posts = {
   name: "dev_posts",
@@ -188,7 +206,7 @@ export const posts = {
     },
     additionalProperties: false,
   },
-};
+} as const;
 
 export const comments = {
   name: "dev_comments",
@@ -233,9 +251,9 @@ export const comments = {
     },
     additionalProperties: false,
   },
-};
+} as const;
 
-const schema = {
+const schemas = {
   users,
   subscriptions,
   notifications,
@@ -243,6 +261,6 @@ const schema = {
   categories,
   posts,
   comments,
-};
+} as const;
 
-export default schema;
+export default schemas;

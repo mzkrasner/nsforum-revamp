@@ -10,13 +10,12 @@ import { Post } from "../types/post";
 
 export const fetchPost = async (postId: string) => {
   if (!postId) throw new Error("Cannot fetch post without postId");
-  const selectStatement = orbisdb.select().from(models.posts).where({
+  const selectStatement = orbisdb.select().from(models.posts.id).where({
     stream_id: postId,
   });
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error) throw new Error(`Error while fetching post: ${error}`);
-  if (!result?.rows.length)
-    throw new Error(`Error while fetching post: Post not found`);
+  if (!result?.rows.length) return null;
   const post = result.rows[0];
   return post as OrbisDBRow<Post>;
 };
@@ -46,7 +45,7 @@ export const fetchComments = async (options: FetchCommentsOptions) => {
   const offset = page * pageSize;
   const selectStatement = orbisdb
     .select()
-    .from(models.comments)
+    .from(models.comments.id)
     .where(
       omitBy(
         {
@@ -80,7 +79,7 @@ export const fetchPosts = async (options?: FetchPostsOptions) => {
   const offset = page * pageSize;
   const selectStatement = orbisdb
     .select(...fields)
-    .from(models.posts)
+    .from(models.posts.id)
     .where({
       status: "published",
       ...filter,
