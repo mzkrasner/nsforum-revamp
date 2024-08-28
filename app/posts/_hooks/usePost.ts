@@ -32,7 +32,7 @@ const usePost = () => {
 
   const fetchPost = async () => {
     if (!postId) throw new Error("Cannot fetch post without postId");
-    const selectStatement = db?.select().from(models.posts).where({
+    const selectStatement = db?.select().from(models.posts.id).where({
       stream_id: postId,
     });
     const [result, error] = await catchError(() => selectStatement?.run());

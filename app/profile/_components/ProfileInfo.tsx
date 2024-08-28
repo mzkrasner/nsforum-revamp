@@ -16,13 +16,13 @@ import Link from "next/link";
 const ProfileInfo = () => {
   const {
     profile,
-    query,
+    profileQuery,
     subscriptionDataQuery,
     subscribedToCount,
     subscriberCount,
   } = useProfile();
 
-  if (query.isLoading) return <div>Loading...</div>;
+  if (profileQuery.isLoading) return <div>Loading...</div>;
   if (!profile) return null;
 
   const { image, name, username, verified } = profile;

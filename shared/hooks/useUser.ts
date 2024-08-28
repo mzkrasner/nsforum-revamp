@@ -21,7 +21,7 @@ const useUser = ({ did }: Props) => {
 
   const fetchUser = async () => {
     if (!did || !db) return null;
-    const selectStatement = db.select().from(models.profiles).where({
+    const selectStatement = db.select().from(models.users.id).where({
       controller: did,
     });
     const [result, error] = await catchError(() => selectStatement?.run());

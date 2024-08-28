@@ -21,7 +21,7 @@ import usePostForm from "./usePostForm";
 
 type Props = { postId?: string };
 const PostForm = ({ postId }: Props) => {
-  const { profile, query: profileQuery } = useProfile();
+  const { profile, profileQuery } = useProfile();
   const { authenticated, ready } = usePrivy();
   const { postQuery } = usePost();
   const { form, categories, publishMutation, draftMutation } = usePostForm({
@@ -38,6 +38,11 @@ const PostForm = ({ postId }: Props) => {
     );
 
   if (postQuery.isLoading) return "Loading...";
+
+  if (!profile)
+    return (
+      <NoProfileGuard displayMessage="You must add a profile before you create posts" />
+    );
 
   if (!profile && profileQuery.isSuccess) return <NoProfileGuard />;
 

@@ -11,7 +11,7 @@ export const fetchSubscription = async (
   if (!query.author || !query.reader) throw new Error("Invalid query");
   const selectStatement = orbisdb
     .select()
-    .from(models.subscriptions)
+    .from(models.subscriptions.id)
     .where(query);
   // console.log("Fetching query with: ", query);
   const [result, error] = await catchError(() => selectStatement?.run());
@@ -33,7 +33,7 @@ export const updateSubscription = async (subscription: Subscription) => {
       .update(existingSubscription.stream_id)
       .set(subscription);
   } else {
-    statement = orbisdb.insert(models.subscriptions).value(subscription);
+    statement = orbisdb.insert(models.subscriptions.id).value(subscription);
     const validation = await statement.validate();
     if (!validation.valid) {
       throw new Error(
@@ -51,7 +51,7 @@ export const updateSubscription = async (subscription: Subscription) => {
 export const fetchSubscribedToCount = async (did: string) => {
   const selectStatement = orbisdb
     .select(count("author", "count"))
-    .from(models.subscriptions)
+    .from(models.subscriptions.id)
     .where({
       reader: did,
       subscribed: true,
@@ -66,7 +66,7 @@ export const fetchSubscribedToCount = async (did: string) => {
 export const fetchSubscriberCount = async (did: string) => {
   const selectStatement = orbisdb
     .select(count("reader", "count"))
-    .from(models.subscriptions)
+    .from(models.subscriptions.id)
     .where({
       author: did,
       subscribed: true,
@@ -78,7 +78,69 @@ export const fetchSubscriberCount = async (did: string) => {
   return Number(result.rows.length ? result.rows[0].count : 0);
 };
 
-// TODO: Fix type
-export const createModel = async (model: any) => {
-  return await orbisdb.ceramic.createModel(model);
+const fetchUserNotification = async (userId: string) => {
+  const selectStatement = orbisdb.select().from(models.notifications.id).where({
+    reader: userId,
+  });
+  const [result, error] = await catchError(() => selectStatement?.run());
+  if (error)
+    throw new Error(`Error while fetching user notification: ${error}`);
+  return result.rows.length ? result.rows[0] : undefined;
+};
+
+type NotificationPost = {
+  id: string;
+  authorName: string;
+  authorId: string;
+};
+
+type AddPostNotificationPayload = {
+  readerId: string;
+  authorId: string;
+  authorName: string;
+  postId: string;
+};
+export const addPostNotification = async ({
+  readerId,
+  authorId,
+  authorName,
+  postId,
+}: AddPostNotificationPayload) => {
+  // Fetch existing notification
+  const existingNotification = await fetchUserNotification(readerId);
+  const existingPosts: NotificationPost[] = existingNotification?.posts || [];
+
+  const newPost: NotificationPost = {
+    id: postId,
+    authorName,
+    authorId,
+  };
+  let statement;
+  if (existingNotification) {
+    // If exists update it
+    // Check if it already exists
+    const alreadyAdded = !!existingPosts.find(
+      (p: { id: string }) => p.id === postId,
+    );
+    if (alreadyAdded) return true;
+
+    statement = orbisdb
+      .update(existingNotification.stream_id)
+      .set({ posts: [...existingPosts, newPost] });
+  } else {
+    // Else create new one
+    statement = orbisdb.insert(models.notifications.id).value(newPost);
+    const validation = await statement.validate();
+    if (!validation.valid) {
+      throw new Error(
+        `Validation error while creating a new notification in addPostNotification: ${validation.error}`,
+      );
+    }
+  }
+
+  const [result, error] = await catchError(() => statement?.run());
+  if (error)
+    throw new Error(`Error while updating notification with post: ${error}`);
+  if (!result) throw new Error("No result was returned from orbis");
+  return result;
 };

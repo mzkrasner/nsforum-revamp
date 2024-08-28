@@ -82,7 +82,7 @@ const useCommentForm = (props?: Props) => {
     } else {
       // console.log("Creating comment");
       // Create new comment
-      statement = db.insert(models.comments).value({ ...values, status });
+      statement = db.insert(models.comments.id).value({ ...values, status });
       const validation = await statement.validate();
       if (!validation.valid) {
         throw new Error(

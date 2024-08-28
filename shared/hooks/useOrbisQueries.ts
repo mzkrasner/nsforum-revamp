@@ -9,7 +9,7 @@ const useOrbisQueries = () => {
 
   const fetchProfile = async (did?: string) => {
     if (!did || !db) return null;
-    const selectStatement = db.select(models.profiles).where({ did });
+    const selectStatement = db.select(models.users.id).where({ did });
     const [result, error] = await catchError(() => selectStatement?.run());
     if (error) throw new Error(`Error while fetching profile: ${error}`);
     if (!result?.rows.length)

@@ -1,12 +1,12 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
-import { contexts, models } from "@/shared/orbis";
+import useProfile from "@/shared/hooks/useProfile";
+import { createPost, updatePost } from "@/shared/orbis/mutations";
 import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
-import { catchError } from "@useorbis/db-sdk/util";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ const usePostForm = ({ postId }: Props) => {
   const { db } = useOrbis();
   const { categories } = useCategories();
   const { connectOrbis } = useAuth();
+  const { profile } = useProfile();
 
   const form = useForm({
     resolver: zodResolver(postFormSchema),
@@ -69,34 +70,27 @@ const usePostForm = ({ postId }: Props) => {
     if (!db.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
     }
-    let statement;
     if (postId) {
-      // Update existing post
-      statement = db.update(postId).set({ ...values, status });
-    } else {
-      // Create new post
-      statement = db
-        .insert(models.posts)
-        .value({ ...values, status })
-        .context(contexts.notifications);
-      const validation = await statement.validate();
-      if (!validation.valid) {
-        throw new Error(
-          `Error during create post validation: ${validation.error}`,
-        );
-      }
+      return await updatePost({
+        orbisdb: db,
+        postId,
+        values: { ...values, status },
+      });
     }
-    const [result, error] = await catchError(() => statement.run());
-    if (error) throw new Error(`Error during create post query: ${error}`);
-    if (!result) throw new Error("No result was returned from orbis");
-    return result;
+    return await createPost({ orbisdb: db, values: { ...values, status } });
   };
 
   const publishMutation = useMutation({
     mutationKey: ["publish-post"],
     mutationFn: saveFn,
-    onSuccess: (result?: CeramicDocument) => {
+    onSuccess: async (result?: CeramicDocument) => {
       if (!result) return;
+      // create notification
+      // await axios.post("/api/notifications/posts", {
+      //   authorId: profile?.stream_id,
+      //   authorName: profile?.name,
+      //   postId,
+      // });
       router.push(`/posts/${result.id}`);
     },
     onError: console.error,

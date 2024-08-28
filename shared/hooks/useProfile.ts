@@ -20,7 +20,7 @@ const useProfile = () => {
     if (!did || !db) return null;
     const selectStatement = db
       .select()
-      .from(models.profiles)
+      .from(models.users.id)
       .where({ controller: did });
     const [result, error] = await catchError(() => selectStatement?.run());
     if (error) throw new Error(`Error while fetching profile: ${error}`);
@@ -29,14 +29,14 @@ const useProfile = () => {
     return profile;
   };
 
-  const query = useQuery({
+  const profileQuery = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
       return await fetchProfile(authInfo?.user.did);
     },
     enabled: !!authInfo?.user?.did,
   });
-  const did = query.data?.controller;
+  const did = profileQuery.data?.controller;
 
   const fetchSubscriptionData = async () => {
     const { data } = await axios.get<SubscriptionData>("/api/subscription", {
@@ -70,7 +70,7 @@ const useProfile = () => {
         ...values,
         verified: false,
       };
-      statement = db.insert(models.profiles).value(newProfile);
+      statement = db.insert(models.users.id).value(newProfile);
       const validation = await statement.validate();
       if (!validation.valid) {
         throw new Error(
@@ -112,8 +112,8 @@ const useProfile = () => {
   });
 
   return {
-    profile: query.data,
-    query,
+    profile: profileQuery.data,
+    profileQuery,
     isSubscribed: subscriptionDataQuery.data?.subscription?.subscribed,
     subscribedToCount: subscriptionDataQuery.data?.subscribedToCount,
     subscriberCount: subscriptionDataQuery.data?.subscriberCount,

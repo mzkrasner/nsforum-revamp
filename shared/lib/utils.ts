@@ -6,7 +6,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getAvatarInitials = (name: string): string => {
+export const getAvatarInitials = (name: string | undefined): string | null => {
+  if (!name) return null;
   // Split the name into words
   const words = _.words(name);
 

@@ -1,11 +1,10 @@
 "use client";
 
+import AuthGuard from "@/shared/components/AuthGuard";
 import NoProfileGuard from "@/shared/components/NoProfileGuard";
-import SignInButton from "@/shared/components/SignInButton";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import useAuth from "@/shared/hooks/useAuth";
 import useProfile from "@/shared/hooks/useProfile";
-import { usePrivy } from "@privy-io/react-auth";
 import { TabsContent } from "@radix-ui/react-tabs";
 import Comments from "./_components/Comments";
 import Drafts from "./_components/Drafts";
@@ -15,15 +14,8 @@ import ProfileInfo from "./_components/ProfileInfo";
 const ProfilePage = () => {
   const { profile } = useProfile();
   const { isLoggedIn } = useAuth();
-  const { ready } = usePrivy();
 
-  if (!isLoggedIn)
-    return (
-      <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
-        <h3 className="font-medium">Sign in to view your profile</h3>
-        {ready && <SignInButton variant="outline" className="mx-auto block" />}
-      </div>
-    );
+  if (!isLoggedIn) return <AuthGuard />;
 
   if (!profile) return <NoProfileGuard />;
 

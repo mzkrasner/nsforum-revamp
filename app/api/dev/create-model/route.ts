@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "../../_orbis";
-import { createModel } from "../../_orbis/queries";
+import { connectDb } from "../_orbis";
+import { createModel } from "../_orbis/queries";
 
-// TODO: Pass seed from script
 export const POST = async (req: NextRequest) => {
-  await connectDb();
-
-  const model = await req.json();
+  const { model, seedString } = (await req.json()) || {};
+  await connectDb(seedString);
   const res = await createModel(model);
 
   return NextResponse.json(res);

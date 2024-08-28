@@ -13,9 +13,14 @@ import { Input } from "@/shared/components/ui/input";
 import useProfile from "@/shared/hooks/useProfile";
 import { ProfileFormType, profileSchema } from "@/shared/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePrivy } from "@privy-io/react-auth";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const ProfileForm = () => {
+  const { user, authenticated } = usePrivy();
+  const authEmail = user?.email?.address;
+
   const { profile, saveMutation } = useProfile();
   const { name = "", username = "", email = "" } = profile || {};
 
@@ -24,10 +29,16 @@ const ProfileForm = () => {
     defaultValues: {
       name,
       username,
-      email,
+      email: email || authEmail || "",
     },
   });
-  const { handleSubmit, control } = form;
+  const { handleSubmit, control, watch, setValue } = form;
+
+  useEffect(() => {
+    if (!watch("email") && authEmail) setValue("email", authEmail);
+  }, [watch, setValue, authEmail]);
+
+  if (!authenticated) return;
 
   return (
     <Form {...form}>
@@ -81,7 +92,7 @@ const ProfileForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" {...field} error={error} />
+                  <Input type="email" {...field} error={error} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
