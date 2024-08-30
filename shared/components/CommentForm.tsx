@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import useCommentForm from "../hooks/useCommentForm";
+import { FetchCommentsArg } from "../orbis/queries";
 import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import RichTextEditor from "./RichTextEditor";
@@ -16,19 +17,23 @@ import { Button } from "./ui/button";
 type Props = {
   comment?: OrbisDBRow<CommentType>;
   cancel?: () => void;
-  parentIds?: {
-    parentId: string;
-    topParentId: string;
-  };
+  parentIds?: string[];
   isReply?: boolean;
+  fetchCommentsArg: FetchCommentsArg;
 };
 
-const CommentForm = (props?: Props) => {
-  const { comment, cancel = () => null, parentIds } = props || {};
+const CommentForm = (props: Props) => {
+  const {
+    comment,
+    cancel = () => null,
+    parentIds = [],
+    fetchCommentsArg,
+  } = props || {};
   const { form, saveMutation } = useCommentForm({
     comment,
     onSave: cancel,
     parentIds,
+    fetchCommentsArg,
   });
   const { handleSubmit, control } = form;
 

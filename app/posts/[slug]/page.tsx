@@ -1,5 +1,5 @@
 import { config } from "@/app/_providers/react-query/config";
-import { fetchPost } from "@/shared/orbis/queries";
+import { fetchPost, FetchPostArg } from "@/shared/orbis/queries";
 import {
   dehydrate,
   HydrationBoundary,
@@ -10,7 +10,7 @@ import PostDetails from "../_components/PostDetails";
 const PostPage = async ({ params: { slug } }: { params: { slug: string } }) => {
   const queryClient = new QueryClient(config);
 
-  const options = { slug };
+  const options: FetchPostArg = { filter: { slug } };
   await queryClient.prefetchQuery({
     queryKey: ["post", options],
     queryFn: async () => fetchPost(options),

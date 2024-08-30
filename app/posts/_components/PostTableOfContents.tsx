@@ -35,7 +35,7 @@ const PostTableOfContents = ({ open, setOpen }: Props) => {
       <Button
         variant="secondary"
         size="icon"
-        className="fixed left-8 top-[100px] h-8 w-8"
+        className="fixed left-8 top-[100px] z-10 h-8 w-8"
         onClick={() => setOpen(true)}
       >
         <ListIcon size={14} />

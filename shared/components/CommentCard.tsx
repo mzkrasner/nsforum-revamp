@@ -1,10 +1,11 @@
 "use client";
 
+import { istartsWith } from "@useorbis/db-sdk/operators";
 import { EditIcon, ReplyIcon } from "lucide-react";
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import useProfile from "../hooks/useProfile";
 import htmlToReact from "../lib/htmlToReact";
+import { FetchCommentsArg } from "../orbis/queries";
 import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import CommentForm from "./CommentForm";
@@ -15,22 +16,43 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import User from "./User";
 
-type Props = { comment: OrbisDBRow<CommentType>; noReplies?: boolean };
-const CommentCard = ({ comment, noReplies = false }: Props) => {
+type Props = {
+  comment: OrbisDBRow<CommentType>;
+  noReplies?: boolean;
+  parentIds?: string[];
+  fetchCommentsArg: FetchCommentsArg;
+};
+const CommentCard = ({
+  comment,
+  noReplies = false,
+  parentIds: olderParentIds = [],
+  fetchCommentsArg,
+}: Props) => {
   const [editing, setEditing] = useState(false);
   const [replying, setReplying] = useState(false);
-
-  const params = useParams();
-  const postId = params.postId as string;
 
   const { profile } = useProfile();
   const { indexed_at, controller, body } = comment;
 
   const content = editing ? (
-    <CommentForm comment={comment} cancel={() => setEditing(false)} />
+    <CommentForm
+      comment={comment}
+      cancel={() => setEditing(false)}
+      fetchCommentsArg={fetchCommentsArg}
+      parentIds={olderParentIds}
+    />
   ) : (
     htmlToReact(body)
   );
+
+  const parentIds = [...olderParentIds, comment.stream_id];
+
+  const fetchRepliesArg = {
+    filter: {
+      post_id: comment.post_id,
+      parent_ids: istartsWith(parentIds.join("-")),
+    },
+  };
 
   return (
     <Card>
@@ -73,25 +95,18 @@ const CommentCard = ({ comment, noReplies = false }: Props) => {
           {replying && (
             <div className="mb-3 w-full">
               <CommentForm
-                parentIds={{
-                  parentId: comment.stream_id,
-                  topParentId:
-                    comment.parentId === postId
-                      ? comment.stream_id
-                      : comment.topParentId,
-                }}
                 cancel={() => setReplying(false)}
+                fetchCommentsArg={fetchRepliesArg}
+                parentIds={parentIds}
                 isReply
               />
             </div>
           )}
           {!noReplies && (
             <CommentList
-              fetchCommentsOptions={{
-                postId: comment.postId,
-                parentId: comment.stream_id,
-              }}
+              fetchCommentsArg={fetchRepliesArg}
               emptyContent={<></>}
+              parentIds={parentIds}
             />
           )}
         </div>

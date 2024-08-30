@@ -1,20 +1,23 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { isNil, omitBy } from "lodash-es";
-import { fetchComments, FetchCommentsOptions } from "../orbis/queries";
+import { fetchComments, FetchCommentsArg } from "../orbis/queries";
 
 type Props = {
-  fetchCommentsOptions: FetchCommentsOptions;
+  fetchCommentsArg: FetchCommentsArg;
 };
 
 const useCommentList = (props: Props) => {
-  const { fetchCommentsOptions } = props;
+  const { fetchCommentsArg } = props;
 
-  const queryKey = ["comments", omitBy(fetchCommentsOptions, isNil)];
-  // console.log("Comments query key: ", queryKey, fetchCommentsOptions);
+  const queryKey = ["comments", omitBy(fetchCommentsArg, isNil)];
+  // console.log("Comments query key: ", queryKey, fetchCommentsArg);
   const commentListQuery = useInfiniteQuery({
     queryKey,
     queryFn: ({ pageParam }) =>
-      fetchComments({ page: pageParam, ...fetchCommentsOptions }),
+      fetchComments({
+        ...fetchCommentsArg,
+        pagination: { page: pageParam, ...(fetchCommentsArg.pagination || {}) },
+      }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length ? pages.length : undefined;

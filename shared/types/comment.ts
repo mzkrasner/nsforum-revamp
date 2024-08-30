@@ -1,13 +1,12 @@
 import { PostStatus } from "../schema/post";
 
 export type CommentType = {
-  user: {
+  author: {
     username: string;
     did: string;
   };
   body: string;
-  postId: string;
-  topParentId: string;
-  parentId: string;
+  post_id: string;
+  parent_ids: string;
   status: PostStatus;
 };

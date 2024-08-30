@@ -2,32 +2,41 @@
 
 import { ReactNode } from "react";
 import useCommentList from "../hooks/useCommentList";
-import { FetchCommentsOptions } from "../orbis/queries";
+import { FetchCommentsArg } from "../orbis/queries";
 import CommentCard from "./CommentCard";
 import { Button } from "./ui/button";
 import { InfiniteScroll } from "./ui/infinite-scroll";
 
 type Props = {
-  fetchCommentsOptions: FetchCommentsOptions;
+  fetchCommentsArg: FetchCommentsArg;
   emptyContent?: ReactNode;
   noReplies?: boolean;
+  parentIds?: string[];
 };
 const CommentList = ({
-  fetchCommentsOptions,
+  fetchCommentsArg,
   emptyContent,
   noReplies = false,
+  parentIds = [],
 }: Props) => {
-  const { commentListQuery } = useCommentList({ fetchCommentsOptions });
+  const { commentListQuery } = useCommentList({ fetchCommentsArg });
   const { hasNextPage, isLoading, fetchNextPage } = commentListQuery;
   const comments =
     commentListQuery.data?.pages.map((page) => page).flat() || [];
+  // console.log("fetchCommentsArg: ", fetchCommentsArg);
+  // console.log("Comments: ", comments);
   return (
     <div>
       <ul className="flex flex-col gap-3">
         {comments.map((comment, index) => {
           return (
             <li key={index}>
-              <CommentCard comment={comment} noReplies={noReplies} />
+              <CommentCard
+                comment={comment}
+                noReplies={noReplies}
+                parentIds={parentIds}
+                fetchCommentsArg={fetchCommentsArg}
+              />
             </li>
           );
         })}

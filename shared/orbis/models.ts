@@ -5,16 +5,16 @@ const models = {
     "name": "dev_posts_v6"
   },
   "comments": {
-    "id": "kjzl6hvfrbw6c839a88nzwdvuqj9licmajxgpvs99tf8k8nxovururi6d0f4ycx",
-    "name": "dev_comments_v5"
+    "id": "kjzl6hvfrbw6c59dbur68wmm3he6u4lj74o3qlpjxu1709qryd9k8vcofhitc3q",
+    "name": "dev_comments_v6"
   },
   "subscriptions": {
     "id": "kjzl6hvfrbw6c8vyyj7b6y4iyzv20u6fwzvvlqzgypiev56jxcgv9nvdaenntzn",
     "name": "dev_subscriptions_v8"
   },
   "notifications": {
-    "id": "kjzl6hvfrbw6c8r4dej88o2x2ew8r3cke37kk1a5ne8w3kuhrz2paig1uir3fqk",
-    "name": "dev_notifications_v12"
+    "id": "kjzl6hvfrbw6c51a2ds0gk0e0v9xv3chsw7b9xn5f0e5r925coo560xg60m1d8h",
+    "name": "dev_notifications_v13"
   },
   "tags": {
     "id": "kjzl6hvfrbw6c76dbzl5uclphbqh44p62uovqrdp6oz8sv0a0yf7i0d1tuptaoj",

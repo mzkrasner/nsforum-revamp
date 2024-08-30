@@ -2,19 +2,23 @@
 
 import CommentForm from "@/shared/components/CommentForm";
 import CommentList from "@/shared/components/CommentList";
-import { useParams } from "next/navigation";
+import usePost from "../_hooks/usePost";
 
-type Props = {};
-const PostComments = (props: Props) => {
-  const params = useParams();
-  const postId = params.postId as string;
+const PostComments = () => {
+  const { post } = usePost();
+  if (!post) return null;
+  const postId = post.stream_id;
+
+  const fetchCommentsArg = {
+    filter: { post_id: postId, parent_ids: "" },
+  };
 
   return (
     <div>
       <div className="mb-8 mt-10">
-        <CommentForm />
+        <CommentForm fetchCommentsArg={fetchCommentsArg} />
       </div>
-      <CommentList fetchCommentsOptions={{ postId, parentId: postId }} />
+      <CommentList fetchCommentsArg={fetchCommentsArg} />
     </div>
   );
 };

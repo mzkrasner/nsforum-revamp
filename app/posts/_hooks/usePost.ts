@@ -30,7 +30,7 @@ const usePost = () => {
 
   const queryClient = useQueryClient();
 
-  const queryOptions = { slug };
+  const queryOptions = { filter: { slug } };
   const postQuery = useQuery({
     queryKey: ["post", queryOptions],
     queryFn: async () => fetchPost(queryOptions),

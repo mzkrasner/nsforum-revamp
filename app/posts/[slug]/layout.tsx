@@ -17,7 +17,10 @@ export async function generateMetadata({
   };
   if (!slug) return defaultMetaData;
 
-  const post = await fetchPost({ slug }, ["title", "preview"]);
+  const post = await fetchPost({
+    filter: { slug },
+    columns: ["title", "preview"],
+  });
   if (!post) return defaultMetaData;
 
   return {

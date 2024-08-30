@@ -78,7 +78,7 @@ const usePostForm = ({ postId }: Props) => {
         .replace(/\s+/g, "-") // Replace spaces with hyphens
         .replace(/-+/g, "-") + // Remove multiple consecutive hyphens
       (appendRandomString ? generateRandomAlphaNumString(4) : "");
-    const slugExists = await fetchPost({ slug });
+    const slugExists = await fetchPost({ filter: { slug } });
     if (slugExists) return await createPostSlug(title, true);
     return slug;
   };

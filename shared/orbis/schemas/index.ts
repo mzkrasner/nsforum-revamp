@@ -77,12 +77,33 @@ export const notifications = {
           additionalProperties: false,
         },
       },
-      // comments: {
-      //   type: "array",
-      //   items: {
-      //     type: "string",
-      //   },
-      // },
+      comments: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            stream_id: {
+              type: "string",
+            },
+            author: {
+              type: "object",
+              properties: {
+                username: {
+                  type: "string",
+                },
+                did: {
+                  type: "string",
+                },
+              },
+              additionalProperties: false,
+            },
+            preview: {
+              type: "string",
+            },
+          },
+          additionalProperties: false,
+        },
+      },
       status: {
         type: "string",
       },
@@ -224,7 +245,7 @@ export const comments = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
-      user: {
+      author: {
         type: "object",
         properties: {
           username: {
@@ -239,13 +260,10 @@ export const comments = {
       body: {
         type: "string",
       },
-      postId: {
+      post_id: {
         type: "string",
       },
-      topParentId: {
-        type: "string",
-      },
-      parentId: {
+      parent_ids: {
         type: "string",
       },
       status: {

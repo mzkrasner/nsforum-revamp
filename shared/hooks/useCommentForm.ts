@@ -1,3 +1,4 @@
+import usePost from "@/app/posts/_hooks/usePost";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   InfiniteData,
@@ -7,10 +8,10 @@ import {
 import { catchError } from "@useorbis/db-sdk/util";
 import { produce } from "immer";
 import { isNil, omitBy } from "lodash-es";
-import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { models } from "../orbis";
+import { FetchCommentsArg } from "../orbis/queries";
 import { commentFormSchema, CommentFormType } from "../schema/comment";
 import { PostStatus } from "../schema/post";
 import { GenericCeramicDocument, OrbisDBRow } from "../types";
@@ -21,38 +22,36 @@ import useProfile from "./useProfile";
 type Props = {
   comment?: OrbisDBRow<CommentType>;
   onSave?: () => void;
-  parentIds?: {
-    parentId: string;
-    topParentId: string;
-  };
+  parentIds?: string[];
   isReply?: boolean;
+  fetchCommentsArg: FetchCommentsArg;
 };
 
-const useCommentForm = (props?: Props) => {
-  const { comment, onSave, parentIds, isReply = false } = props || {};
-  const { topParentId, parentId } = parentIds || {};
+const useCommentForm = (props: Props) => {
+  const {
+    comment,
+    onSave,
+    parentIds = [],
+    fetchCommentsArg,
+    isReply = false,
+  } = props || {};
 
-  const params = useParams();
-  const postId = params.postId as string;
+  const { post } = usePost();
+  const postId = post?.stream_id;
 
   const queryClient = useQueryClient();
 
   const { db } = useOrbis();
   const { profile } = useProfile();
 
-  const emptyFormValues: Omit<CommentFormType, "user"> & {
-    user?: CommentFormType["user"];
-  } = {
-    user: profile
-      ? {
-          username: profile?.username,
-          did: profile?.controller,
-        }
-      : undefined,
+  const emptyFormValues: CommentType = {
+    author: {
+      username: profile?.username || "",
+      did: profile?.controller || "",
+    },
     body: "",
-    postId,
-    topParentId: topParentId || postId,
-    parentId: parentId || postId,
+    post_id: postId || "",
+    parent_ids: parentIds.join("-"),
     status: "published",
   };
   const form = useForm<CommentFormType>({
@@ -60,20 +59,24 @@ const useCommentForm = (props?: Props) => {
     defaultValues: comment || emptyFormValues,
   });
   const { reset, watch, setValue } = form;
+  // console.log(form.formState.errors);
 
   useEffect(() => {
-    if (profile?.controller && !watch("user.did")) {
-      setValue("user", {
+    if (profile?.controller && !watch("author.did")) {
+      setValue("author", {
         username: profile.username,
         did: profile.controller,
       });
     }
   }, [profile, watch]);
 
+  // console.log("Parent ids: ", parentIds);
   const saveFn = async (
     values: CommentFormType,
     status: PostStatus = "published",
   ) => {
+    // console.log("Values: ", values);
+    // return;
     let statement;
     if (comment) {
       // console.log("Updating comment");
@@ -104,10 +107,7 @@ const useCommentForm = (props?: Props) => {
       reset(emptyFormValues);
       const { id, content, controller } = result;
       // console.log("Result: ", result);
-      const queryKey = [
-        "comments",
-        omitBy({ postId, parentId: result.content.parentId }, isNil),
-      ];
+      const queryKey = ["comments", omitBy(fetchCommentsArg, isNil)];
       // console.log("Query key: ", queryKey);
       const commentsQueryData =
         queryClient.getQueryData<InfiniteData<OrbisDBRow<CommentType>[]>>(
