@@ -1,6 +1,6 @@
 import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
-import { models } from "@/shared/orbis";
+import { fetchPost } from "@/shared/orbis/queries";
 import { PostStatus } from "@/shared/schema/post";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Level } from "@tiptap/extension-heading";
@@ -23,35 +23,24 @@ const usePost = () => {
   const router = useRouter();
 
   const params = useParams();
-  const postId = params.postId;
+  const slug = params.slug as string;
 
   const { db } = useOrbis();
   const { connectOrbis } = useAuth();
 
   const queryClient = useQueryClient();
 
-  const fetchPost = async () => {
-    if (!postId) throw new Error("Cannot fetch post without postId");
-    const selectStatement = db?.select().from(models.posts.id).where({
-      stream_id: postId,
-    });
-    const [result, error] = await catchError(() => selectStatement?.run());
-    if (error) throw new Error(`Error while fetching post: ${error}`);
-    if (!result?.rows.length)
-      throw new Error(`Error while fetching post: Post not found`);
-    const post = result.rows[0];
-    return post;
-  };
-
+  const queryOptions = { slug };
   const postQuery = useQuery({
-    queryKey: ["post", { postId }],
-    queryFn: fetchPost,
+    queryKey: ["post", queryOptions],
+    queryFn: async () => fetchPost(queryOptions),
   });
 
-  const deletePost = async (postId: string) => {
+  const deletePost = async () => {
     // Orbis does not support delete statements yet
     // To delete a post change the deleted field to true
-    if (!db) return;
+    const postId = postQuery.data?.stream_id;
+    if (!db || !postId) return;
     await connectOrbis(); // Does nothing if user is already connected
     if (!db.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
@@ -70,12 +59,12 @@ const usePost = () => {
     mutationKey: ["delete-post"],
     mutationFn: deletePost,
     onSuccess: () => {
-      queryClient.setQueryData(["post", { postId }], (post: any) => ({
+      queryClient.setQueryData(["post", queryOptions], (post: any) => ({
         ...post,
         status: "deleted",
       }));
       queryClient.removeQueries({
-        queryKey: ["post", { postId }],
+        queryKey: ["post", queryOptions],
         exact: true,
       });
       router.push("/");
@@ -83,14 +72,14 @@ const usePost = () => {
   });
 
   const postHeadingsQuery = useQuery({
-    queryKey: ["post-headings", { postId }],
+    queryKey: ["post-headings", queryOptions],
     initialData: [] as PostHeading[],
     enabled: false,
   });
 
   const addPostHeading = useCallback(
     (postHeading: PostHeading) => {
-      const queryKey = ["post-headings", { postId }];
+      const queryKey = ["post-headings", queryOptions];
       const existingHeadings: PostHeading[] | undefined =
         queryClient.getQueryData(queryKey);
       const alreadyAdded = !!existingHeadings?.find(
@@ -116,7 +105,7 @@ const usePost = () => {
       id: string;
       viewportPosition: PostHeadingViewportPosition;
     }) => {
-      const queryKey = ["post-headings", { postId }];
+      const queryKey = ["post-headings", queryOptions];
       queryClient.setQueryData(
         queryKey,
         produce((draft?: PostHeading[]) => {
@@ -150,6 +139,7 @@ const usePost = () => {
   }, [postHeadings]);
 
   return {
+    post: postQuery.data,
     postQuery,
     deletePostMutation,
     postHeadingsQuery,

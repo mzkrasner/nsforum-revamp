@@ -62,7 +62,6 @@ export const fetchSubscribedToCount = async (did: string) => {
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error)
     throw new Error(`Error while fetching subscribed to count: ${error}`);
-  // console.log("Subscribed to count result: ", result);
   return Number(result.rows.length ? result.rows[0].count : 0);
 };
 
@@ -79,71 +78,4 @@ export const fetchSubscriberCount = async (did: string) => {
     throw new Error(`Error while fetching subscribed to count: ${error}`);
   // console.log("Subscriber count result: ", result);
   return Number(result.rows.length ? result.rows[0].count : 0);
-};
-
-const fetchUserNotification = async (userId: string) => {
-  const selectStatement = orbisdb.select().from(models.notifications.id).where({
-    reader_did: userId,
-  });
-  const [result, error] = await catchError(() => selectStatement?.run());
-  if (error)
-    throw new Error(`Error while fetching user notification: ${error}`);
-  return result.rows.length ? result.rows[0] : undefined;
-};
-
-type NotificationPost = {
-  id: string;
-  authorName: string;
-  author_did: string;
-};
-
-type AddPostNotificationPayload = {
-  reader_did: string;
-  author_did: string;
-  authorName: string;
-  postId: string;
-};
-export const addPostNotification = async ({
-  reader_did,
-  author_did,
-  authorName,
-  postId,
-}: AddPostNotificationPayload) => {
-  // Fetch existing notification
-  const existingNotification = await fetchUserNotification(reader_did);
-  const existingPosts: NotificationPost[] = existingNotification?.posts || [];
-
-  const newPost: NotificationPost = {
-    id: postId,
-    authorName,
-    author_did,
-  };
-  let statement;
-  if (existingNotification) {
-    // If exists update it
-    // Check if it already exists
-    const alreadyAdded = !!existingPosts.find(
-      (p: { id: string }) => p.id === postId,
-    );
-    if (alreadyAdded) return true;
-
-    statement = orbisdb
-      .update(existingNotification.stream_id)
-      .set({ posts: [...existingPosts, newPost] });
-  } else {
-    // Else create new one
-    statement = orbisdb.insert(models.notifications.id).value(newPost);
-    const validation = await statement.validate();
-    if (!validation.valid) {
-      throw new Error(
-        `Validation error while creating a new notification in addPostNotification: ${validation.error}`,
-      );
-    }
-  }
-
-  const [result, error] = await catchError(() => statement?.run());
-  if (error)
-    throw new Error(`Error while updating notification with post: ${error}`);
-  if (!result) throw new Error("No result was returned from orbis");
-  return result;
 };

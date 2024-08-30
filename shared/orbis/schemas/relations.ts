@@ -22,7 +22,7 @@ export type Relation<T extends keyof Schema, K extends keyof Schema> = {
   index?: number;
 };
 
-export const subscriptionUserRelations: Relation<"subscriptions", "users"> = {
+export const subscriptionReaderRelation: Relation<"subscriptions", "users"> = {
   referenceName: "reader",
   table: models.subscriptions.id,
   column: "reader_did",
@@ -31,6 +31,18 @@ export const subscriptionUserRelations: Relation<"subscriptions", "users"> = {
   referencedType: "single",
 };
 
-const relations = { subscriptionUserRelations } as const;
+export const notificationReaderRelation: Relation<"notifications", "users"> = {
+  referenceName: "reader",
+  table: models.notifications.id,
+  column: "reader_did",
+  referencedColumn: "controller",
+  referencedTable: models.users.id,
+  referencedType: "single",
+};
+
+const relations = {
+  subscriptionReaderRelation,
+  notificationReaderRelation,
+} as const;
 
 export default relations;

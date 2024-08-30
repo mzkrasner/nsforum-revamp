@@ -4,9 +4,10 @@
 import { OrbisDB } from "@useorbis/db-sdk";
 import { catchError } from "@useorbis/db-sdk/util";
 import { contexts, models } from ".";
-import { PostFormType } from "../schema/post";
+import { GenericCeramicDocument } from "../types";
+import { Post } from "../types/post";
 
-export type CreatePostPayload = { orbisdb: OrbisDB; values: PostFormType };
+export type CreatePostPayload = { orbisdb: OrbisDB; values: Post };
 export const createPost = async ({ orbisdb, values }: CreatePostPayload) => {
   const statement = orbisdb
     .insert(models.posts.id)
@@ -19,13 +20,13 @@ export const createPost = async ({ orbisdb, values }: CreatePostPayload) => {
   const [result, error] = await catchError(() => statement.run());
   if (error) throw new Error(`Error while creating post: ${error}`);
   if (!result) console.warn("No result was returned from create post");
-  return result;
+  return result as GenericCeramicDocument<Post>;
 };
 
 export type UpdatePostPayload = {
   orbisdb: OrbisDB;
   postId: string;
-  values: PostFormType;
+  values: Post;
 };
 export const updatePost = async ({
   orbisdb,
@@ -36,5 +37,5 @@ export const updatePost = async ({
   const [result, error] = await catchError(() => statement.run());
   if (error) throw new Error(`Error while updating post: ${error}`);
   if (!result) console.warn("No result was returned from update post");
-  return result;
+  return result as GenericCeramicDocument<Post>;
 };

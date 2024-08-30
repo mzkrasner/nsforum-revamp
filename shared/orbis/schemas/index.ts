@@ -67,6 +67,12 @@ export const notifications = {
             author_did: {
               type: "string",
             },
+            title: {
+              type: "string",
+            },
+            preview: {
+              type: "string",
+            },
           },
           additionalProperties: false,
         },
@@ -173,6 +179,15 @@ export const posts = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
+      slug: {
+        type: "string",
+      },
+      author_name: {
+        type: "string",
+      },
+      preview: {
+        type: "string",
+      },
       title: {
         type: "string",
       },
@@ -190,18 +205,6 @@ export const posts = {
       },
       status: {
         type: "string",
-      },
-      metadata: {
-        type: "object",
-        properties: {
-          created_at: {
-            type: "string",
-          },
-          updated_at: {
-            type: "string",
-          },
-        },
-        additionalProperties: false,
       },
     },
     additionalProperties: false,

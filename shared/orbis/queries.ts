@@ -2,17 +2,17 @@
 
 import { CeramicDocument } from "@useorbis/db-sdk";
 import { catchError } from "@useorbis/db-sdk/util";
-import { isNil, omitBy } from "lodash-es";
+// import { isNil, omitBy } from "lodash-es";
 import { models, orbisdb } from ".";
 import { OnlyStringFields, OrbisDBRow } from "../types";
-import { CommentType } from "../types/comment";
+// import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
 
-export const fetchPost = async (postId: string) => {
-  if (!postId) throw new Error("Cannot fetch post without postId");
-  const selectStatement = orbisdb.select().from(models.posts.id).where({
-    stream_id: postId,
-  });
+export const fetchPost = async (filter: Partial<Omit<Post, "tags">>, columns: (keyof Post)[] = []) => {
+  // TODO: Add filtering by tags functionality
+
+  if (!filter) throw new Error("Cannot fetch post without a filter");
+  const selectStatement = orbisdb.select(...columns).from(models.posts.id).where(filter);
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error) throw new Error(`Error while fetching post: ${error}`);
   if (!result?.rows.length) return null;
@@ -20,6 +20,7 @@ export const fetchPost = async (postId: string) => {
   return post as OrbisDBRow<Post>;
 };
 
+// TODO: Refactor to use post slug instead of id
 export type FetchCommentsOptions = {
   parentId?: string;
   topParentId?: string;
@@ -38,32 +39,33 @@ export const fetchComments = async (options: FetchCommentsOptions) => {
     pageSize = 10,
     controller,
   } = options;
-  if (!postId && !controller)
-    throw new Error(
-      "Cannot fetch comments without either a postId or controller",
-    );
-  const offset = page * pageSize;
-  const selectStatement = orbisdb
-    .select()
-    .from(models.comments.id)
-    .where(
-      omitBy(
-        {
-          postId,
-          parentId,
-          topParentId,
-          controller,
-          status: "published",
-        },
-        isNil,
-      ),
-    )
-    .limit(pageSize)
-    .offset(offset);
-  const [result, error] = await catchError(() => selectStatement?.run());
-  if (error) throw new Error(`Error while fetching comments: ${error}`);
-  const comments = result.rows;
-  return comments as OrbisDBRow<CommentType>[];
+  return [];
+  // if (!postId && !controller)
+  //   throw new Error(
+  //     "Cannot fetch comments without either a postId or controller",
+  //   );
+  // const offset = page * pageSize;
+  // const selectStatement = orbisdb
+  //   .select()
+  //   .from(models.comments.id)
+  //   .where(
+  //     omitBy(
+  //       {
+  //         postId,
+  //         parentId,
+  //         topParentId,
+  //         controller,
+  //         status: "published",
+  //       },
+  //       isNil,
+  //     ),
+  //   )
+  //   .limit(pageSize)
+  //   .offset(offset);
+  // const [result, error] = await catchError(() => selectStatement?.run());
+  // if (error) throw new Error(`Error while fetching comments: ${error}`);
+  // const comments = result.rows;
+  // return comments as OrbisDBRow<CommentType>[];
 };
 
 export type FetchPostsOptions = {

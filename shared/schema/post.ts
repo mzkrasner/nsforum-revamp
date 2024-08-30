@@ -6,6 +6,8 @@ export type PostStatus = (typeof POST_STATUSES)[number];
 export const postStatusSchema = z.enum([...POST_STATUSES]);
 
 export const postFormSchema = z.object({
+  author_name: z.string().min(1),
+  slug: z.string().optional().nullable(),
   title: z
     .string({ message: "Post title is required" })
     .min(1, "Post title is required"),
@@ -15,7 +17,6 @@ export const postFormSchema = z.object({
   category: z.string({ message: "Post category is required" }),
   tags: z.array(z.string()),
   status: postStatusSchema,
-  stream_id: z.string().optional().nullable(),
 });
 
 export type PostFormType = z.infer<typeof postFormSchema>;

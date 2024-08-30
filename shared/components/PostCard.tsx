@@ -13,12 +13,12 @@ import PostTags from "./PostTags";
 
 type Props = { post: Post };
 const PostCard = ({ post }: Props) => {
-  const { title, stream_id } = post || {};
+  const { title, slug } = post || {};
   return (
     <Card>
       <CardHeader className="space-y-0 p-3">
         <CardTitle className="text-base font-medium">
-          <Link href={`/posts/${stream_id}`} className="link inline-block">
+          <Link href={`/posts/${slug}`} className="link inline-block">
             {title}
           </Link>
         </CardTitle>

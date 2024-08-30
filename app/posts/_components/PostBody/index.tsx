@@ -23,44 +23,49 @@ const PostBody = () => {
 
   const parseOptions: HTMLReactParserOptions | undefined = useMemo(
     () =>
-      data?.body && {
-        replace: (domNode: DOMNode, index) => {
-          if (domNode instanceof Element && domNode.name?.match(/^h[1-6]$/)) {
-            const getContent = (element: Element) =>
-              element.children
-                .map((child) => {
-                  return child instanceof Text ? child.data : "";
-                })
-                .join("");
-            const content = getContent(domNode);
-            const baseSlug = slugify(content, {
-              lower: true,
-              strict: true,
-              trim: true,
-            }).substring(0, 50);
-            let slug = `${baseSlug}-${index}`;
-            const tagName = domNode.name as PostHeadingTagName;
-            const level = +tagName.slice(-1) as Level;
+      data?.body
+        ? {
+            replace: (domNode: DOMNode, index) => {
+              if (
+                domNode instanceof Element &&
+                domNode.name?.match(/^h[1-6]$/)
+              ) {
+                const getContent = (element: Element) =>
+                  element.children
+                    .map((child) => {
+                      return child instanceof Text ? child.data : "";
+                    })
+                    .join("");
+                const content = getContent(domNode);
+                const baseSlug = slugify(content, {
+                  lower: true,
+                  strict: true,
+                  trim: true,
+                }).substring(0, 50);
+                let slug = `${baseSlug}-${index}`;
+                const tagName = domNode.name as PostHeadingTagName;
+                const level = +tagName.slice(-1) as Level;
 
-            // Set the ID attribute
-            domNode.attribs.id = slug;
-            addPostHeading({
-              tagName,
-              level,
-              textContent: content,
-              id: slug,
-            });
-            const props = attributesToProps(domNode.attribs);
-            return (
-              <PostHeading {...props} level={level}>
-                {domToReact(domNode.children as DOMNode[], parseOptions)}
-              </PostHeading>
-            );
+                // Set the ID attribute
+                domNode.attribs.id = slug;
+                addPostHeading({
+                  tagName,
+                  level,
+                  textContent: content,
+                  id: slug,
+                });
+                const props = attributesToProps(domNode.attribs);
+                return (
+                  <PostHeading {...props} level={level}>
+                    {domToReact(domNode.children as DOMNode[], parseOptions)}
+                  </PostHeading>
+                );
+              }
+
+              return domNode;
+            },
           }
-
-          return domNode;
-        },
-      },
+        : undefined,
     [data?.body],
   );
 

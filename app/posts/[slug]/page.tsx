@@ -7,16 +7,13 @@ import {
 } from "@tanstack/react-query";
 import PostDetails from "../_components/PostDetails";
 
-const PostPage = async ({
-  params: { postId },
-}: {
-  params: { postId: string };
-}) => {
+const PostPage = async ({ params: { slug } }: { params: { slug: string } }) => {
   const queryClient = new QueryClient(config);
 
+  const options = { slug };
   await queryClient.prefetchQuery({
-    queryKey: ["post", { postId }],
-    queryFn: async () => fetchPost(postId),
+    queryKey: ["post", options],
+    queryFn: async () => fetchPost(options),
   });
 
   return (

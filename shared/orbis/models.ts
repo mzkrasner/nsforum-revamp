@@ -1,32 +1,32 @@
 
 const models = {
   "posts": {
-    "id": "kjzl6hvfrbw6c5m00jgjtrvodfikrrt54u75dfgdy7ffoa6uisu7j8jnmil7bsf",
-    "name": "dev_posts_v2"
+    "id": "kjzl6hvfrbw6c9si1akqp5dsspz2392xwbjadzl44ltewq7z6tl8uxr0zyyvvfr",
+    "name": "dev_posts_v6"
   },
   "comments": {
-    "id": "kjzl6hvfrbw6c83pyhuoufdjt7he22moven0gdkaxiplhgonv7t1sz0ks6o0tja",
-    "name": "dev_comments_v2"
+    "id": "kjzl6hvfrbw6c839a88nzwdvuqj9licmajxgpvs99tf8k8nxovururi6d0f4ycx",
+    "name": "dev_comments_v5"
   },
   "subscriptions": {
-    "id": "kjzl6hvfrbw6cb6hi6guh4vdthquobn3dw3xiw0rbgu21tji5unqth1r4dk0p9d",
-    "name": "dev_subscriptions_v5"
+    "id": "kjzl6hvfrbw6c8vyyj7b6y4iyzv20u6fwzvvlqzgypiev56jxcgv9nvdaenntzn",
+    "name": "dev_subscriptions_v8"
   },
   "notifications": {
-    "id": "kjzl6hvfrbw6c5976yti8z6ssif6qqdfegbqqt4c46m7z91sp4vvhfl9cayg2n4",
-    "name": "dev_notifications_v5"
+    "id": "kjzl6hvfrbw6c8r4dej88o2x2ew8r3cke37kk1a5ne8w3kuhrz2paig1uir3fqk",
+    "name": "dev_notifications_v12"
   },
   "tags": {
-    "id": "kjzl6hvfrbw6cacvffzhwch25ody3af065e90zuuwlvvu9m6890xjubq6m5nslx",
-    "name": "dev_tags_v2"
+    "id": "kjzl6hvfrbw6c76dbzl5uclphbqh44p62uovqrdp6oz8sv0a0yf7i0d1tuptaoj",
+    "name": "dev_tags_v5"
   },
   "categories": {
-    "id": "kjzl6hvfrbw6c86hsqx77tk8vwa8hghyhhzj4pykcfst2slp5czi1otnqu3f8vp",
-    "name": "dev_categories_v2"
+    "id": "kjzl6hvfrbw6c6a2wqptzsnqq6acd8o2nebj6z6yrxe5fq1wanrrto0kdywumfl",
+    "name": "dev_categories_v5"
   },
   "users": {
-    "id": "kjzl6hvfrbw6c5t99sst2un02ocvilnk3rz67via1t3d2y6oq9t53bdrux0lp5m",
-    "name": "dev_users_v2"
+    "id": "kjzl6hvfrbw6c7jjrkn1d8ldrd7nlv70bpyoxmt4ihosj1b8bhqwnguto7u3zdz",
+    "name": "dev_users_v5"
   }
 } as const;
 

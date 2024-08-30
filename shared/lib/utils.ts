@@ -20,3 +20,9 @@ export const getAvatarInitials = (name: string | undefined): string | null => {
   // Return the initials, combining first and last letters
   return `${firstLetter}${lastLetter}`;
 };
+
+export const generateRandomAlphaNumString = (length: number) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  return _.sampleSize(characters, length).join("");
+};

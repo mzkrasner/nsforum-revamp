@@ -64,7 +64,7 @@ const updateRelation = async <T extends keyof Schema, K extends keyof Schema>(
     );
     // console.log("Data returned from relation update: ", data);
     if (data?.success === false && data?.message === "Relation not found") {
-      console.log("Trying to create");
+      console.log("Relation update failed, trying to create");
       createRelation(relation, relationName);
     } else {
       console.log("Successfully updated relation");
