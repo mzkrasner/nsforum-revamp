@@ -59,7 +59,7 @@ const useCommentForm = (props: Props) => {
     defaultValues: comment || emptyFormValues,
   });
   const { reset, watch, setValue } = form;
-  // console.log(form.formState.errors);
+  console.log(form.formState.errors);
 
   useEffect(() => {
     if (profile?.controller && !watch("author.did")) {

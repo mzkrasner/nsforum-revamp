@@ -58,10 +58,7 @@ export const fetchComments = async ({
     .offset(offset);
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error) throw new Error(`Error while fetching comments: ${error}`);
-  const comments = result.rows?.map((row: Record<string, any>) => ({
-    ...row,
-    parent_ids: row.parent_ids?.split("-") || [],
-  }));
+  const comments = result.rows || [];
   return comments as OrbisDBRow<CommentType>[];
 };
 
