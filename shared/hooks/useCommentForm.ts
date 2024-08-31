@@ -5,16 +5,16 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { catchError } from "@useorbis/db-sdk/util";
 import { produce } from "immer";
 import { isNil, omitBy } from "lodash-es";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { models } from "../orbis";
+import { getHtmlContentPreview } from "../lib/utils";
+import { createComment, updateComment } from "../orbis/mutations";
 import { FetchCommentsArg } from "../orbis/queries";
 import { commentFormSchema, CommentFormType } from "../schema/comment";
 import { PostStatus } from "../schema/post";
-import { GenericCeramicDocument, OrbisDBRow } from "../types";
+import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import useOrbis from "./useOrbis";
 import useProfile from "./useProfile";
@@ -59,7 +59,7 @@ const useCommentForm = (props: Props) => {
     defaultValues: comment || emptyFormValues,
   });
   const { reset, watch, setValue } = form;
-  console.log(form.formState.errors);
+  // console.log(form.formState.errors);
 
   useEffect(() => {
     if (profile?.controller && !watch("author.did")) {
@@ -70,33 +70,23 @@ const useCommentForm = (props: Props) => {
     }
   }, [profile, watch]);
 
-  // console.log("Parent ids: ", parentIds);
   const saveFn = async (
-    values: CommentFormType,
+    _values: CommentFormType,
     status: PostStatus = "published",
   ) => {
-    // console.log("Values: ", values);
+    const preview = getHtmlContentPreview(_values.body);
+    const values = { ..._values, preview, status };
+    console.log("Values: ", values);
     // return;
-    let statement;
     if (comment) {
-      // console.log("Updating comment");
-      // Update existing comment
-      statement = db.update(comment.stream_id).set({ ...values, status });
+      return await updateComment({
+        orbisdb: db,
+        commentId: comment.stream_id,
+        values,
+      });
     } else {
-      // console.log("Creating comment");
-      // Create new comment
-      statement = db.insert(models.comments.id).value({ ...values, status });
-      const validation = await statement.validate();
-      if (!validation.valid) {
-        throw new Error(
-          `Error during create comment validation: ${validation.error}`,
-        );
-      }
+      return await createComment({ orbisdb: db, values });
     }
-    const [result, error] = await catchError(() => statement.run());
-    if (error) throw new Error(`Error during create comment query: ${error}`);
-    if (!result) throw new Error("No result was returned from orbis");
-    return result as GenericCeramicDocument<CommentType>;
   };
 
   const saveMutation = useMutation({

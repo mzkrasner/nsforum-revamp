@@ -19,13 +19,13 @@ import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
 
-type Props = { postId?: string };
-const PostForm = ({ postId }: Props) => {
+type Props = { isEditing?: boolean };
+const PostForm = ({ isEditing }: Props) => {
   const { profile, profileQuery } = useProfile();
   const { authenticated, ready } = usePrivy();
-  const { postQuery } = usePost();
+  const { postQuery, post } = usePost();
   const { form, categories, publishMutation, draftMutation } = usePostForm({
-    postId,
+    isEditing,
   });
   const { handleSubmit, control } = form;
 
@@ -45,6 +45,7 @@ const PostForm = ({ postId }: Props) => {
     );
 
   if (!profile && profileQuery.isSuccess) return <NoProfileGuard />;
+  const postId = post?.stream_id;
 
   return (
     <Form {...form}>

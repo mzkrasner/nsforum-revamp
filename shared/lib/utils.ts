@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { htmlToText } from "html-to-text";
 import * as _ from "lodash-es";
 import { twMerge } from "tailwind-merge";
 
@@ -25,4 +26,13 @@ export const generateRandomAlphaNumString = (length: number) => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   return _.sampleSize(characters, length).join("");
+};
+
+export const getHtmlContentPreview = (content: string) => {
+  const maxLength = 200;
+  const text = htmlToText(content);
+  if (text.length <= maxLength) {
+    return text + "...";
+  }
+  return text.slice(0, maxLength) + "...";
 };

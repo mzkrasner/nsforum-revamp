@@ -2,21 +2,23 @@ import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
 import useProfile from "@/shared/hooks/useProfile";
-import { generateRandomAlphaNumString } from "@/shared/lib/utils";
+import {
+  generateRandomAlphaNumString,
+  getHtmlContentPreview,
+} from "@/shared/lib/utils";
 import { createPost, updatePost } from "@/shared/orbis/mutations";
 import { fetchPost } from "@/shared/orbis/queries";
 import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
-import { htmlToText } from "html-to-text";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import usePost from "../../_hooks/usePost";
 
-type Props = { postId?: string };
-const usePostForm = ({ postId }: Props) => {
+type Props = { isEditing?: boolean };
+const usePostForm = ({ isEditing }: Props) => {
   const router = useRouter();
 
   const { db } = useOrbis();
@@ -34,15 +36,16 @@ const usePostForm = ({ postId }: Props) => {
       status: "published",
     } as Partial<PostFormType>,
   });
-  const { setValue } = form;
+  const { setValue, reset } = form;
 
   const {
     postQuery: { data: post, isLoading: isLoadingPost },
   } = usePost();
+  const postId = post?.stream_id;
 
-  // Initialize form with post
+  // Initialize form with post and clear on unmount
   useEffect(() => {
-    if (!postId || isLoadingPost || !post) return;
+    if (!isEditing || !postId || isLoadingPost || !post) return;
     const { title, body, category, status, tags, slug } = post;
     setValue("slug", slug);
     setValue("title", title);
@@ -50,21 +53,12 @@ const usePostForm = ({ postId }: Props) => {
     setValue("category", category);
     setValue("status", status);
     setValue("tags", tags || []);
-  }, [postId, post, setValue, isLoadingPost]);
+  }, [postId, post, setValue, isLoadingPost, reset, isEditing]);
 
   // Initialize author name
   useEffect(() => {
     if (profile?.name) setValue("author_name", profile.name);
   }, [profile, setValue]);
-
-  const getPostPreview = (body: string) => {
-    const maxLength = 200;
-    const text = htmlToText(body);
-    if (text.length <= maxLength) {
-      return text + "...";
-    }
-    return text.slice(0, maxLength) + "...";
-  };
 
   const createPostSlug = async (
     title: string,
@@ -93,7 +87,7 @@ const usePostForm = ({ postId }: Props) => {
       throw new Error("Cannot create a post without connection to orbis");
     }
     const { body, title } = formValues;
-    const preview = getPostPreview(body);
+    const preview = getHtmlContentPreview(body);
     const slug = formValues.slug || (await createPostSlug(title));
     const values = { ...formValues, preview, status, slug };
     if (postId) {
