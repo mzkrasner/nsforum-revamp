@@ -1,4 +1,3 @@
-import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { PostStatus } from "@/shared/schema/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,13 +11,11 @@ const useComment = ({ commentId }: Props) => {
   const queryClient = useQueryClient();
 
   const { db } = useOrbis();
-  const { connectOrbis } = useAuth();
 
   const deleteComment = async () => {
     // Orbis does not support delete statements yet
     // To delete a comment change the deleted field to true
     if (!db) return;
-    await connectOrbis(); // Does nothing if user is already connected
     if (!db.getConnectedUser()) {
       throw new Error("Cannot create a comment without connection to orbis");
     }

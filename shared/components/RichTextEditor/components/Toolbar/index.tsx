@@ -1,13 +1,13 @@
 "use client";
 
 import { Toggle } from "@/shared/components/ui/toggle";
-import { useCurrentEditor } from "@tiptap/react";
 import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon } from "lucide-react";
+import useEditorContext from "../../hooks/useEditorContext";
 import HeadingsButton from "./HeadingsButton";
-import TableButton from "./TableButton";
+import InsertButtons from "./InsertButtons";
 
 const TipTapToolbar = () => {
-  const { editor } = useCurrentEditor();
+  const { editor } = useEditorContext();
   if (!editor) return null;
 
   return (
@@ -46,7 +46,7 @@ const TipTapToolbar = () => {
       </Toggle>
       <HeadingsButton />
       <span className="ml-auto"></span>
-      <TableButton />
+      <InsertButtons />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import useAuth from "@/shared/hooks/useAuth";
 import useOrbis from "@/shared/hooks/useOrbis";
 import { fetchPost } from "@/shared/orbis/queries";
 import { PostStatus } from "@/shared/schema/post";
@@ -26,7 +25,6 @@ const usePost = () => {
   const slug = params.slug as string;
 
   const { db } = useOrbis();
-  const { connectOrbis } = useAuth();
 
   const queryClient = useQueryClient();
 
@@ -41,7 +39,6 @@ const usePost = () => {
     // To delete a post change the deleted field to true
     const postId = postQuery.data?.stream_id;
     if (!db || !postId) return;
-    await connectOrbis(); // Does nothing if user is already connected
     if (!db.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
     }

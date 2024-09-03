@@ -1,4 +1,3 @@
-import useAuth from "@/shared/hooks/useAuth";
 import useCategories from "@/shared/hooks/useCategories";
 import useOrbis from "@/shared/hooks/useOrbis";
 import useProfile from "@/shared/hooks/useProfile";
@@ -23,7 +22,6 @@ const usePostForm = ({ isEditing }: Props) => {
 
   const { db } = useOrbis();
   const { categories } = useCategories();
-  const { connectOrbis } = useAuth();
   const { profile } = useProfile();
 
   const form = useForm({
@@ -82,7 +80,6 @@ const usePostForm = ({ isEditing }: Props) => {
     status: PostStatus = "published",
   ) => {
     if (!db || !formValues) return;
-    await connectOrbis(); // Does nothing if user is already connected
     if (!db.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
     }

@@ -11,9 +11,13 @@ import {
 } from "@/shared/components/ui/tooltip";
 import useProfile from "@/shared/hooks/useProfile";
 import { getAvatarInitials } from "@/shared/lib/utils";
+import { LockOpenIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const ProfileInfo = () => {
+  const router = useRouter();
+
   const {
     profile,
     profileQuery,
@@ -36,23 +40,44 @@ const ProfileInfo = () => {
       <div className="flex flex-col gap-2">
         <div>
           <h3 className="text-2xl font-semibold">{name}</h3>
-          <div className="flex items-center justify-start gap-3 text-neutral-500">
+          <div className="flex items-center justify-start gap-2 text-neutral-500">
             <span>@{username}</span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="h-7 px-2 text-sm"
+                  size="icon"
+                  className="h-7 w-7 text-sm"
+                  onClick={() => router.push("/profile/edit#username-lock")}
                   hidden={verified}
                 >
-                  Verify
+                  <LockOpenIcon size={12} />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                Verify this username with your X account
+                You can verify your account using your X (formerly twitter)
+                account. This allows you to lock your username and react to
+                posts <span className="link">Learn more</span>
               </TooltipContent>
             </Tooltip>
+            {/* <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-7 w-7 text-sm"
+                  hidden={verified}
+                  asChild
+                >
+                  <Link href="/profile/edit#identity-verification">
+                    <BadgeHelpIcon size={14} />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Verify your identity. This allows you to react to posts.
+              </TooltipContent>
+            </Tooltip> */}
           </div>
         </div>
         <div className="flex h-5 items-center space-x-4 text-sm">

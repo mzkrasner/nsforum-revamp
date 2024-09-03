@@ -15,6 +15,7 @@ const useProfile = () => {
   const queryClient = useQueryClient();
 
   const { db, authInfo } = useOrbis();
+  const did = authInfo?.user.did;
 
   const fetchProfile = async (did?: string) => {
     if (!did || !db) return null;
@@ -30,13 +31,12 @@ const useProfile = () => {
   };
 
   const profileQuery = useQuery({
-    queryKey: ["profile"],
+    queryKey: ["profile", { did }],
     queryFn: async () => {
-      return await fetchProfile(authInfo?.user.did);
+      return await fetchProfile(did);
     },
-    enabled: !!authInfo?.user?.did,
+    enabled: !!did,
   });
-  const did = profileQuery.data?.controller;
 
   const fetchSubscriptionData = async () => {
     const { data } = await axios.get<SubscriptionData>("/api/subscription", {
@@ -53,9 +53,8 @@ const useProfile = () => {
   });
 
   const saveProfile = async (values: ProfileFormType) => {
-    if (!db || !authInfo) return;
+    if (!db || !did) return;
 
-    const did = authInfo.user.did;
     let statement;
     const existingProfile = await fetchProfile(did);
     // console.log("Existing profile: ", existingProfile);

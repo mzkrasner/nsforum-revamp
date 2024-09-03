@@ -1,11 +1,12 @@
-import { BubbleMenu, useCurrentEditor } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react";
+import useEditorContext from "../../hooks/useEditorContext";
 import TableButtons from "./TableButtons";
 import TableCellButtons from "./TableCellButtons";
 import TableColumnButtons from "./TableColumnButtons";
 import TableRowButtons from "./TableRowButtons";
 
 const TableMenu = () => {
-  const { editor } = useCurrentEditor();
+  const { editor } = useEditorContext();
 
   if (!editor) {
     return null;
@@ -25,7 +26,7 @@ const TableMenu = () => {
         return editor.isActive("table");
       }}
     >
-      <div className="flex gap-1 rounded-md border border-gray-1 bg-white p-1">
+      <div className="border-gray-1 flex gap-1 rounded-md border bg-white p-1">
         <TableCellButtons />
         <TableRowButtons />
         <TableColumnButtons />

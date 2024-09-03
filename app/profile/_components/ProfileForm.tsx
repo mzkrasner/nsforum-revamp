@@ -13,16 +13,18 @@ import { Input } from "@/shared/components/ui/input";
 import useProfile from "@/shared/hooks/useProfile";
 import { ProfileFormType, profileSchema } from "@/shared/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePrivy } from "@privy-io/react-auth";
+import { useLinkAccount, usePrivy } from "@privy-io/react-auth";
+import { PlusIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const ProfileForm = () => {
   const { user, authenticated } = usePrivy();
   const authEmail = user?.email?.address;
+  const { linkPhone } = useLinkAccount();
 
   const { profile, saveMutation } = useProfile();
-  const { name = "", username = "", email = "" } = profile || {};
+  const { name = "", username = "", email = "", phone = "" } = profile || {};
 
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(profileSchema),
@@ -30,6 +32,7 @@ const ProfileForm = () => {
       name,
       username,
       email: email || authEmail || "",
+      phone,
     },
   });
   const { handleSubmit, control, watch, setValue } = form;
@@ -69,15 +72,15 @@ const ProfileForm = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <div className="flex items-center gap-3">
-                    <Input {...field} error={error} />
-                    <Button
+                  {/* <div className="flex items-center gap-3"> */}
+                  <Input {...field} error={error} />
+                  {/* <Button
                       variant="outline"
-                      className="ml-auto flex w-fit px-2 text-sm"
+                      className="ml-auto flex w-fit gap-1 px-2 text-sm"
                     >
-                      Verify
+                      <LockOpenIcon size={16} /> Lock
                     </Button>
-                  </div>
+                  </div> */}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -93,6 +96,37 @@ const ProfileForm = () => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} error={error} disabled />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={control}
+          name="phone"
+          render={({ field, fieldState: { error } }) => {
+            const value = field.value || "";
+            return (
+              <FormItem>
+                <FormLabel>Phone number</FormLabel>
+                <FormControl>
+                  <div className="flex items-center gap-3">
+                    <Input
+                      placeholder="No phone number added"
+                      {...field}
+                      value={value}
+                      error={error}
+                      readOnly
+                    />
+                    <Button
+                      variant="outline"
+                      className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                      onClick={linkPhone}
+                    >
+                      <PlusIcon size={16} /> Add
+                    </Button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -1,7 +1,9 @@
+import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { htmlToText } from "html-to-text";
 import * as _ from "lodash-es";
 import { twMerge } from "tailwind-merge";
+import { pinata } from "../pinata/config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,4 +37,30 @@ export const getHtmlContentPreview = (content: string) => {
     return text + "...";
   }
   return text.slice(0, maxLength) + "...";
+};
+
+export const shortenAddress = (
+  address: string,
+  startLength: number = 5,
+  endLength: number = 5,
+) => {
+  return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
+};
+
+export const checkSBT = async (
+  address: string,
+  actionId: string = "123456789",
+) => {
+  if (!address) return false;
+  const { data } = await axios.get(
+    `https://api.holonym.io/sybil-resistance/gov-id/optimism?user=${address}&action-id=${actionId}`,
+  );
+  return !!data?.isUnique;
+};
+
+export const uploadToPinata = async (file: File) => {
+  const { data: keyData } = await axios.get("/api/pinata/key");
+  const upload = await pinata.upload.file(file).key(keyData.JWT);
+  const cid = upload.IpfsHash;
+  return cid;
 };

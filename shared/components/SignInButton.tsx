@@ -6,7 +6,6 @@ type Props = Omit<ButtonProps, "onClick">;
 const SignInButton = (props: Props) => {
   const { ready } = usePrivy();
   const { login } = useAuth();
-  console.log("Ready: ", ready);
   if (!ready) return null;
 
   return (

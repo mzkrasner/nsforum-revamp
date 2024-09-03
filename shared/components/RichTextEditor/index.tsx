@@ -1,21 +1,21 @@
 import { cn } from "@/shared/lib/utils";
 import CharacterCount from "@tiptap/extension-character-count";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
-import {
-  AnyExtension,
-  EditorContent,
-  EditorContext,
-  useEditor,
-} from "@tiptap/react";
+import Youtube from "@tiptap/extension-youtube";
+import { AnyExtension, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { forwardRef, useEffect, useState } from "react";
 import { FieldError, RefCallBack } from "react-hook-form";
 import TableMenu from "./components/TableMenu";
 import Toolbar from "./components/Toolbar";
+import { EditorContext } from "./context";
+import Iframe from "./plugins/iframe";
 
 type Props = {
   onChange?: (richText: string) => void;
@@ -25,6 +25,7 @@ type Props = {
   hideToolbar?: boolean;
   placeholder?: string;
   error?: FieldError;
+  uploadImage?: (file: File) => Promise<string>;
 };
 const RichTextEditor = forwardRef<HTMLDivElement, Props>(
   (
@@ -36,6 +37,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       hideToolbar = false,
       placeholder = "",
       error,
+      uploadImage,
     }: Props,
     forwardedRef,
   ) => {
@@ -51,17 +53,17 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
           },
         }),
         Placeholder.configure({
-          // Use a placeholder:
           placeholder,
-          // Use different placeholders depending on the node type:
-          // placeholder: ({ node }) => {
-          //   if (node.type.name === 'heading') {
-          //     return 'What’s the title?'
-          //   }
-
-          //   return 'Can you add some further context?'
-          // },
         }),
+        Link.configure({
+          openOnClick: true,
+          autolink: true,
+          defaultProtocol: "https",
+          HTMLAttributes: {
+            class: "link",
+          },
+        }),
+        Image,
         Table.configure({
           resizable: true,
         }),
@@ -73,6 +75,15 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
               limit,
             })
           : null,
+        Youtube.configure({
+          controls: true,
+          nocookie: true,
+          HTMLAttributes: {
+            style:
+              "margin: 0 auto; width: 100%; max-width: 640px; height: auto; aspect-ratio: 16/9; border-radius: 8px",
+          },
+        }),
+        Iframe,
       ].filter((v) => !!v) as AnyExtension[],
       content: value || "",
       editorProps: {
@@ -98,7 +109,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       : null;
 
     return (
-      <EditorContext.Provider value={{ editor }}>
+      <EditorContext.Provider value={{ editor, uploadImage }}>
         <div
           tabIndex={0}
           ref={(e) => {

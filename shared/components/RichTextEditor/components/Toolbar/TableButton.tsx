@@ -8,6 +8,7 @@ import { cn } from "@/shared/lib/utils";
 import { useCurrentEditor } from "@tiptap/react";
 import { TableIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import useEditorContext from "../../hooks/useEditorContext";
 
 const TableButton = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -23,7 +24,7 @@ const TableButton = () => {
     }
   }, [open]);
 
-  const { editor } = useCurrentEditor();
+  const { editor } = useEditorContext();
   if (!editor) return null;
 
   const insertTable = () => {

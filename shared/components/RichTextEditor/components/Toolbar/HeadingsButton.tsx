@@ -16,6 +16,7 @@ import {
   HeadingIcon,
 } from "lucide-react";
 import { useState } from "react";
+import useEditorContext from "../../hooks/useEditorContext";
 
 const headingIcons = [
   Heading2Icon,
@@ -28,7 +29,7 @@ const headingIcons = [
 const HeadingsButton = () => {
   const [open, setOpen] = useState(false);
 
-  const { editor } = useCurrentEditor();
+  const { editor } = useEditorContext();
   if (!editor) return null;
 
   const toggleHeading = (level: Level) => {

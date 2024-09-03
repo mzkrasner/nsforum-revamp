@@ -40,9 +40,35 @@ export const notificationReaderRelation: Relation<"notifications", "users"> = {
   referencedType: "single",
 };
 
+export const notificationsPostsRelation: Relation<
+  "notifications",
+  "notifications"
+> = {
+  referenceName: "posts",
+  table: models.notifications.id,
+  column: "posts",
+  referencedColumn: "posts",
+  referencedTable: models.notifications.id,
+  referencedType: "single",
+};
+
+export const notificationsCommentsRelation: Relation<
+  "notifications",
+  "notifications"
+> = {
+  referenceName: "comments",
+  table: models.notifications.id,
+  column: "comments",
+  referencedColumn: "comments",
+  referencedTable: models.notifications.id,
+  referencedType: "single",
+};
+
 const relations = {
   subscriptionReaderRelation,
   notificationReaderRelation,
+  notificationsPostsRelation,
+  notificationsCommentsRelation,
 } as const;
 
 export default relations;

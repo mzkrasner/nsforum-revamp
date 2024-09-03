@@ -14,6 +14,7 @@ import {
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
 import useProfile from "@/shared/hooks/useProfile";
+import { uploadToPinata } from "@/shared/lib/utils";
 import { usePrivy } from "@privy-io/react-auth";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
@@ -88,6 +89,7 @@ const PostForm = ({ isEditing }: Props) => {
                     onChange={onChange}
                     value={value}
                     error={error}
+                    uploadImage={uploadToPinata}
                   />
                 </FormControl>
                 <FormMessage />

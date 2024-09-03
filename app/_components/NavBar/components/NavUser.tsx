@@ -20,18 +20,26 @@ import useProfile from "@/shared/hooks/useProfile";
 import { getAvatarInitials } from "@/shared/lib/utils";
 import { usePrivy } from "@privy-io/react-auth";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { LoaderIcon } from "lucide-react";
 import Link from "next/link";
 
 const NavUser = () => {
   const { ready, authenticated, user } = usePrivy();
   const { logout } = useAuth();
   const { profile } = useProfile();
+  const email = profile?.email || user?.email?.address || "";
 
-  if (!ready) return null; // TODO: Add loading UI
+  if (!ready)
+    return (
+      <Button
+        variant="ghost"
+        className="relative h-8 gap-2 rounded-full p-0 hover:bg-transparent"
+      >
+        <LoaderIcon size={16} className="animate-spin" />
+      </Button>
+    );
 
   if (!authenticated) return <SignInButton />;
-
-  const authEmail = user?.email?.address;
 
   return (
     <DropdownMenu>
@@ -43,11 +51,7 @@ const NavUser = () => {
           <Avatar className="h-8 w-8">
             <AvatarImage src={profile?.image} alt="@shadcn" />
             <AvatarFallback className="text-[10px]">
-              {profile
-                ? getAvatarInitials(profile.name)
-                : authEmail?.length
-                  ? authEmail[0].toUpperCase()
-                  : "-"}
+              {profile ? getAvatarInitials(profile.name) : email ? email : "-"}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -59,7 +63,7 @@ const NavUser = () => {
               {profile ? profile.username : "No profile added"}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.email?.address as string}
+              {email}
             </p>
           </div>
         </DropdownMenuLabel>

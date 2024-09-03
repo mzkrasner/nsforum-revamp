@@ -260,6 +260,9 @@ export const comments = {
       body: {
         type: "string",
       },
+      preview: {
+        type: "string",
+      },
       post_id: {
         type: "string",
       },

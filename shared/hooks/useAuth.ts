@@ -1,34 +1,26 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useQuery } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
-import { useCallback, useEffect } from "react";
+import { isAddress } from "viem";
 import useOrbis from "./useOrbis";
 
-// TODO: Add login and logout loading states
-
 const useAuth = () => {
-  const privy = usePrivy();
+  const { ready, authenticated, logout, login, user } = usePrivy();
   const { wallets } = useWallets();
-  const connectedWallet = wallets.find((wallet) => !wallet.imported);
+  const privyWallet = wallets.find(
+    (wallet) => wallet.walletClientType === "privy",
+  ); // Use the privy wallet to connect to authenticate orbis
   const { db, authInfo, setAuthInfo } = useOrbis();
 
-  const connectOrbis = useCallback(async () => {
+  const connectOrbis = async () => {
+    if (!(ready && authenticated && privyWallet)) return;
     try {
-      if (!privy.ready)
-        return console.warn("Cannot connect to orbis when wallet is not ready");
-      if (!privy.authenticated)
-        return console.warn(
-          "Cannot connect to orbis when wallet is not authenticated",
-        );
-      if (!connectedWallet)
-        throw new Error("No privy wallet is connected to your account");
-
       let authInfo;
-      const connected = await db?.isUserConnected(connectedWallet.address);
+      const connected = await db?.isUserConnected(privyWallet.address);
       if (connected) {
-        // TODO Confirm if this gets called unneccessarily
         authInfo = await db?.getConnectedUser();
       } else {
-        const provider = await connectedWallet.getEthereumProvider();
+        const provider = await privyWallet.getEthereumProvider();
         if (!provider) throw new Error("Unable to fetch provider");
         const auth = new OrbisEVMAuth(provider);
         authInfo = await db?.connectUser({ auth });
@@ -42,24 +34,27 @@ const useAuth = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [wallets, privy.ready, privy.authenticated, connectedWallet]);
-
-  useEffect(() => {
-    if (privy.authenticated && privy.ready && connectedWallet) {
-      connectOrbis();
-    }
-  }, [connectOrbis, privy.ready, privy.authenticated, connectedWallet]);
-
-  const logout = async () => {
-    privy.logout();
-    await db?.disconnectUser();
   };
 
+  useQuery({
+    queryKey: ["connect-orbis", { privyWallet }],
+    queryFn: connectOrbis,
+    enabled: ready && authenticated && !!privyWallet,
+  });
+
+  const linkedWallets = user?.linkedAccounts.filter(
+    (acct: Record<string, any> & { address?: string }) =>
+      acct.address && isAddress(acct.address),
+  );
+
   return {
-    login: privy.login,
-    isLoggedIn: !!(privy.authenticated && authInfo),
-    logout,
-    connectOrbis,
+    linkedWallets,
+    login,
+    isLoggedIn: !!(authenticated && authInfo),
+    logout: async () => {
+      logout();
+      await db?.disconnectUser();
+    },
   };
 };
 

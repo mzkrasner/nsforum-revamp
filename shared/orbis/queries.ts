@@ -53,7 +53,7 @@ export const fetchComments = async ({
   const selectStatement = orbisdb
     .select()
     .from(models.comments.id)
-    .where(omitBy(filter, isNil))
+    .where({ status: "published", ...omitBy(filter, isNil) })
     .limit(pageSize)
     .offset(offset);
   const [result, error] = await catchError(() => selectStatement?.run());

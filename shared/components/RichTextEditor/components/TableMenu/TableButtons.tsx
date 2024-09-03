@@ -4,11 +4,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { useCurrentEditor } from "@tiptap/react";
 import { ChevronDownIcon, TableIcon } from "lucide-react";
+import useEditorContext from "../../hooks/useEditorContext";
 
 const TableButtons = () => {
-  const { editor } = useCurrentEditor();
+  const { editor } = useEditorContext();
 
   if (!editor) {
     return null;
