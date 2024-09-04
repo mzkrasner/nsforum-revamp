@@ -6,7 +6,6 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { Toggle } from "@/shared/components/ui/toggle";
 import { Level } from "@tiptap/extension-heading";
-import { useCurrentEditor } from "@tiptap/react";
 import {
   Heading2Icon,
   Heading3Icon,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import useEditorContext from "../../hooks/useEditorContext";
+import useToolbarFunctions from "./useToolbarFunctions";
 
 const headingIcons = [
   Heading2Icon,
@@ -30,12 +30,9 @@ const HeadingsButton = () => {
   const [open, setOpen] = useState(false);
 
   const { editor } = useEditorContext();
-  if (!editor) return null;
+  const { toggleHeading, isHeadingActive } = useToolbarFunctions();
 
-  const toggleHeading = (level: Level) => {
-    if (!editor) return;
-    editor.chain().focus().toggleHeading({ level }).run();
-  };
+  if (!editor) return null;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -52,11 +49,9 @@ const HeadingsButton = () => {
               <Toggle
                 size="sm"
                 className="w-full gap-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleHeading(level);
-                }}
-                pressed={editor.isActive("heading", { level })}
+                onClick={(e) => e.stopPropagation()}
+                onPressedChange={() => toggleHeading(level)}
+                pressed={isHeadingActive(level)}
               >
                 <Icon size={16} />
                 Heading {level}

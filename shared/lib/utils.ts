@@ -64,3 +64,7 @@ export const uploadToPinata = async (file: File) => {
   const cid = upload.IpfsHash;
   return cid;
 };
+
+export const reverseString = (str: string) => {
+  return str.split("").reverse().join("");
+};

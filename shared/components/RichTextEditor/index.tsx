@@ -12,10 +12,13 @@ import { AnyExtension, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { forwardRef, useEffect, useState } from "react";
 import { FieldError, RefCallBack } from "react-hook-form";
+import { Markdown } from "tiptap-markdown";
+import MdEditor from "./components/MdEditor";
 import TableMenu from "./components/TableMenu";
 import Toolbar from "./components/Toolbar";
 import { EditorContext } from "./context";
 import Iframe from "./plugins/iframe";
+import { MdEditorType } from "./types";
 
 type Props = {
   onChange?: (richText: string) => void;
@@ -41,7 +44,9 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
     }: Props,
     forwardedRef,
   ) => {
-    const [focused, setFocused] = useState<boolean>(false);
+    const [isMdEditorActive, setIsMdEditorActive] = useState(false);
+    const [mdEditor, setMdEditor] = useState<MdEditorType | null>(null);
+    const [focused, setFocused] = useState(false);
 
     const hasLimit = !isNaN(Number(limit));
 
@@ -84,6 +89,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
           },
         }),
         Iframe,
+        Markdown,
       ].filter((v) => !!v) as AnyExtension[],
       content: value || "",
       editorProps: {
@@ -104,12 +110,27 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       }
     }, [value, editor]);
 
+    useEffect(() => {
+      if (!isMdEditorActive && mdEditor) setMdEditor(null);
+    }, [isMdEditorActive, mdEditor]);
+
+    const toggleMarkdown = () => setIsMdEditorActive((v) => !v);
+
     const charsLeft = hasLimit
       ? limit! - editor?.storage.characterCount.characters()
       : null;
 
     return (
-      <EditorContext.Provider value={{ editor, uploadImage }}>
+      <EditorContext.Provider
+        value={{
+          editor,
+          uploadImage,
+          isMdEditorActive,
+          toggleMarkdown,
+          mdEditor,
+          setMdEditor,
+        }}
+      >
         <div
           tabIndex={0}
           ref={(e) => {
@@ -128,10 +149,14 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
           )}
         >
           {!hideToolbar && <Toolbar />}
+          {isMdEditorActive && <MdEditor />}
           <EditorContent
             editor={editor}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
+            className={cn({
+              "-z-1 pointer-events-none h-0 w-0 opacity-0": isMdEditorActive,
+            })}
           />
           <TableMenu />
           {hasLimit && (

@@ -72,3 +72,8 @@
 .link {
   @apply cursor-pointer hover:underline;
 }
+
+/* Code mirror */
+.cm-editor {
+  @apply overflow-hidden rounded-b-sm;
+}

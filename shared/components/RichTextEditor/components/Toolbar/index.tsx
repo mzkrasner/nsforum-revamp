@@ -1,13 +1,26 @@
 "use client";
 
 import { Toggle } from "@/shared/components/ui/toggle";
+import { cn } from "@/shared/lib/utils";
+import { SiMarkdown } from "@icons-pack/react-simple-icons";
 import { BoldIcon, ItalicIcon, ListIcon, ListOrderedIcon } from "lucide-react";
 import useEditorContext from "../../hooks/useEditorContext";
 import HeadingsButton from "./HeadingsButton";
 import InsertButtons from "./InsertButtons";
+import useToolbarFunctions from "./useToolbarFunctions";
 
 const TipTapToolbar = () => {
-  const { editor } = useEditorContext();
+  const { editor, isMdEditorActive, toggleMarkdown } = useEditorContext();
+  const {
+    toggleBold,
+    toggleItalic,
+    toggleBulletedList,
+    toggleOrderedList,
+    isBoldActive,
+    isItalicActive,
+    isBulletedListActive,
+    isOrderedListActive,
+  } = useToolbarFunctions();
   if (!editor) return null;
 
   return (
@@ -15,38 +28,51 @@ const TipTapToolbar = () => {
       <Toggle
         size="sm"
         className="h-8 w-8"
-        pressed={editor.isActive("bold")}
-        onPressedChange={() => editor.chain().focus().toggleBold().run()}
+        pressed={isBoldActive()}
+        onPressedChange={toggleBold}
       >
         <BoldIcon size={14} />
       </Toggle>
       <Toggle
         size="sm"
         className="h-8 w-8"
-        pressed={editor.isActive("italic")}
-        onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+        pressed={isItalicActive()}
+        onPressedChange={toggleItalic}
       >
         <ItalicIcon size={14} />
       </Toggle>
       <Toggle
         size="sm"
         className="h-8 w-8"
-        pressed={editor.isActive("bulletlist")}
-        onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+        pressed={isBulletedListActive()}
+        onPressedChange={toggleBulletedList}
       >
         <ListIcon size={14} />
       </Toggle>
       <Toggle
         size="sm"
         className="h-8 w-8"
-        pressed={editor.isActive("orderedList")}
-        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+        pressed={isOrderedListActive()}
+        onPressedChange={() => toggleOrderedList()}
       >
         <ListOrderedIcon size={14} />
       </Toggle>
       <HeadingsButton />
       <span className="ml-auto"></span>
       <InsertButtons />
+      <Toggle
+        size="sm"
+        className="h-8 w-8 p-0"
+        pressed={isMdEditorActive}
+        onPressedChange={toggleMarkdown}
+      >
+        <SiMarkdown
+          size={20}
+          className={cn({
+            "opacity-30": !isMdEditorActive,
+          })}
+        />
+      </Toggle>
     </div>
   );
 };
