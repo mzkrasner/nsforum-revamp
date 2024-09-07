@@ -5,7 +5,7 @@ import { LoaderIcon, LucideProps } from "lucide-react";
 import * as React from "react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex gap-2 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -64,7 +64,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       size,
       asChild = false,
       loadingText = "Loading...",
-      loaderProps,
+      loaderProps = {},
       startContent = null,
       ...props
     },
@@ -80,11 +80,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading && (
           <LoaderIcon
+            size={16}
             {...loaderProps}
-            className={cn(
-              "mr-2 h-5 w-5 animate-spin text-muted",
-              loaderProps?.className,
-            )}
+            className={cn("animate-spin", loaderProps?.className)}
           />
         )}
         {startContent}

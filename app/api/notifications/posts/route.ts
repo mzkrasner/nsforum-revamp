@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const updatePostNotificationsSchema = z.object({
-  author_did: z.string().min(1),
-  authorName: z.string().min(1),
-  postId: z.string().min(1),
+  author_did: z.string().trim().min(1),
+  authorName: z.string().trim().min(1),
+  postId: z.string().trim().min(1),
 });
 
 export const POST = async (req: NextRequest) => {

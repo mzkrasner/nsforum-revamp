@@ -27,6 +27,10 @@ const models = {
   "users": {
     "id": "kjzl6hvfrbw6c85bnvi049qaw1qu228bkjg1yn8zjotbqni8b9kamkuugnr7ant",
     "name": "dev_users_v6"
+  },
+  "categorySuggestions": {
+    "id": "kjzl6hvfrbw6c5n9pe47xfu6445g6qcf7qxbhv7lb3n0l2ruegb0gobzzdswu5f",
+    "name": "dev_category_suggestions_v1"
   }
 } as const;
 

@@ -1,15 +1,13 @@
-import { HTMLAttributes } from "react"
-import { format } from 'date-fns'
+import { format } from "date-fns";
+import { HTMLAttributes } from "react";
 
 const DateDisplay = ({
   dateString,
   children,
   ...props
-}: HTMLAttributes<HTMLSpanElement> & { dateString: string; }) => {
+}: HTMLAttributes<HTMLSpanElement> & { dateString: string }) => {
   if (!dateString) return null;
   const formattedDate = format(new Date(dateString), "do MMM yyyy");
-  return (
-    <span {...props}>{formattedDate}</span>
-  )
-}
-export default DateDisplay
+  return <span {...props}>{formattedDate}</span>;
+};
+export default DateDisplay;

@@ -102,7 +102,9 @@ const PostForm = ({ isEditing }: Props) => {
           name="category"
           render={({ field, fieldState: { error } }) => {
             const { onChange, value, ref } = field;
-            const selectedCategory = categories.find(({ id }) => id === value);
+            const selectedCategory = categories.find(
+              ({ stream_id }) => stream_id === value,
+            );
             return (
               <FormItem>
                 <FormControl>
@@ -110,7 +112,7 @@ const PostForm = ({ isEditing }: Props) => {
                     ref={ref}
                     label="Select category"
                     selectedCategory={selectedCategory}
-                    onSelect={({ id }) => onChange(id)}
+                    onSelect={({ stream_id }) => onChange(stream_id)}
                     error={error}
                   />
                 </FormControl>
@@ -143,16 +145,16 @@ const PostForm = ({ isEditing }: Props) => {
             variant="outline"
             onClick={handleSubmit((v: any) => draftMutation.mutate(v))}
             loading={draftMutation.isPending}
-            loadingText={`${postId ? "Converting to" : "Saving as"} draft...`}
+            loadingText={`${isEditing ? "Converting to" : "Saving as"} draft...`}
           >
-            {postId ? "Save as" : "Convert to"} Draft
+            {isEditing ? "Save as" : "Convert to"} Draft
           </Button>
           <Button
             type="submit"
             loading={publishMutation.isPending}
-            loadingText={`${postId ? "Editing" : "Creating"} post...`}
+            loadingText={`${isEditing ? "Editing" : "Creating"} post...`}
           >
-            {postId ? "Edit" : "Create"} Post
+            {isEditing ? "Edit" : "Create"} Post
           </Button>
         </div>
       </form>

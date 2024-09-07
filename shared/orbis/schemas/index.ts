@@ -163,6 +163,33 @@ export const categories = {
   },
 } as const;
 
+export const categorySuggestions = {
+  name: "dev_category_suggestions",
+  version: "2.0",
+  interface: false,
+  immutableFields: [],
+  implements: [],
+  accountRelation: {
+    type: "list",
+  },
+  schema: {
+    type: "object",
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    properties: {
+      name: {
+        type: "string",
+      },
+      description: {
+        type: "string",
+      },
+      status: {
+        type: "string",
+      },
+    },
+    additionalProperties: false,
+  },
+} as const;
+
 export const tags = {
   name: "dev_tags",
   version: "2.0",
@@ -283,6 +310,7 @@ const schemas = {
   notifications,
   tags,
   categories,
+  categorySuggestions,
   posts,
   comments,
 } as const;

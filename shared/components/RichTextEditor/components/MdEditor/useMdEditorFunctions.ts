@@ -287,7 +287,6 @@ const useMdEditorFunctions = () => {
     const { from, to } = state.selection.main;
     // Check wrapping inclusive of wrapper
     const delimiterRange = getDelimiterRange({ from, to, delimiter: wrapper });
-    console.log(wrapper, delimiterRange);
     return !!delimiterRange;
   };
 

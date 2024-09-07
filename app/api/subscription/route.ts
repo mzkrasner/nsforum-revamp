@@ -6,15 +6,15 @@ import {
 } from "@/app/api/_orbis/queries";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { connectDb } from "../_orbis";
+import { connectDbWithSeed } from "../_orbis";
 
 const fetchSubscriptionSchema = z.object({
-  author_did: z.string().min(1),
-  reader_did: z.string().min(1),
+  author_did: z.string().trim().min(1),
+  reader_did: z.string().trim().min(1),
 });
 
 export const GET = async (req: NextRequest) => {
-  await connectDb();
+  await connectDbWithSeed();
   const { searchParams } = new URL(req.url);
   const author_did = searchParams.get("author");
   const reader_did = searchParams.get("reader");
@@ -37,8 +37,8 @@ export const GET = async (req: NextRequest) => {
 };
 
 const updateSubscriptionSchema = z.object({
-  author_did: z.string().min(1),
-  reader_did: z.string().min(1),
+  author_did: z.string().trim().min(1),
+  reader_did: z.string().trim().min(1),
   subscribed: z.boolean(),
 });
 
@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
   if (!isValid)
     return NextResponse.json({ error: "Invalid data", status: 400 });
 
-  await connectDb();
+  await connectDbWithSeed();
   const res = await updateSubscription(body);
   return NextResponse.json(res.content);
 };

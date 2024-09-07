@@ -5,7 +5,8 @@ import { forwardRef, useState } from "react";
 import { FieldError } from "react-hook-form";
 import useCategories from "../hooks/useCategories";
 import { cn } from "../lib/utils";
-import { Category } from "../schema/category";
+import { OrbisDBRow } from "../types";
+import { Category } from "../types/category";
 import { Button } from "./ui/button";
 import {
   Command,
@@ -19,9 +20,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 type Props = {
   label?: string;
-  selectedCategory?: Category;
+  selectedCategory?: OrbisDBRow<Category>;
   error?: FieldError;
-  onSelect?: (category: Category) => void;
+  onSelect?: (category: OrbisDBRow<Category>) => void;
 };
 const CategorySelector = forwardRef<HTMLButtonElement, Props>(
   ({ label = "Category", selectedCategory, error, onSelect }, forwardedRef) => {
@@ -51,19 +52,19 @@ const CategorySelector = forwardRef<HTMLButtonElement, Props>(
               <CommandEmpty>No categories found.</CommandEmpty>
               <CommandGroup className="p-1.5">
                 {categories.map((category) => {
-                  const { id, name, description } = category;
+                  const { stream_id, name, description } = category;
                   return (
                     <CommandItem
-                      key={id}
+                      key={stream_id}
                       className="teamaspace-y-1 flex cursor-pointer flex-col items-start px-4 py-2"
-                      value={id}
+                      value={name}
                       onSelect={() => {
                         onSelect?.(category);
                         setOpen(false);
                       }}
                     >
                       <p>{name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="line-clamp-3 text-sm text-muted-foreground">
                         {description}
                       </p>
                     </CommandItem>

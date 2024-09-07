@@ -1,23 +1,34 @@
-import { ExternalLinkIcon } from "lucide-react";
+import useCategories from "../hooks/useCategories";
+import { OrbisDBRow } from "../types";
+import { Post } from "../types/post";
+import CategoryDisplay from "./CategoryDisplay";
 import DateDisplay from "./DateDisplay";
-import { Button } from "./ui/button";
 import User from "./User";
 
-type Props = { post: any };
+type Props = { post: OrbisDBRow<Post> };
 const PostInfo = ({ post }: Props) => {
-  const { indexed_at, controller } = post;
+  const { indexed_at, controller, category: categoryId } = post;
+  const { categories } = useCategories();
+  const category = categories.find((c) => c.stream_id === categoryId);
+
   return (
     <div className="relative flex h-8 flex-row items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
-      <span>By</span>
       <User did={controller} />
+      {category && (
+        <>
+          <span className="text-neutral-400">in</span>{" "}
+          <CategoryDisplay category={category} />
+        </>
+      )}
+      <span className="text-neutral-400">on</span>
       <DateDisplay dateString={indexed_at} />
-      <Button
+      {/* <Button
         variant="ghost"
         size="sm"
         className="ml-auto inline-flex h-8 items-center gap-1.5 text-xs"
       >
         Proof <ExternalLinkIcon className="w-4" />
-      </Button>
+      </Button> */}
     </div>
   );
 };

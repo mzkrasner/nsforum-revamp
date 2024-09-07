@@ -6,7 +6,7 @@ export type PostStatus = (typeof POST_STATUSES)[number];
 export const postStatusSchema = z.enum([...POST_STATUSES]);
 
 export const postFormSchema = z.object({
-  author_name: z.string().min(1),
+  author_name: z.string().trim().min(1),
   slug: z.string().optional().nullable(),
   title: z
     .string({ message: "Post title is required" })

@@ -1,9 +1,12 @@
 import { models, orbisdb } from "@/shared/orbis";
-import { OrbisDBRow } from "@/shared/types";
+import { CategorySuggestionSchema } from "@/shared/schema/categorySuggestion";
+import { GenericCeramicDocument, OrbisDBRow } from "@/shared/types";
+import { CategorySuggestion } from "@/shared/types/category";
 import { Subscription } from "@/shared/types/subscription";
 import { count } from "@useorbis/db-sdk/operators";
 import { InsertStatement, UpdateByIdStatement } from "@useorbis/db-sdk/query";
 import { catchError } from "@useorbis/db-sdk/util";
+import axios from "axios";
 
 export const fetchSubscription = async (
   query: Omit<Subscription, "subscribed">,
@@ -48,7 +51,7 @@ export const updateSubscription = async (subscription: Subscription) => {
   const [result, error] = await catchError(() => statement?.run());
   if (error) throw new Error(`Error during subscription: ${error}`);
   if (!result) throw new Error("No result was returned from orbis");
-  return result;
+  return result as GenericCeramicDocument<Subscription>;
 };
 
 export const fetchSubscribedToCount = async (did: string) => {
@@ -78,4 +81,46 @@ export const fetchSubscriberCount = async (did: string) => {
     throw new Error(`Error while fetching subscribed to count: ${error}`);
   // console.log("Subscriber count result: ", result);
   return Number(result.rows.length ? result.rows[0].count : 0);
+};
+
+export const suggestCategory = async (
+  categorySuggestion: CategorySuggestionSchema,
+) => {
+  const statement = orbisdb
+    .insert(models.categorySuggestions.id)
+    .value({ ...categorySuggestion, status: "pending" });
+  const validation = await statement.validate();
+  if (!validation.valid) {
+    throw new Error(
+      `Error during subscription validation: ${validation.error}`,
+    );
+  }
+
+  const [result, error] = await catchError(() => statement?.run());
+  if (error) throw new Error(`Error during subscription: ${error}`);
+  if (!result) throw new Error("No result was returned from orbis");
+  return result as GenericCeramicDocument<CategorySuggestion>;
+};
+
+export const fetchCategorySuggestion = async (id: string) => {
+  const graphql = `{
+    ${models.categorySuggestions.name}(filter: { stream_id: "${id}" }) {
+      stream_id
+      name
+      description
+    }
+  }
+`;
+
+  const { data } = await axios.post(
+    `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/global/graphql`,
+    {
+      query: graphql,
+    },
+  );
+
+  const categorySuggestions: CategorySuggestion[] =
+    data?.data?.[models.categorySuggestions.name] || [];
+
+  return categorySuggestions.length ? categorySuggestions[0] : null;
 };

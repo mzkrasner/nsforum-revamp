@@ -18,6 +18,7 @@ const PostTableOfContents = ({ open, setOpen }: Props) => {
   if (!data) return "No data found...";
   const { title } = data;
 
+  // TODO: handle this with CSS
   const scrollToHeading = (headingId: string) => {
     const headingElement = document.getElementById(headingId);
     if (!headingElement) return;

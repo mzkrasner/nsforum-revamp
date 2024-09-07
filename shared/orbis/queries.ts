@@ -1,19 +1,24 @@
-"use server";
+// "use server";
 
 import { CeramicDocument } from "@useorbis/db-sdk";
 import { catchError } from "@useorbis/db-sdk/util";
-// import { isNil, omitBy } from "lodash-es";
+import { isNil, omitBy } from "lodash-es";
 import { models, orbisdb } from ".";
 import { OnlyStringFields, OrbisDBRow } from "../types";
-// import { CommentType } from "../types/comment";
-import { isNil, omitBy } from "lodash-es";
+import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
+
+export type PaginationOptions = {
+  page?: number;
+  pageSize?: number;
+};
 
 export type FetchPostArg = {
   filter: Partial<Omit<OrbisDBRow<Post>, "tags" | "body" | "preview">>;
   columns?: (keyof Post)[];
 };
+
 export const fetchPost = async ({ filter, columns = [] }: FetchPostArg) => {
   // TODO: Add filtering by tags functionality
 
@@ -32,13 +37,9 @@ export const fetchPost = async ({ filter, columns = [] }: FetchPostArg) => {
 export type FetchCommentsFilter = Partial<
   Omit<OrbisDBRow<CommentType>, "author" | "body" | "parent_ids">
 > & { parent_ids?: any };
-export type FetchCommentsPaginationOptions = {
-  page?: number;
-  pageSize?: number;
-};
 export type FetchCommentsArg = {
   filter: FetchCommentsFilter;
-  pagination?: FetchCommentsPaginationOptions;
+  pagination?: PaginationOptions;
 };
 export const fetchComments = async ({
   filter,
@@ -63,13 +64,12 @@ export const fetchComments = async ({
 };
 
 export type FetchPostsOptions = {
-  page?: number;
-  pageSize?: 0;
   fields?: string[];
   filter?:
     | Record<string, any>
     | Partial<OnlyStringFields<Post & CeramicDocument["content"]>>;
-};
+} & PaginationOptions;
+
 export const fetchPosts = async (options?: FetchPostsOptions) => {
   const { page = 0, pageSize = 10, fields = [], filter = {} } = options || {};
   const offset = page * pageSize;
@@ -82,8 +82,77 @@ export const fetchPosts = async (options?: FetchPostsOptions) => {
     })
     .limit(pageSize)
     .offset(offset);
+
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error) throw new Error(`Error while fetching posts: ${error}`);
   const posts = result.rows;
   return posts as OrbisDBRow<Post>[];
+};
+
+export type FetchCategorySuggestionsOptions = PaginationOptions & {
+  filter?: Record<string, any>;
+};
+
+export const fetchCategorySuggestions = async (
+  options: FetchCategorySuggestionsOptions = {},
+) => {
+  const { page = 0, pageSize = 10, filter = {} } = options;
+  const offset = page * pageSize;
+
+  //   const graphql = `{
+  //     ${models.categorySuggestions.name}(filter: {}) {
+  //       stream_id
+  //       name
+  //       description
+  //       status
+  //     }
+  //   }
+  // `;
+
+  //   const { data } = await axios.post(
+  //     `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/global/graphql`,
+  //     {
+  //       query: graphql,
+  //     },
+  //   );
+
+  //   const categorySuggestions: OrbisDBRow<CategorySuggestion>[] =
+  //     data?.data?.[models.categorySuggestions.name] || [];
+
+  //   return categorySuggestions;
+
+  const selectStatement = orbisdb
+    .select()
+    .from(models.categorySuggestions.id)
+    .where(filter)
+    .limit(pageSize)
+    .offset(offset);
+
+  const [result, error] = await catchError(() => selectStatement?.run());
+  if (error)
+    throw new Error(`Error while fetching category suggestions: ${error}`);
+  const categorySuggestions = result.rows;
+  return categorySuggestions as OrbisDBRow<CategorySuggestion>[];
+};
+
+export type FetchCategoriesOptions = {
+  fields?: string[];
+  filter?:
+    | Record<string, any>
+    | Partial<OnlyStringFields<Category & CeramicDocument["content"]>>;
+} & PaginationOptions;
+export const fetchCategories = async (options?: FetchCategoriesOptions) => {
+  const { page = 0, pageSize = 10, fields = [], filter = {} } = options || {};
+  const offset = page * pageSize;
+  const selectStatement = orbisdb
+    .select(...fields)
+    .from(models.categories.id)
+    .where(filter)
+    .limit(pageSize)
+    .offset(offset);
+
+  const [result, error] = await catchError(() => selectStatement?.run());
+  if (error) throw new Error(`Error while fetching categories: ${error}`);
+  const posts = result.rows;
+  return posts as OrbisDBRow<Category>[];
 };

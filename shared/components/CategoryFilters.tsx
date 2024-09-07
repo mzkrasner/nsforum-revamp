@@ -1,4 +1,3 @@
-import CategorySelector from "@/shared/components/CategorySelector";
 import {
   Select,
   SelectContent,
@@ -7,21 +6,20 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 
-const PostFilters = () => {
+type Props = {};
+const CategoryFilters = (props: Props) => {
   return (
     <div className="flex items-center gap-3">
-      <CategorySelector label="All categories" />
       <Select>
         <SelectTrigger className="h-9">
           <SelectValue placeholder="Sort by" className="mr-3" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="1">Most Upvoted</SelectItem>
-          <SelectItem value="2">Newest</SelectItem>
-          <SelectItem value="3">Oldest</SelectItem>
+          <SelectItem value="2">Alphabetical order</SelectItem>
+          <SelectItem value="1">Number of posts</SelectItem>
         </SelectContent>
       </Select>
     </div>
   );
 };
-export default PostFilters;
+export default CategoryFilters;

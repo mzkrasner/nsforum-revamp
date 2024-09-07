@@ -18,7 +18,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     useEffect(() => {
       if (!(ref as any)?.current) return;
-      if (autoGrow) autosize((ref as any).current);
+      if (autoGrow) setTimeout(() => autosize((ref as any).current), 10);
     }, [ref, autoGrow]);
 
     return (

@@ -6,15 +6,16 @@ import usePost from "../_hooks/usePost";
 
 const PostTop = () => {
   const {
-    postQuery: { isLoading, data },
+    post,
+    postQuery: { isLoading },
   } = usePost();
   if (isLoading) return "Loading...";
-  if (!data) return "No data found...";
-  const { title } = data;
+  if (!post) return "No post found...";
+  const { title } = post;
   return (
     <div className="mb-5">
       <h2 className="font-serif text-3xl font-medium">{title}</h2>
-      <PostInfo post={data} />
+      <PostInfo post={post} />
       <PostTags tags={[{ name: "Example Tag", description: "", id: "0" }]} />
     </div>
   );

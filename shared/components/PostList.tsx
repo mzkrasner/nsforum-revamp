@@ -11,8 +11,7 @@ type Props = {
   fetchPostsOptions?: FetchPostsOptions;
   emptyContent?: ReactNode;
 };
-const PostList = (props: Props) => {
-  const { fetchPostsOptions, emptyContent } = props;
+const PostList = ({ fetchPostsOptions, emptyContent }: Props) => {
   const { postListQuery } = usePostList({ fetchPostsOptions });
   const { hasNextPage, isLoading, fetchNextPage } = postListQuery;
   const posts = postListQuery.data?.pages.map((page) => page).flat() || [];
@@ -37,7 +36,7 @@ const PostList = (props: Props) => {
         {isLoading && (
           <Button
             variant="ghost"
-            className="mx-auto flex"
+            className="mx-auto flex gap-2"
             loading={true}
             loadingText="Loading..."
             loaderProps={{ className: "text-primary" }}

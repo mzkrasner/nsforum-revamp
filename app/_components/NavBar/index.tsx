@@ -1,17 +1,31 @@
+"use client";
+
 import { Button } from "@/shared/components/ui/button";
-import { MenuIcon } from "lucide-react";
+import useSidebar from "@/shared/hooks/useSidebar";
+import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import NavUser from "./components/NavUser";
 import Notifications from "./components/Notifications";
 import Search from "./components/Search";
 
 const NavBar = () => {
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
+
   return (
     <div className="flex h-20 w-full items-center">
       <div className="container flex h-full items-center justify-between gap-5">
         <div className="relative -left-4 flex items-center gap-2">
-          <Button size="sm" variant="ghost">
-            <MenuIcon strokeWidth={1.4} />
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8"
+            onClick={toggleSidebar}
+          >
+            {isSidebarOpen ? (
+              <XIcon size={18} strokeWidth={1.4} />
+            ) : (
+              <MenuIcon size={18} strokeWidth={1.4} />
+            )}
           </Button>
           <h1>
             <Link

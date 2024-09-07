@@ -33,7 +33,7 @@ const NavUser = () => {
     return (
       <Button
         variant="ghost"
-        className="relative h-8 gap-2 rounded-full p-0 hover:bg-transparent"
+        className="relative h-8 cursor-pointer gap-2 rounded-full p-0 hover:bg-transparent"
       >
         <LoaderIcon size={16} className="animate-spin" />
       </Button>
