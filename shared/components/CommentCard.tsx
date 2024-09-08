@@ -10,6 +10,7 @@ import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
+import CommentReaction from "./CommentReaction";
 import DateDisplay from "./DateDisplay";
 import DeleteCommentButton from "./DeleteCommentButton";
 import { Button } from "./ui/button";
@@ -57,39 +58,43 @@ const CommentCard = ({
   return (
     <Card>
       <CardHeader className="p-2 text-sm">
-        <div className="flex flex-row items-center gap-4 space-y-0">
+        <div className="flex flex-row items-center gap-2 space-y-0 text-xs">
           <User did={controller} className="text-neutral-800" />
+          <span className="text-neutral-400">on</span>
           <DateDisplay dateString={indexed_at} className="text-xs" />
+          <CommentReaction comment={comment} />
           {!!profile && !editing && (
-            <div className="ml-auto flex flex-row items-center gap-2">
-              {!replying && !noReplies && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
-                  onClick={() => setReplying(true)}
-                >
-                  <ReplyIcon size={14} />
-                </Button>
-              )}
-              {profile?.controller === controller && (
-                <>
+            <>
+              <div className="ml-auto flex flex-row items-center gap-2">
+                {!replying && !noReplies && (
                   <Button
                     variant="ghost"
                     size="icon"
                     className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
-                    onClick={() => setEditing(true)}
+                    onClick={() => setReplying(true)}
                   >
-                    <EditIcon size={14} />
+                    <ReplyIcon size={14} />
                   </Button>
-                  <DeleteCommentButton commentId={comment.stream_id} />
-                </>
-              )}
-            </div>
+                )}
+                {profile?.controller === controller && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="inline-flex h-7 w-7 items-center px-0 text-neutral-500"
+                      onClick={() => setEditing(true)}
+                    >
+                      <EditIcon size={14} />
+                    </Button>
+                    <DeleteCommentButton commentId={comment.stream_id} />
+                  </>
+                )}
+              </div>
+            </>
           )}
         </div>
       </CardHeader>
-      <CardContent className="p-2 pt-0">{content}</CardContent>
+      <CardContent className="p-2 pt-0 text-sm">{content}</CardContent>
       <CardFooter className="p-2 pt-0">
         <div className="flex-1">
           {replying && (

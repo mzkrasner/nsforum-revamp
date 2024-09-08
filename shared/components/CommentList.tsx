@@ -23,8 +23,7 @@ const CommentList = ({
   const { hasNextPage, isLoading, fetchNextPage } = commentListQuery;
   const comments =
     commentListQuery.data?.pages.map((page) => page).flat() || [];
-  // console.log("fetchCommentsArg: ", fetchCommentsArg);
-  // console.log("Comments: ", comments);
+
   return (
     <div>
       <ul className="flex flex-col gap-3">

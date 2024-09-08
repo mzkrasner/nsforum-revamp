@@ -22,13 +22,13 @@ type Props = {
   fetchCommentsArg: FetchCommentsArg;
 };
 
-const CommentForm = (props: Props) => {
-  const {
-    comment,
-    cancel = () => null,
-    parentIds = [],
-    fetchCommentsArg,
-  } = props || {};
+const CommentForm = ({
+  comment,
+  cancel = () => null,
+  parentIds = [],
+  fetchCommentsArg,
+  isReply,
+}: Props) => {
   const { form, saveMutation } = useCommentForm({
     comment,
     onSave: cancel,
@@ -36,8 +36,6 @@ const CommentForm = (props: Props) => {
     fetchCommentsArg,
   });
   const { handleSubmit, control } = form;
-
-  const isReply = !!parentIds;
 
   return (
     <Form {...form}>

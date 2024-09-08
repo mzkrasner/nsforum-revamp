@@ -1,5 +1,6 @@
 "use server";
 
+import { connectDbWithSeed } from "@/app/api/_orbis";
 import { contexts, models, orbisdb } from "@/shared/orbis";
 import { fetchReactionCounter } from "@/shared/orbis/queries";
 import { GenericCeramicDocument, OrbisDBRow } from "@/shared/types";
@@ -9,7 +10,6 @@ import {
   ReactionType,
 } from "@/shared/types/reactions";
 import { catchError } from "@useorbis/db-sdk/util";
-import { connectDbWithSeed } from "../api/_orbis";
 
 const fetchReaction = async (filter: Partial<Reaction> = {}) => {
   const statement = orbisdb.select().from(models.reactions.id).where(filter);
@@ -38,7 +38,7 @@ const updateReactionCounter = async (
   id: string,
   data: Partial<ReactionCounter>,
 ) => {
-  console.log("Updating with: ", data);
+  console.log("In shared, updating with: ", data);
   const statement = orbisdb.update(id).set(data);
   const [result, error] = await catchError(() => statement.run());
   if (error) throw new Error(`Error while updating post reaction: ${error}`);
@@ -74,6 +74,7 @@ export const reactToContent = async (reaction: Reaction) => {
   // Confirm that user has been verified and validate the reaction data
 
   const { content_id, user_id, model, type } = reaction;
+  console.log("Reaction: ", reaction);
 
   await connectDbWithSeed();
   const existingReaction = await fetchReaction({ content_id, user_id, model });

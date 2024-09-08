@@ -1,9 +1,9 @@
 import { Button } from "@/shared/components/ui/button";
 import useProfile from "@/shared/hooks/useProfile";
+import useReaction from "@/shared/hooks/useReaction";
 import { cn } from "@/shared/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import usePost from "../_hooks/usePost";
-import usePostReaction from "../_hooks/usePostReaction";
 
 const PostReactions = () => {
   const { profile } = useProfile();
@@ -12,9 +12,9 @@ const PostReactions = () => {
   const {
     reactionQuery,
     reactionCounterQuery,
-    upvotePostMutation,
-    downvotePostMutation,
-  } = usePostReaction();
+    upvoteMutation,
+    downvoteMutation,
+  } = useReaction({ contentId: post?.stream_id, model: "posts" });
 
   if (
     !post ||
@@ -32,8 +32,7 @@ const PostReactions = () => {
     downvotes: 0,
   };
 
-  const isPending =
-    upvotePostMutation.isPending || downvotePostMutation.isPending;
+  const isPending = upvoteMutation.isPending || downvoteMutation.isPending;
 
   return (
     <div className="flex items-center justify-center pt-5">
@@ -42,8 +41,8 @@ const PostReactions = () => {
           variant="ghost"
           size="sm"
           className={cn("h-8 w-8 p-0", { "text-neutral-400": !upvoted })}
-          onClick={() => upvotePostMutation.mutate()}
-          loading={upvotePostMutation.isPending}
+          onClick={() => upvoteMutation.mutate()}
+          loading={upvoteMutation.isPending}
           loadingText=""
           loaderProps={{ className: "text-neutral-600" }}
           disabled={isPending}
@@ -58,8 +57,8 @@ const PostReactions = () => {
           variant="ghost"
           size="sm"
           className={cn("h-8 w-8 p-0", { "text-neutral-400": !downvoted })}
-          onClick={() => downvotePostMutation.mutate()}
-          loading={downvotePostMutation.isPending}
+          onClick={() => downvoteMutation.mutate()}
+          loading={downvoteMutation.isPending}
           loadingText=""
           loaderProps={{ className: "text-neutral-600" }}
           disabled={isPending}
