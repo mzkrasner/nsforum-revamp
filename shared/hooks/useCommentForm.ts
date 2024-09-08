@@ -76,8 +76,6 @@ const useCommentForm = (props: Props) => {
   ) => {
     const preview = getHtmlContentPreview(_values.body);
     const values = { ..._values, preview, status };
-    console.log("Values: ", values);
-    // return;
     if (comment) {
       return await updateComment({
         orbisdb: db,

@@ -8,6 +8,7 @@ import { OnlyStringFields, OrbisDBRow } from "../types";
 import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
+import { Reaction, ReactionCounter } from "../types/reactions";
 
 export type PaginationOptions = {
   page?: number;
@@ -155,4 +156,35 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
   if (error) throw new Error(`Error while fetching categories: ${error}`);
   const posts = result.rows;
   return posts as OrbisDBRow<Category>[];
+};
+
+export const fetchReactionCounter = async (filter: {
+  content_id: string;
+  model: string;
+}) => {
+  const statement = orbisdb
+    .select()
+    .from(models.reaction_counter.id)
+    .where(filter);
+
+  const [result, error] = await catchError(() => statement.run());
+  if (error) throw new Error(`Error while fetching reaction counter: ${error}`);
+  if (!result?.rows.length) return null;
+
+  const reaction = result.rows[0] as OrbisDBRow<ReactionCounter>;
+  return reaction;
+};
+
+export const fetchReaction = async (filter: {
+  content_id: string;
+  user_id: string;
+}) => {
+  const statement = orbisdb.select().from(models.reactions.id).where(filter);
+
+  const [result, error] = await catchError(() => statement.run());
+  if (error) throw new Error(`Error while fetching reaction: ${error}`);
+  if (!result?.rows.length) return null;
+
+  const reaction = result.rows[0] as OrbisDBRow<Reaction>;
+  return reaction;
 };

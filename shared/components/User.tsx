@@ -17,10 +17,7 @@ const User = ({ did, className = "" }: Props) => {
   return (
     <Link
       href={href}
-      className={cn(
-        "inline-flex items-center gap-1 leading-none text-muted-foreground",
-        className,
-      )}
+      className={cn("inline-flex items-center gap-1 leading-none", className)}
     >
       {username}
       {verified && (

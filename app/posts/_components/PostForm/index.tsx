@@ -145,9 +145,9 @@ const PostForm = ({ isEditing }: Props) => {
             variant="outline"
             onClick={handleSubmit((v: any) => draftMutation.mutate(v))}
             loading={draftMutation.isPending}
-            loadingText={`${isEditing ? "Converting to" : "Saving as"} draft...`}
+            loadingText={`${isEditing ? "Saving as" : "Converting to"} draft...`}
           >
-            {isEditing ? "Save as" : "Convert to"} Draft
+            {isEditing ? "Convert to" : "Save as"} Draft
           </Button>
           <Button
             type="submit"

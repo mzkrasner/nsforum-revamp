@@ -5,6 +5,7 @@ import { useState } from "react";
 import PostActions from "./PostActions";
 import PostBody from "./PostBody";
 import PostComments from "./PostComments";
+import PostReactions from "./PostReactions";
 import PostTableOfContents from "./PostTableOfContents";
 import PostTop from "./PostTop";
 
@@ -14,7 +15,7 @@ const PostDetails = () => {
   return (
     <div>
       <div
-        className={cn("container relative pb-10 pt-5 md:grid", {
+        className={cn("container relative py-5 md:grid", {
           "md:grid-cols-[280px_1fr]": isTableOfContentOpen,
         })}
       >
@@ -26,6 +27,7 @@ const PostDetails = () => {
           <PostActions />
           <PostTop />
           <PostBody />
+          <PostReactions />
         </div>
       </div>
       <div

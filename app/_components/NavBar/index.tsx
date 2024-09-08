@@ -14,7 +14,7 @@ const NavBar = () => {
   return (
     <div className="flex h-20 w-full items-center">
       <div className="container flex h-full items-center justify-between gap-5">
-        <div className="relative -left-4 flex items-center gap-2">
+        <div className="relative -left-4 flex items-center gap-2 pl-4">
           <Button
             size="icon"
             variant="ghost"
