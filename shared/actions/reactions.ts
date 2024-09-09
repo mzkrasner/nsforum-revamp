@@ -38,7 +38,6 @@ const updateReactionCounter = async (
   id: string,
   data: Partial<ReactionCounter>,
 ) => {
-  console.log("In shared, updating with: ", data);
   const statement = orbisdb.update(id).set(data);
   const [result, error] = await catchError(() => statement.run());
   if (error) throw new Error(`Error while updating post reaction: ${error}`);
@@ -72,9 +71,7 @@ const updateReaction = async (id: string, type: ReactionType) => {
 
 export const reactToContent = async (reaction: Reaction) => {
   // Confirm that user has been verified and validate the reaction data
-
   const { content_id, user_id, model, type } = reaction;
-  console.log("Reaction: ", reaction);
 
   await connectDbWithSeed();
   const existingReaction = await fetchReaction({ content_id, user_id, model });
