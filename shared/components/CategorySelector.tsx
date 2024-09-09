@@ -22,10 +22,16 @@ type Props = {
   label?: string;
   selectedCategory?: OrbisDBRow<Category>;
   error?: FieldError;
-  onSelect?: (category: OrbisDBRow<Category>) => void;
+  onSelect?: (
+    category: OrbisDBRow<Category> | (Category & { stream_id: string }),
+  ) => void;
+  categories?: (Category & { stream_id: string })[];
 };
 const CategorySelector = forwardRef<HTMLButtonElement, Props>(
-  ({ label = "Category", selectedCategory, error, onSelect }, forwardedRef) => {
+  (
+    { label = "Category", selectedCategory, error, onSelect, ...props },
+    forwardedRef,
+  ) => {
     const [open, setOpen] = useState(false);
 
     const { categories } = useCategories();
@@ -51,25 +57,27 @@ const CategorySelector = forwardRef<HTMLButtonElement, Props>(
             <CommandList>
               <CommandEmpty>No categories found.</CommandEmpty>
               <CommandGroup className="p-1.5">
-                {categories.map((category) => {
-                  const { stream_id, name, description } = category;
-                  return (
-                    <CommandItem
-                      key={stream_id}
-                      className="teamaspace-y-1 flex cursor-pointer flex-col items-start px-4 py-2"
-                      value={name}
-                      onSelect={() => {
-                        onSelect?.(category);
-                        setOpen(false);
-                      }}
-                    >
-                      <p>{name}</p>
-                      <p className="line-clamp-3 text-sm text-muted-foreground">
-                        {description}
-                      </p>
-                    </CommandItem>
-                  );
-                })}
+                {(props.categories?.length ? props.categories : categories).map(
+                  (category) => {
+                    const { stream_id, name, description } = category;
+                    return (
+                      <CommandItem
+                        key={stream_id}
+                        className="teamaspace-y-1 flex cursor-pointer flex-col items-start px-4 py-2"
+                        value={name}
+                        onSelect={() => {
+                          onSelect?.(category);
+                          setOpen(false);
+                        }}
+                      >
+                        <p>{name}</p>
+                        <p className="line-clamp-3 text-sm text-muted-foreground">
+                          {description}
+                        </p>
+                      </CommandItem>
+                    );
+                  },
+                )}
               </CommandGroup>
             </CommandList>
           </Command>

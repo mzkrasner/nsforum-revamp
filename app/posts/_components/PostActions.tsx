@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/components/ui/button";
+import useProfile from "@/shared/hooks/useProfile";
 import { EditIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -10,10 +11,13 @@ import DeletePostButton from "./DeletePostButton";
 const PostActions = () => {
   const params = useParams();
   const { slug } = params;
-  if (!slug) return null;
+
+  const { profile } = useProfile();
 
   const { post } = usePost();
   const postId = post?.stream_id;
+
+  if (!slug || profile?.controller !== post?.controller) return null;
 
   return (
     <div className="mb-2 flex justify-end gap-2 pb-2">

@@ -69,10 +69,17 @@ export type FetchPostsOptions = {
   filter?:
     | Record<string, any>
     | Partial<OnlyStringFields<Post & CeramicDocument["content"]>>;
+  orderBy?: [keyof OrbisDBRow<Post>, "asc" | "desc"][];
 } & PaginationOptions;
 
 export const fetchPosts = async (options?: FetchPostsOptions) => {
-  const { page = 0, pageSize = 10, fields = [], filter = {} } = options || {};
+  const {
+    page = 0,
+    pageSize = 10,
+    fields = [],
+    filter = {},
+    orderBy = [],
+  } = options || {};
   const offset = page * pageSize;
   const selectStatement = orbisdb
     .select(...fields)
@@ -82,7 +89,8 @@ export const fetchPosts = async (options?: FetchPostsOptions) => {
       ...filter,
     })
     .limit(pageSize)
-    .offset(offset);
+    .offset(offset)
+    .orderBy(...orderBy);
 
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error) throw new Error(`Error while fetching posts: ${error}`);

@@ -68,3 +68,19 @@ export const uploadToPinata = async (file: File) => {
 export const reverseString = (str: string) => {
   return str.split("").reverse().join("");
 };
+
+export const stringToSlug = (str: string) => {
+  return str
+    .toLowerCase() // Convert to lowercase
+    .trim() // Remove leading and trailing spaces
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-"); // Remove multiple consecutive hyphens
+};
+
+export const slugToString = (slug: string) => {
+  return slug
+    .toLowerCase() // Ensure the string is lowercase
+    .replace(/-/g, " ") // Replace hyphens with spaces
+    .trim(); // Remove leading and trailing spaces (just in case)
+};

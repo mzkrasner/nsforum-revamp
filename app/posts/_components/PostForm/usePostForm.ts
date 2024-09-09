@@ -9,7 +9,7 @@ import { createPost, updatePost } from "@/shared/orbis/mutations";
 import { fetchPost } from "@/shared/orbis/queries";
 import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -23,6 +23,8 @@ const usePostForm = ({ isEditing }: Props) => {
   const { db } = useOrbis();
   const { categories } = useCategories();
   const { profile } = useProfile();
+
+  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(postFormSchema),
@@ -87,7 +89,11 @@ const usePostForm = ({ isEditing }: Props) => {
     const preview = getHtmlContentPreview(body);
     const slug = formValues.slug || (await createPostSlug(title));
     const values = { ...formValues, preview, status, slug };
-    if (postId) {
+    if (isEditing) {
+      if (!postId)
+        throw new Error(
+          "No postId. Cannot update post without it's stream_id)",
+        );
       return await updatePost({
         orbisdb: db,
         postId,
@@ -108,6 +114,9 @@ const usePostForm = ({ isEditing }: Props) => {
       //   authorName: profile?.name,
       //   postId,
       // });
+      queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
       router.push(`/posts/${result?.content?.slug}`);
     },
     onError: console.error,
