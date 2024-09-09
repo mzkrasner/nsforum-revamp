@@ -10,6 +10,8 @@ import {
   ReactionType,
 } from "@/shared/types/reactions";
 import { catchError } from "@useorbis/db-sdk/util";
+import { reactionSchema } from "../schema/reaction";
+import { isUserVerified } from "./auth";
 
 const fetchReaction = async (filter: Partial<Reaction> = {}) => {
   const statement = orbisdb.select().from(models.reactions.id).where(filter);
@@ -71,6 +73,11 @@ const updateReaction = async (id: string, type: ReactionType) => {
 
 export const reactToContent = async (reaction: Reaction) => {
   // Confirm that user has been verified and validate the reaction data
+  if (!(await isUserVerified())) throw new Error("Unverified");
+
+  const { success: isValid } = reactionSchema.safeParse(reaction);
+  if (!isValid) throw new Error("Invalid data");
+
   const { content_id, user_id, model, type } = reaction;
 
   await connectDbWithSeed();

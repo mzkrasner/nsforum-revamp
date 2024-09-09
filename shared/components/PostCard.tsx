@@ -10,8 +10,9 @@ import Link from "next/link";
 import { Post } from "../types/post";
 import PostInfo from "./PostInfo";
 import PostTags from "./PostTags";
+import { OrbisDBRow } from "../types";
 
-type Props = { post: Post };
+type Props = { post: OrbisDBRow<Post> };
 const PostCard = ({ post }: Props) => {
   const { title, slug } = post || {};
   return (

@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
+import useAuth from "@/shared/hooks/useAuth";
 import useProfile from "@/shared/hooks/useProfile";
 import { ProfileFormType, profileSchema } from "@/shared/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +22,8 @@ import { useForm } from "react-hook-form";
 const ProfileForm = () => {
   const { user, authenticated } = usePrivy();
   const authEmail = user?.email?.address;
-  const { linkPhone } = useLinkAccount();
+  const { linkPhone, linkTwitter } = useLinkAccount();
+  const { linkedPhone, linkedXAcct } = useAuth();
 
   const { profile, saveMutation } = useProfile();
   const { name = "", username = "", email = "", phone = "" } = profile || {};
@@ -102,37 +104,46 @@ const ProfileForm = () => {
             );
           }}
         />
-        <FormField
-          control={control}
-          name="phone"
-          render={({ field, fieldState: { error } }) => {
-            const value = field.value || "";
-            return (
-              <FormItem>
-                <FormLabel>Phone number</FormLabel>
-                <FormControl>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      placeholder="No phone number added"
-                      {...field}
-                      value={value}
-                      error={error}
-                      readOnly
-                    />
-                    <Button
-                      variant="outline"
-                      className="ml-auto flex w-fit gap-1 px-2 text-sm"
-                      onClick={linkPhone}
-                    >
-                      <PlusIcon size={16} /> Add
-                    </Button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
+        <FormItem>
+          <FormLabel>Phone number</FormLabel>
+          <FormControl>
+            <div className="flex items-center gap-3">
+              <Input
+                placeholder="No phone number added"
+                value={linkedPhone?.number || ""}
+                readOnly
+              />
+              <Button
+                variant="outline"
+                className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                onClick={linkPhone}
+              >
+                <PlusIcon size={16} /> Add
+              </Button>
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+        <FormItem>
+          <FormLabel>X account</FormLabel>
+          <FormControl>
+            <div className="flex items-center gap-3">
+              <Input
+                placeholder="No account added"
+                value={linkedXAcct?.username || ""}
+                readOnly
+              />
+              <Button
+                variant="outline"
+                className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                onClick={linkTwitter}
+              >
+                <PlusIcon size={16} /> Add
+              </Button>
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
         <Button
           type="submit"
           className="ml-auto mt-3 flex"

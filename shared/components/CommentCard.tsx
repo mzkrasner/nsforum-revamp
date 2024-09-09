@@ -8,9 +8,9 @@ import htmlToReact from "../lib/htmlToReact";
 import { FetchCommentsArg } from "../orbis/queries";
 import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
+import CardReaction from "./CardReaction";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
-import CommentReaction from "./CommentReaction";
 import DateDisplay from "./DateDisplay";
 import DeleteCommentButton from "./DeleteCommentButton";
 import { Button } from "./ui/button";
@@ -62,7 +62,7 @@ const CommentCard = ({
           <User did={controller} className="text-neutral-800" />
           <span className="text-neutral-400">on</span>
           <DateDisplay dateString={indexed_at} className="text-xs" />
-          <CommentReaction comment={comment} />
+          <CardReaction content={comment} model="comments" />
           {!!profile && !editing && (
             <>
               <div className="ml-auto flex flex-row items-center gap-2">

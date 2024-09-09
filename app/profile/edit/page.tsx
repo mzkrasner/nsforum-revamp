@@ -9,8 +9,8 @@ const EditProfilePage = () => {
       <PageHeading back="/profile">Account Settings</PageHeading>
       <SectionHeading>Profile</SectionHeading>
       <ProfileForm />
-      <SectionHeading id="verification">Verification</SectionHeading>
-      <Verification />
+      {/* <SectionHeading id="verification">Verification</SectionHeading>
+      <Verification /> */}
     </>
   );
 };

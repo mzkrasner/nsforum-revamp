@@ -47,7 +47,17 @@ const useAuth = () => {
       acct.address && isAddress(acct.address),
   );
 
+  const linkedPhone = user?.linkedAccounts.find((acc) => acc.type === "phone");
+  const linkedXAcct = user?.linkedAccounts.find(
+    (acc) => acc.type === "twitter_oauth",
+  );
+
+  const isVerified = !!(linkedPhone || linkedXAcct);
+
   return {
+    linkedPhone,
+    linkedXAcct,
+    isVerified,
     linkedWallets,
     login,
     isLoggedIn: !!(authenticated && authInfo),

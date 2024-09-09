@@ -2,7 +2,7 @@
 
 import { connectDbWithSeed } from "@/app/api/_orbis";
 import { fetchCategorySuggestion } from "@/app/api/_orbis/queries";
-import checkAdminAuth from "@/shared/lib/auth/checkAdminAuth";
+import { checkAdminAuth } from "@/shared/actions/auth";
 import { models, orbisdb } from "@/shared/orbis";
 import { CategorySchema } from "@/shared/schema/category";
 import { GenericCeramicDocument, OrbisDBRow } from "@/shared/types";

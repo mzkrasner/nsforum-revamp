@@ -5,7 +5,7 @@ import { useState } from "react";
 import PostActions from "./PostActions";
 import PostBody from "./PostBody";
 import PostComments from "./PostComments";
-import PostReactions from "./PostReactions";
+import PostReaction from "./PostReaction";
 import PostTableOfContents from "./PostTableOfContents";
 import PostTop from "./PostTop";
 
@@ -27,7 +27,7 @@ const PostDetails = () => {
           <PostActions />
           <PostTop />
           <PostBody />
-          <PostReactions />
+          <PostReaction />
         </div>
       </div>
       <div
