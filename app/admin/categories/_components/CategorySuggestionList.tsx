@@ -15,14 +15,11 @@ const CategorySuggestionList = ({
   fetchOptions,
   emptyContent = null,
 }: Props) => {
-  const { categorySuggestionListQuery } = useCategorySuggestionList({
-    fetchOptions,
-  });
+  const { categorySuggestions, categorySuggestionListQuery } =
+    useCategorySuggestionList({
+      fetchOptions,
+    });
   const { hasNextPage, isLoading, fetchNextPage } = categorySuggestionListQuery;
-  const categorySuggestions =
-    categorySuggestionListQuery.data?.pages.map((page) => page).flat() || [];
-
-  console.log(categorySuggestions);
 
   return (
     <div>

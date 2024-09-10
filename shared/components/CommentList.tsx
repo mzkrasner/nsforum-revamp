@@ -19,10 +19,8 @@ const CommentList = ({
   noReplies = false,
   parentIds = [],
 }: Props) => {
-  const { commentListQuery } = useCommentList({ fetchCommentsArg });
+  const { comments, commentListQuery } = useCommentList({ fetchCommentsArg });
   const { hasNextPage, isLoading, fetchNextPage } = commentListQuery;
-  const comments =
-    commentListQuery.data?.pages.map((page) => page).flat() || [];
 
   return (
     <div>

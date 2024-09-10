@@ -6,6 +6,7 @@ import { Input } from "@/shared/components/ui/input";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import useOutsideClick from "@/shared/hooks/useOutsideClick";
 import usePostList from "@/shared/hooks/usePostList";
+import { escapeSQLLikePattern } from "@/shared/lib/utils";
 import { ilike } from "@useorbis/db-sdk/operators";
 import { SearchIcon } from "lucide-react";
 import { useRef, useState } from "react";
@@ -19,11 +20,14 @@ const Search = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   useOutsideClick(ref, () => setOpen(false));
 
-  const { postListQuery } = usePostList({
-    fetchPostsOptions: { filter: { title: ilike(`%${debouncedSearchTerm}%`) } },
+  const { posts, postListQuery } = usePostList({
+    fetchPostsOptions: {
+      filter: {
+        title: ilike(`%${escapeSQLLikePattern(debouncedSearchTerm)}%`),
+      },
+    },
   });
-  const { data, isLoading } = postListQuery;
-  const posts = data?.pages.map((page) => page).flat() || [];
+  const { isLoading } = postListQuery;
 
   return (
     <div ref={ref} className="relative">
@@ -41,7 +45,7 @@ const Search = () => {
       />
       {open && searchTerm && (
         <div className="absolute right-0 top-12 z-10 sm:min-w-80">
-          <ScrollArea className="max-h-[calc(100vh_-_80px)]">
+          <ScrollArea className="h-80">
             <ul className="flex flex-col gap-2 rounded-md border bg-white p-2">
               {isLoading ? (
                 <li className="flex items-center justify-center">

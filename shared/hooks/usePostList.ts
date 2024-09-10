@@ -15,7 +15,11 @@ const usePostList = (props?: Props) => {
     },
   });
 
-  return { postListQuery };
+  const { data } = postListQuery;
+
+  const posts = data?.pages.map((page) => page).flat() || [];
+
+  return { posts, postListQuery };
 };
 
 export default usePostList;

@@ -24,7 +24,12 @@ const useCommentList = (props: Props) => {
     },
   });
 
-  return { commentListQuery };
+  const { data } = commentListQuery;
+
+  const comments =
+    commentListQuery.data?.pages.map((page) => page).flat() || [];
+
+  return { comments, commentListQuery };
 };
 
 export default useCommentList;

@@ -24,11 +24,11 @@ type Props = { isEditing?: boolean };
 const PostForm = ({ isEditing }: Props) => {
   const { profile, profileQuery } = useProfile();
   const { authenticated, ready } = usePrivy();
-  const { postQuery, post } = usePost();
+  const { postQuery } = usePost();
   const { form, categories, publishMutation, draftMutation } = usePostForm({
     isEditing,
   });
-  const { handleSubmit, control } = form;
+  const { handleSubmit, control, setValue } = form;
 
   if (!authenticated)
     return (
@@ -46,7 +46,6 @@ const PostForm = ({ isEditing }: Props) => {
     );
 
   if (!profile && profileQuery.isSuccess) return <NoProfileGuard />;
-  const postId = post?.stream_id;
 
   return (
     <Form {...form}>
@@ -130,8 +129,10 @@ const PostForm = ({ isEditing }: Props) => {
               <FormItem>
                 <FormControl>
                   <TagsSelector
-                    selectedTags={value}
-                    onChange={onChange}
+                    selectedTagIds={value}
+                    onChange={(tagIds: string[]) => {
+                      onChange(tagIds);
+                    }}
                     error={error}
                   />
                 </FormControl>

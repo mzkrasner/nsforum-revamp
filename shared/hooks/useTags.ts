@@ -1,40 +1,42 @@
-import { Tag } from "../schema/tag";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { ilike } from "@useorbis/db-sdk/operators";
+import { useMemo, useState } from "react";
+import { escapeSQLLikePattern } from "../lib/utils";
+import { fetchTags, FetchTagsOptions } from "../orbis/queries";
 
-const useTags = () => {
-  const tags: Tag[] = [
-    {
-      id: "0",
-      name: "Tag 0",
-      description: "Lorem Ipsum dolor amet consectur",
-    },
-    {
-      id: "1",
-      name: "Tag 1",
-      description: "Lorem Ipsum dolor amet consectur",
-    },
-    {
-      id: "2",
-      name: "Tag 2",
-      description: "Lorem Ipsum dolor amet consectur",
-    },
-    {
-      id: "3",
-      name: "Tag 3",
-      description: "Lorem Ipsum dolor amet consectur",
-    },
-    {
-      id: "4",
-      name: "Tag 4",
-      description: "Lorem Ipsum dolor amet consectur",
-    },
-    {
-      id: "5",
-      name: "Tag 5",
-      description: "Lorem Ipsum dolor amet consectur",
-    },
-  ];
+type Props = { fetchTagsOptions?: FetchTagsOptions };
+const useTags = (
+  { fetchTagsOptions: _fetchTagsOptions }: Props = { fetchTagsOptions: {} },
+) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  return { tags };
+  const fetchTagsOptions = useMemo(() => {
+    if (_fetchTagsOptions && searchTerm)
+      return {
+        ..._fetchTagsOptions,
+        filter: {
+          ...(_fetchTagsOptions.filter || {}),
+          name: ilike(`%${escapeSQLLikePattern(searchTerm)}%`),
+        } as FetchTagsOptions,
+      };
+    return _fetchTagsOptions;
+  }, [_fetchTagsOptions, searchTerm]);
+
+  const tagsQuery = useInfiniteQuery({
+    queryKey: ["tags", fetchTagsOptions],
+    queryFn: async ({ pageParam }) => {
+      return await fetchTags({ page: pageParam, ...fetchTagsOptions });
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.length ? pages.length : undefined;
+    },
+  });
+  const { data } = tagsQuery;
+
+  const tags = data?.pages.map((page) => page).flat() || [];
+
+  return { tags, tagsQuery, searchTerm, setSearchTerm };
 };
 
 export default useTags;

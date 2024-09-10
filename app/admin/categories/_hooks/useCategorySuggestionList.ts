@@ -24,7 +24,11 @@ const useCategorySuggestionList = (props: Props) => {
     },
   });
 
-  return { categorySuggestionListQuery };
+  const { data } = categorySuggestionListQuery;
+
+  const categorySuggestions = data?.pages.map((page) => page).flat() || [];
+
+  return { categorySuggestions, categorySuggestionListQuery };
 };
 
 export default useCategorySuggestionList;

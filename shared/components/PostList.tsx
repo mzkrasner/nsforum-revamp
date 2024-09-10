@@ -12,9 +12,8 @@ type Props = {
   emptyContent?: ReactNode;
 };
 const PostList = ({ fetchPostsOptions, emptyContent }: Props) => {
-  const { postListQuery } = usePostList({ fetchPostsOptions });
+  const { posts, postListQuery } = usePostList({ fetchPostsOptions });
   const { hasNextPage, isLoading, fetchNextPage } = postListQuery;
-  const posts = postListQuery.data?.pages.map((page) => page).flat() || [];
 
   return (
     <div>

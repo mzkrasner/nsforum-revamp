@@ -48,7 +48,7 @@ const DeletePostButton = ({ postId }: Props) => {
               color="destructive"
               className="w-fit"
               onClick={async () => {
-                await deletePostMutation.mutateAsync(postId);
+                await deletePostMutation.mutateAsync();
                 setOpen(false);
               }}
               loading={deletePostMutation.isPending}

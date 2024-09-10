@@ -1,14 +1,17 @@
 // "use server";
 
 import { CeramicDocument } from "@useorbis/db-sdk";
+import { ilike } from "@useorbis/db-sdk/operators";
 import { catchError } from "@useorbis/db-sdk/util";
 import { isNil, omitBy } from "lodash-es";
 import { models, orbisdb } from ".";
-import { OnlyStringFields, OrbisDBRow } from "../types";
+import { escapeSQLLikePattern } from "../lib/utils";
+import { GenericCeramicDocument, OnlyStringFields, OrbisDBRow } from "../types";
 import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
 import { Reaction, ReactionCounter } from "../types/reactions";
+import { Tag } from "../types/tag";
 
 export type PaginationOptions = {
   page?: number;
@@ -195,4 +198,70 @@ export const fetchReaction = async (filter: {
 
   const reaction = result.rows[0] as OrbisDBRow<Reaction>;
   return reaction;
+};
+
+export const fetchTagByName = async (name: string) => {
+  const statement = orbisdb
+    .select()
+    .from(models.tags.id)
+    .where({ name: ilike(escapeSQLLikePattern(name)) });
+  const [result, error] = await catchError(() => statement.run());
+  if (error) throw new Error(`Error while fetching reaction counter: ${error}`);
+  if (!result?.rows.length) return null;
+  return result.rows[0] as OrbisDBRow<Tag>;
+};
+
+export const createNewTag = async (data: Tag) => {
+  const statement = orbisdb.insert(models.tags.id).value(data);
+  const validation = await statement.validate();
+  if (!validation.valid) {
+    throw new Error(`Error during tag validation: ${validation.error}`);
+  }
+
+  const [result, error] = await catchError(() => statement.run());
+  if (error) throw new Error(`Error during tag creation: ${error}`);
+
+  if (!result) return null;
+  return result as GenericCeramicDocument<Tag>;
+};
+
+export const updateTag = async (tagId: string, data: Tag) => {
+  const statement = orbisdb.update(tagId).set(data);
+
+  const [result, error] = await catchError(() => statement.run());
+  if (error) throw new Error(`Error during tag update: ${error}`);
+
+  if (!result) return null;
+  return result as GenericCeramicDocument<Tag>;
+};
+
+export type FetchTagsOptions = {
+  fields?: string[];
+  filter?:
+    | Record<string, any>
+    | Partial<OnlyStringFields<Tag & CeramicDocument["content"]>>;
+  orderBy?: [keyof OrbisDBRow<Tag>, "asc" | "desc"][];
+} & PaginationOptions;
+
+export const fetchTags = async (options: FetchTagsOptions) => {
+  const {
+    page = 0,
+    pageSize = 10,
+    fields = [],
+    filter = {},
+    orderBy = [],
+  } = options || {};
+  const offset = page * pageSize;
+  const selectStatement = orbisdb
+    .select(...fields)
+    .from(models.tags.id)
+    .where(filter)
+    .limit(pageSize)
+    .offset(offset)
+    .orderBy(...orderBy);
+
+  const [result, error] = await catchError(() => selectStatement?.run());
+  if (error) throw new Error(`Error while fetching tags: ${error}`);
+  const tags = result.rows;
+  return tags as OrbisDBRow<Tag>[];
 };

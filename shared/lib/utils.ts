@@ -84,3 +84,8 @@ export const slugToString = (slug: string) => {
     .replace(/-/g, " ") // Replace hyphens with spaces
     .trim(); // Remove leading and trailing spaces (just in case)
 };
+
+export const escapeSQLLikePattern = (pattern: string) => {
+  // Escape special characters _ and % by prefixing them with \
+  return pattern.replace(/([_%])/g, "\\$1");
+};
