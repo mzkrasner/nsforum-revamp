@@ -64,11 +64,21 @@ export const notificationsCommentsRelation: Relation<
   referencedType: "single",
 };
 
+export const postTagsRelation: Relation<"posts", "tags"> = {
+  referenceName: "tags",
+  table: models.posts.id,
+  column: "tag_ids",
+  referencedColumn: "stream_id",
+  referencedTable: models.tags.id,
+  referencedType: "list",
+};
+
 const relations = {
-  subscriptionReaderRelation,
-  notificationReaderRelation,
-  notificationsPostsRelation,
-  notificationsCommentsRelation,
+  // subscriptionReaderRelation,
+  // notificationReaderRelation,
+  // notificationsPostsRelation,
+  // notificationsCommentsRelation,
+  postTagsRelation,
 } as const;
 
 export default relations;

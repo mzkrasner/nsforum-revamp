@@ -32,7 +32,7 @@ const usePostForm = ({ isEditing }: Props) => {
       title: "",
       body: "",
       category: undefined,
-      tags: [],
+      tag_ids: [],
       status: "published",
     } as Partial<PostFormType>,
   });
@@ -46,13 +46,13 @@ const usePostForm = ({ isEditing }: Props) => {
   // Initialize form with post and clear on unmount
   useEffect(() => {
     if (!isEditing || !postId || isLoadingPost || !post) return;
-    const { title, body, category, status, tags, slug } = post;
+    const { title, body, category, status, tag_ids, slug } = post;
     setValue("slug", slug);
     setValue("title", title);
     setValue("body", body);
     setValue("category", category);
     setValue("status", status);
-    setValue("tags", tags || []);
+    setValue("tag_ids", tag_ids || []);
   }, [postId, post, setValue, isLoadingPost, reset, isEditing]);
 
   // Initialize author name

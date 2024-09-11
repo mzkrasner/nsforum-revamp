@@ -7,14 +7,22 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import Link from "next/link";
+import useTags from "../hooks/useTags";
+import { OrbisDBRow } from "../types";
 import { Post } from "../types/post";
 import PostInfo from "./PostInfo";
 import PostTags from "./PostTags";
-import { OrbisDBRow } from "../types";
 
 type Props = { post: OrbisDBRow<Post> };
 const PostCard = ({ post }: Props) => {
-  const { title, slug } = post || {};
+  const { title, slug, tag_ids } = post || {};
+  const { tags } = useTags({
+    fetchTagsOptions: {
+      filter: {
+        stream_id: tag_ids || [],
+      },
+    },
+  });
   return (
     <Card>
       <CardHeader className="space-y-0 p-3">
@@ -25,9 +33,7 @@ const PostCard = ({ post }: Props) => {
         </CardTitle>
         <CardContent className="m-0 p-0">
           <PostInfo post={post} />
-          <PostTags
-            tags={[{ name: "Example Tag", description: "", id: "0" }]}
-          />
+          <PostTags tags={tags} />
         </CardContent>
       </CardHeader>
     </Card>

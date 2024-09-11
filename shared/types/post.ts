@@ -7,7 +7,7 @@ export type Post = {
   title: string;
   body: string;
   category: string;
-  tags: string[];
+  tag_ids: string[];
   status: PostStatus;
   stream_id?: string;
 };

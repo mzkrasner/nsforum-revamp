@@ -122,7 +122,7 @@ const PostForm = ({ isEditing }: Props) => {
         />
         <FormField
           control={control}
-          name="tags"
+          name="tag_ids"
           render={({ field, fieldState: { error } }) => {
             const { value = [], onChange } = field;
             return (

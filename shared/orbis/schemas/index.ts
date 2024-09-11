@@ -245,7 +245,7 @@ export const posts = {
       category: {
         type: "string",
       },
-      tags: {
+      tag_ids: {
         type: "array",
         items: {
           type: "string",

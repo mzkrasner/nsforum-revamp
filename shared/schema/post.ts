@@ -15,7 +15,7 @@ export const postFormSchema = z.object({
     .string({ message: "Post body is required" })
     .min(1, "Post body is required"),
   category: z.string({ message: "Post category is required" }),
-  tags: z.array(z.string()),
+  tag_ids: z.array(z.string()),
   status: postStatusSchema,
 });
 

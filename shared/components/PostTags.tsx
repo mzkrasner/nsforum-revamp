@@ -1,4 +1,4 @@
-import { Tag } from "../schema/tag";
+import { Tag } from "../types/tag";
 import { Button } from "./ui/button";
 
 type Props = { tags: Tag[] };

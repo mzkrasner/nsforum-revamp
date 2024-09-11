@@ -1,8 +1,8 @@
 
 const models = {
   "posts": {
-    "id": "kjzl6hvfrbw6c5d7o87ae459uled8gwuq9di000cs3jyjqm33o9wsoujk90nepg",
-    "name": "dev_posts_v9"
+    "id": "kjzl6hvfrbw6c8di5pm83vx6mrfgvwic8m3u0oe9j94cl5vu0paxxzd7221vzdd",
+    "name": "dev_posts_v10"
   },
   "comments": {
     "id": "kjzl6hvfrbw6c6k5b6rag4sg1jo12e9xeyec4j08q6pj7dlxohqp1vpqry74rzm",
