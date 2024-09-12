@@ -32,6 +32,19 @@ const useToolbarFunctions = () => {
     return editor?.isActive("heading", { level });
   };
 
+  const isAnyHeadingActive = () => {
+    if (isMdEditorActive)
+      return mdEditorFns.isNodeActive([
+        "ATXHeading1",
+        "ATXHeading2",
+        "ATXHeading3",
+        "ATXHeading4",
+        "ATXHeading5",
+        "ATXHeading6",
+      ]);
+    return editor?.isActive("heading");
+  };
+
   const toggleBold = () => {
     if (isMdEditorActive)
       return mdEditorFns.toggleMark({
@@ -68,6 +81,7 @@ const useToolbarFunctions = () => {
     isBulletedListActive,
     isOrderedListActive,
     isHeadingActive,
+    isAnyHeadingActive,
     toggleBold,
     toggleItalic,
     toggleHeading,

@@ -5,6 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { Toggle } from "@/shared/components/ui/toggle";
+import { cn } from "@/shared/lib/utils";
 import { Level } from "@tiptap/extension-heading";
 import {
   Heading2Icon,
@@ -30,14 +31,18 @@ const HeadingsButton = () => {
   const [open, setOpen] = useState(false);
 
   const { editor } = useEditorContext();
-  const { toggleHeading, isHeadingActive } = useToolbarFunctions();
+  const { toggleHeading, isHeadingActive, isAnyHeadingActive } =
+    useToolbarFunctions();
 
   if (!editor) return null;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Toggle size="sm" className="h-8 w-8">
+        <Toggle
+          size="sm"
+          className={cn("h-8 w-8", { "bg-neutral-100": isAnyHeadingActive() })}
+        >
           <HeadingIcon size={16} />
         </Toggle>
       </DropdownMenuTrigger>
