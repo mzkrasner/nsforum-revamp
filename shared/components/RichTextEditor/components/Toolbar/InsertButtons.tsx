@@ -6,6 +6,7 @@ import { useWindowWidth } from "@react-hook/window-size";
 import { EllipsisVerticalIcon, LinkIcon, YoutubeIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import useEditorContext from "../../hooks/useEditorContext";
+import useMdEditorFunctions from "../MdEditor/useMdEditorFunctions";
 import ImageButton from "./ImageButton";
 import useToolbarInsertFunctions from "./useToolbarInsertFunctions";
 
@@ -23,7 +24,11 @@ const InsertButtons = () => {
   const { setLink, addYoutubeVideo, addSpotifyPodcastEpisode } =
     useToolbarInsertFunctions();
 
+  const { isNodeActive } = useMdEditorFunctions();
+
   if (!editor) return null;
+
+  const insertsDisabled = isNodeActive(["Link", "HtmlBlock"]);
 
   const buttons = (
     <>
@@ -36,6 +41,7 @@ const InsertButtons = () => {
           e.preventDefault();
           e.stopPropagation();
         }}
+        disabled={insertsDisabled}
       >
         <LinkIcon size={14} />
       </Toggle>
@@ -45,6 +51,7 @@ const InsertButtons = () => {
         className="h-8 w-8 px-2"
         pressed={editor.isActive("spotify")}
         onClick={addSpotifyPodcastEpisode}
+        disabled={insertsDisabled}
       >
         <SpotifyIcon
           size={14}
@@ -57,6 +64,7 @@ const InsertButtons = () => {
         className="h-8 w-8 px-2"
         pressed={editor.isActive("youtube")}
         onClick={addYoutubeVideo}
+        disabled={insertsDisabled}
       >
         <YoutubeIcon size={14} strokeWidth={1.4} />
       </Toggle>
@@ -68,7 +76,11 @@ const InsertButtons = () => {
   if (isSmallScreen)
     return (
       <div className="relative h-fit w-fit">
-        <Button onClick={() => setOpen((v) => !v)}>
+        <Button
+          size="sm"
+          className="h-8 w-8 px-2"
+          onClick={() => setOpen((v) => !v)}
+        >
           <EllipsisVerticalIcon className="w-3.5" />
         </Button>
         {open && (

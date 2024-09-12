@@ -1,7 +1,7 @@
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { syntaxTree } from "@codemirror/language";
 import { languages } from "@codemirror/language-data";
-import { useCodeMirror } from "@uiw/react-codemirror";
+import { EditorView, useCodeMirror } from "@uiw/react-codemirror";
 import { useEffect, useRef } from "react";
 import useEditorContext from "../../hooks/useEditorContext";
 import { MdNodeType } from "../../types";
@@ -24,26 +24,27 @@ const MdEditor = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mdEditor = useCodeMirror({
     container: containerRef.current,
-    extensions,
+    extensions: [
+      ...extensions,
+      EditorView.updateListener.of((update) => {
+        if (update.selectionSet) {
+          const { from, to } = update.state.selection.main;
+          const activeNodeTypes: MdNodeType[] = [];
+
+          syntaxTree(update.state).iterate({
+            from,
+            to,
+            enter: (node) => {
+              const type = node.type.name;
+              activeNodeTypes.push(type as MdNodeType);
+            },
+          });
+
+          setMdActiveNodeTypes(activeNodeTypes);
+        }
+      }),
+    ],
     value: editor.storage.markdown.getMarkdown(),
-    onChange: (_, { state }) => {
-      const selection = state.selection.main;
-      const from = selection.from;
-      const to = selection.to;
-
-      const activeNodeTypes: MdNodeType[] = [];
-
-      syntaxTree(state).iterate({
-        from,
-        to,
-        enter: (node) => {
-          const type = node.type.name;
-          activeNodeTypes.push(type as MdNodeType);
-        },
-      });
-
-      setMdActiveNodeTypes(activeNodeTypes);
-    },
     // onChange: (value) => editor.commands.setContent(value),
   });
   const { setContainer } = mdEditor;

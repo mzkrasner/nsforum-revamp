@@ -148,7 +148,7 @@ const useMdEditorFunctions = () => {
     view.focus();
   };
 
-  // TODO Theres a bug with post-transaction selection when working with nested wrappers
+  // TODO Use standard code mirror methods to implement this
   const toggleSelectionWrapper = (wrapper: string) => {
     if (!view) return;
     const { state } = view;
