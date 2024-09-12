@@ -8,27 +8,27 @@ const useToolbarFunctions = () => {
   const md = useMdEditorFunctions();
 
   const isBoldActive = () => {
-    if (isMdEditorActive) return md.isMainSelectionDelimitedBy("**");
+    if (isMdEditorActive) return md.isNodeActive("StrongEmphasis");
     return !!editor?.isActive("bold");
   };
 
   const isItalicActive = () => {
-    if (isMdEditorActive) return md.isMainSelectionDelimitedBy("_");
+    if (isMdEditorActive) return md.isNodeActive("Emphasis");
     return editor?.isActive("italic");
   };
 
   const isBulletedListActive = () => {
-    if (isMdEditorActive) return md.getActiveList() === "bulleted";
+    if (isMdEditorActive) return md.isNodeActive("BulletList");
     return editor?.isActive("bulletlist");
   };
 
   const isOrderedListActive = () => {
-    if (isMdEditorActive) return md.getActiveList() === "numbered";
+    if (isMdEditorActive) return md.isNodeActive("OrderedList");
     return editor?.isActive("orderedList");
   };
 
-  const isHeadingActive = (level: number) => {
-    if (isMdEditorActive) return md.getActiveHeading() === level;
+  const isHeadingActive = (level: Level) => {
+    if (isMdEditorActive) return md.isNodeActive(`ATXHeading${level}`);
     return editor?.isActive("heading", { level });
   };
 

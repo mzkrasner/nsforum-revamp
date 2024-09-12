@@ -7,4 +7,6 @@ export const EditorContext = createContext<EditorContextType>({
   toggleMarkdown: () => null,
   mdEditor: null,
   setMdEditor: () => null,
+  mdActiveNodeTypes: [],
+  setMdActiveNodeTypes: () => null,
 });

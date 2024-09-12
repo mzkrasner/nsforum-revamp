@@ -18,7 +18,7 @@ import TableMenu from "./components/TableMenu";
 import Toolbar from "./components/Toolbar";
 import { EditorContext } from "./context";
 import Iframe from "./plugins/iframe";
-import { MdEditorType } from "./types";
+import { MdEditorType, MdNodeType } from "./types";
 
 type Props = {
   onChange?: (richText: string) => void;
@@ -46,6 +46,9 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
   ) => {
     const [isMdEditorActive, setIsMdEditorActive] = useState(false);
     const [mdEditor, setMdEditor] = useState<MdEditorType | null>(null);
+    const [mdActiveNodeTypes, setMdActiveNodeTypes] = useState<MdNodeType[]>(
+      [],
+    );
     const [focused, setFocused] = useState(false);
 
     const hasLimit = !isNaN(Number(limit));
@@ -129,6 +132,8 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
           toggleMarkdown,
           mdEditor,
           setMdEditor,
+          mdActiveNodeTypes,
+          setMdActiveNodeTypes,
         }}
       >
         <div

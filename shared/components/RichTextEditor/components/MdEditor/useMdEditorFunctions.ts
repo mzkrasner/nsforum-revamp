@@ -1,9 +1,19 @@
 import { reverseString } from "@/shared/lib/utils";
 import { Level } from "@tiptap/extension-heading";
+import {} from "@tiptap/extension-youtube";
+import { isNil } from "lodash-es";
 import useEditorContext from "../../hooks/useEditorContext";
+import { MdNodeType } from "../../types";
+
+export const YOUTUBE_REGEX =
+  /^(https?:\/\/)?(www\.|music\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/(?!channel\/)(?!@)(.+)?$/;
+
+export const isValidYoutubeUrl = (url: string) => {
+  return url.match(YOUTUBE_REGEX);
+};
 
 const useMdEditorFunctions = () => {
-  const { mdEditor } = useEditorContext();
+  const { mdEditor, mdActiveNodeTypes } = useEditorContext();
   const { view } = mdEditor || {};
 
   const countOccurrences = ({
@@ -109,6 +119,7 @@ const useMdEditorFunctions = () => {
       selection: { anchor: from, head: to - wrapperLength * 2 }, // Adjust selection length after unbolding
     });
     view.dispatch(transaction);
+    view.focus();
   };
 
   const wrapRange = ({
@@ -134,6 +145,7 @@ const useMdEditorFunctions = () => {
       selection: { anchor: from + wrapperLength, head: to + wrapperLength }, // Adjust selection inside bolded text
     });
     view.dispatch(transaction);
+    view.focus();
   };
 
   // TODO Theres a bug with post-transaction selection when working with nested wrappers
@@ -281,13 +293,88 @@ const useMdEditorFunctions = () => {
     });
   };
 
-  const isMainSelectionDelimitedBy = (wrapper: string) => {
+  const isNodeActive = (nodeTypes: MdNodeType | MdNodeType[]) => {
+    if (!view) return false;
+
+    const nodeTypeArray: string[] = Array.isArray(nodeTypes)
+      ? nodeTypes
+      : [nodeTypes]; // Normalize to array
+
+    for (const nodeType of mdActiveNodeTypes) {
+      if (nodeTypeArray.includes(nodeType)) return true;
+    }
+
+    return false;
+  };
+
+  const insertLink = (url: `http${string}`) => {
     if (!view) return;
     const { state } = view;
     const { from, to } = state.selection.main;
-    // Check wrapping inclusive of wrapper
-    const delimiterRange = getDelimiterRange({ from, to, delimiter: wrapper });
-    return !!delimiterRange;
+    const selectedText = state.sliceDoc(from, to);
+    const linkMarkdown = `[${selectedText}](${url})`;
+
+    // Create a transaction to insert the link at the current cursor position
+    const transaction = state.update({
+      changes: {
+        from,
+        to,
+        insert: linkMarkdown,
+      },
+      selection: {
+        anchor: from + 1 + selectedText.length,
+        head: from + 1 + selectedText.length,
+      },
+    });
+    view.dispatch(transaction);
+    view.focus();
+  };
+
+  const insertContent = ({
+    from,
+    to,
+    content,
+  }: {
+    from?: number;
+    to?: number;
+    content: string;
+  }) => {
+    if (!view) return;
+    const { state } = view;
+
+    if (isNil(from)) from = state.selection.main.from;
+    if (isNil(to)) to = state.selection.main.to;
+
+    const transaction = state.update({
+      changes: { from, to, insert: content },
+      selection: {
+        anchor: from + content.length,
+      },
+    });
+
+    // Dispatch the transaction to insert HTML
+    view.dispatch(transaction);
+
+    // Refocus the editor and set cursor after the inserted HTML
+    view.focus();
+  };
+
+  const insertYoutubeVideo = (url: string) => {
+    if (!view) return;
+    const { state } = view;
+    const { from, to } = state.selection.main;
+
+    if (!isValidYoutubeUrl(url)) {
+      alert("Not a valid youtube url");
+      return;
+    }
+
+    const content = `<div data-youtube-video="">
+  <iframe style="margin: 0 auto; width: 100%; max-width: 640px; height: auto; aspect-ratio: 16/9; border-radius: 8px" width="640" height="480" allowfullscreen="true" autoplay="false" disablekbcontrols="false" enableiframeapi="false" endtime="0" ivloadpolicy="0" loop="false" modestbranding="false" origin="" playlist="" src="${url}" start="0"></iframe>
+</div>
+`;
+
+    insertContent({ from, to, content });
   };
 
   return {
@@ -298,7 +385,10 @@ const useMdEditorFunctions = () => {
     toggleHeading,
     toggleBulletList,
     toggleOrderedList,
-    isMainSelectionDelimitedBy,
+    isNodeActive,
+    insertLink,
+    insertYoutubeVideo,
+    insertContent,
   };
 };
 

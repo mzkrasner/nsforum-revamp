@@ -89,3 +89,18 @@ export const escapeSQLLikePattern = (pattern: string) => {
   // Escape special characters _ and % by prefixing them with \
   return pattern.replace(/([_%])/g, "\\$1");
 };
+
+export const normalizeAndValidateUrl = (url: string): string | null => {
+  // Add 'https://' if the URL doesn't start with 'http://' or 'https://'
+  if (!/^https?:\/\//i.test(url)) {
+    url = "https://" + url; // Default to 'https://'
+  }
+
+  // Try to create a new URL object
+  try {
+    new URL(url); // Will throw if the URL is invalid
+    return url; // Return the normalized URL if valid
+  } catch (error) {
+    return null; // Return null if the URL is invalid
+  }
+};
