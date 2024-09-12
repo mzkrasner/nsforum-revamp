@@ -1,10 +1,11 @@
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { syntaxTree } from "@codemirror/language";
 import { languages } from "@codemirror/language-data";
-import { EditorView, useCodeMirror } from "@uiw/react-codemirror";
-import { useEffect, useRef } from "react";
+import { EditorView, keymap, Prec, useCodeMirror } from "@uiw/react-codemirror";
+import { useEffect, useMemo, useRef } from "react";
 import useEditorContext from "../../hooks/useEditorContext";
 import { MdNodeType } from "../../types";
+import useToolbarFunctions from "../Toolbar/useToolbarFunctions";
 
 const extensions = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -12,20 +13,43 @@ const extensions = [
 
 const MdEditor = () => {
   const {
-    editor,
+    editor: tiptapEditor,
     mdEditor: contextMdEditor,
     setMdEditor,
     setMdActiveNodeTypes,
   } = useEditorContext();
+  const toolbarFns = useToolbarFunctions();
   const setContextMdEditor = useRef(setMdEditor).current;
 
-  if (!editor) return null;
+  const keyBindings = useMemo(() => {
+    const { toggleBold, toggleItalic } = toolbarFns;
+    return [
+      {
+        key: "Mod-b",
+        run: () => {
+          toggleBold();
+          return true;
+        },
+      },
+      {
+        key: "Mod-i",
+        run: () => {
+          toggleItalic();
+          return true;
+        },
+      },
+    ];
+  }, [toolbarFns]);
+
+  if (!tiptapEditor) return null;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mdEditor = useCodeMirror({
     container: containerRef.current,
     extensions: [
       ...extensions,
+      EditorView.lineWrapping,
+      Prec.highest(keymap.of(keyBindings)),
       EditorView.updateListener.of((update) => {
         if (update.selectionSet) {
           const { from, to } = update.state.selection.main;
@@ -44,8 +68,7 @@ const MdEditor = () => {
         }
       }),
     ],
-    value: editor.storage.markdown.getMarkdown(),
-    // onChange: (value) => editor.commands.setContent(value),
+    value: tiptapEditor.storage.markdown.getMarkdown(),
   });
   const { setContainer } = mdEditor;
 

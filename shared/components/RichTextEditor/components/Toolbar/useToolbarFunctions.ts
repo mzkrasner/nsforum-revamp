@@ -5,55 +5,60 @@ import useMdEditorFunctions from "../MdEditor/useMdEditorFunctions";
 const useToolbarFunctions = () => {
   const { editor, isMdEditorActive } = useEditorContext();
 
-  const md = useMdEditorFunctions();
+  const mdEditorFns = useMdEditorFunctions();
 
   const isBoldActive = () => {
-    if (isMdEditorActive) return md.isNodeActive("StrongEmphasis");
+    if (isMdEditorActive) return mdEditorFns.isNodeActive("StrongEmphasis");
     return !!editor?.isActive("bold");
   };
 
   const isItalicActive = () => {
-    if (isMdEditorActive) return md.isNodeActive("Emphasis");
+    if (isMdEditorActive) return mdEditorFns.isNodeActive("Emphasis");
     return editor?.isActive("italic");
   };
 
   const isBulletedListActive = () => {
-    if (isMdEditorActive) return md.isNodeActive("BulletList");
+    if (isMdEditorActive) return mdEditorFns.isNodeActive("BulletList");
     return editor?.isActive("bulletlist");
   };
 
   const isOrderedListActive = () => {
-    if (isMdEditorActive) return md.isNodeActive("OrderedList");
+    if (isMdEditorActive) return mdEditorFns.isNodeActive("OrderedList");
     return editor?.isActive("orderedList");
   };
 
   const isHeadingActive = (level: Level) => {
-    if (isMdEditorActive) return md.isNodeActive(`ATXHeading${level}`);
+    if (isMdEditorActive) return mdEditorFns.isNodeActive(`ATXHeading${level}`);
     return editor?.isActive("heading", { level });
   };
 
   const toggleBold = () => {
-    if (isMdEditorActive) return md.toggleSelectionWrapper("**");
+    if (isMdEditorActive)
+      return mdEditorFns.toggleMark({
+        wrapper: "**",
+        nodeType: "StrongEmphasis",
+      });
     return editor?.chain().focus().toggleBold().run();
   };
 
   const toggleItalic = () => {
-    if (isMdEditorActive) return md.toggleSelectionWrapper("_");
+    if (isMdEditorActive)
+      return mdEditorFns.toggleMark({ wrapper: "_", nodeType: "Emphasis" });
     return editor?.chain().focus().toggleItalic().run();
   };
 
   const toggleHeading = (level: Level) => {
-    if (isMdEditorActive) return md.toggleHeading(level);
+    if (isMdEditorActive) return mdEditorFns.toggleHeading(level);
     return editor?.chain().focus().toggleHeading({ level }).run();
   };
 
   const toggleBulletedList = () => {
-    if (isMdEditorActive) return md.toggleBulletList();
+    if (isMdEditorActive) return mdEditorFns.toggleBulletList();
     return editor?.chain().focus().toggleBulletList().run();
   };
 
   const toggleOrderedList = (num: number = 1) => {
-    if (isMdEditorActive) return md.toggleOrderedList(num);
+    if (isMdEditorActive) return mdEditorFns.toggleOrderedList(num);
     return editor?.chain().focus().toggleOrderedList().run();
   };
 

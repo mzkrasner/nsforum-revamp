@@ -117,7 +117,12 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       if (!isMdEditorActive && mdEditor) setMdEditor(null);
     }, [isMdEditorActive, mdEditor]);
 
-    const toggleMarkdown = () => setIsMdEditorActive((v) => !v);
+    const toggleMarkdown = () => {
+      if (isMdEditorActive) {
+        editor?.commands.setContent(mdEditor?.view?.state.doc.toString() || "");
+      }
+      setIsMdEditorActive(!isMdEditorActive);
+    };
 
     const charsLeft = hasLimit
       ? limit! - editor?.storage.characterCount.characters()

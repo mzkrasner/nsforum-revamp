@@ -5,25 +5,17 @@ import useMdEditorFunctions from "../MdEditor/useMdEditorFunctions";
 const useToolbarInsertFunctions = () => {
   const { editor, isMdEditorActive } = useEditorContext();
 
-  const md = useMdEditorFunctions();
+  const mdEditorFns = useMdEditorFunctions();
 
   const setLink = () => {
     if (!editor) return;
-    const previousUrl = editor.getAttributes("link").href;
-    let url = normalizeAndValidateUrl(window.prompt("URL", previousUrl) || "");
+    let url = editor.getAttributes("link").href;
+    if (!url) return;
 
-    if (!url) {
-      alert("Not a valid url");
-      return;
-    }
-
-    // cancelled
-    if (url === null) {
-      return;
-    }
+    url = normalizeAndValidateUrl(window.prompt("URL", url) || "");
 
     if (isMdEditorActive) {
-      md.insertLink(url as `http${string}`);
+      mdEditorFns.insertLink(url as `http${string}`);
       return;
     }
 
@@ -45,7 +37,7 @@ const useToolbarInsertFunctions = () => {
     const width = 640;
 
     if (isMdEditorActive) {
-      md.insertYoutubeVideo(url);
+      mdEditorFns.insertYoutubeVideo(url);
       return;
     }
 
@@ -76,7 +68,10 @@ const useToolbarInsertFunctions = () => {
     if (!editor) return;
     const input = prompt("Enter spotify podcast URL");
     const url = input?.split("?")[0];
-    if (!url || !validateSpotifyUrl(url)) {
+
+    if (!url) return;
+
+    if (!validateSpotifyUrl(url)) {
       alert("Not a valid spotify podcast episode url.");
       return;
     }
@@ -88,7 +83,7 @@ const useToolbarInsertFunctions = () => {
 `;
 
     if (isMdEditorActive) {
-      md.insertContent({ content: spotifyIframe });
+      mdEditorFns.insertContent({ content: spotifyIframe });
       return;
     }
 

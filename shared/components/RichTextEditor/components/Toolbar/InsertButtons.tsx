@@ -68,7 +68,6 @@ const InsertButtons = () => {
       >
         <YoutubeIcon size={14} strokeWidth={1.4} />
       </Toggle>
-      {/* <TableButton /> */}
     </>
   );
 
@@ -77,6 +76,7 @@ const InsertButtons = () => {
     return (
       <div className="relative h-fit w-fit">
         <Button
+          variant="ghost"
           size="sm"
           className="h-8 w-8 px-2"
           onClick={() => setOpen((v) => !v)}
@@ -86,7 +86,7 @@ const InsertButtons = () => {
         {open && (
           <div
             ref={dropdownListRef}
-            className="absolute right-0 top-[calc(100%_+_8px)] flex gap-1 rounded-lg border border-gray-500/50 bg-[var(--bg-color)] p-1"
+            className="absolute right-0 top-[calc(100%_+_8px)] z-10 flex gap-1 rounded-lg border border-gray-500/50 bg-[var(--bg-color)] p-1"
           >
             {buttons}
           </div>

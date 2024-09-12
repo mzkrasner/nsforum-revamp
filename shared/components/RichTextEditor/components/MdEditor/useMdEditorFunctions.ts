@@ -1,6 +1,5 @@
-import { reverseString } from "@/shared/lib/utils";
+import { syntaxTree } from "@codemirror/language";
 import { Level } from "@tiptap/extension-heading";
-import {} from "@tiptap/extension-youtube";
 import { isNil } from "lodash-es";
 import useEditorContext from "../../hooks/useEditorContext";
 import { MdNodeType } from "../../types";
@@ -16,94 +15,19 @@ const useMdEditorFunctions = () => {
   const { mdEditor, mdActiveNodeTypes } = useEditorContext();
   const { view } = mdEditor || {};
 
-  const countOccurrences = ({
-    text,
-    searchString,
-    chunkSize = 1024,
-    reverse,
-  }: {
-    text: string;
-    searchString: string;
-    chunkSize?: number;
-    reverse?: boolean;
-  }) => {
-    if (!searchString) {
-      return 0; // If searchString is empty, return 0
-    }
-
-    if (reverse) {
-      // Reverse the text and search string
-      text = reverseString(text);
-      searchString = searchString.split("").reverse().join("");
-    }
-
-    // Escape special characters in searchString
-    const escapedSearchString = searchString.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      "\\$&",
-    );
-
-    return (
-      text.slice(0, chunkSize).match(new RegExp(escapedSearchString, "g")) || []
-    ).length;
-  };
-
-  const getDelimiterRange = ({
-    from,
-    to,
-    delimiter,
-  }: {
-    from: number;
-    to: number;
-    delimiter: string;
-  }) => {
-    if (!view) return;
-    const { state } = view;
-
-    const text = state.sliceDoc(); // Get the document text
-    const textLength = text.length;
-
-    // Allow for delimited to be included at the edges of the selction range
-    const delimiterLength = delimiter.length;
-    if (from !== to) {
-      from =
-        textLength < from + delimiterLength ? from : from + delimiterLength;
-      to = to - delimiterLength < 0 ? to : to - delimiterLength;
-    }
-    const beforeText = text.slice(0, from);
-    const afterText = text.slice(to);
-
-    const numDelimitersBefore = countOccurrences({
-      text: beforeText,
-      searchString: delimiter,
-      reverse: true,
-    });
-    const numDelimitersAfter = countOccurrences({
-      text: afterText,
-      searchString: delimiter,
-    });
-
-    if (numDelimitersBefore % 2 !== 0 && numDelimitersAfter % 2 !== 0) {
-      return {
-        start:
-          from -
-          reverseString(beforeText).indexOf(reverseString(delimiter)) -
-          delimiterLength,
-        end: to + afterText.indexOf(delimiter) + delimiterLength,
-      };
-    }
-
-    return false;
-  };
-
   const unWrapRange = ({
     from,
     to,
     wrapper,
+    selectionRange,
   }: {
     from: number;
     to: number;
     wrapper: string;
+    selectionRange?: {
+      anchor: number;
+      head?: number;
+    };
   }) => {
     if (!view) return;
     const { state } = view;
@@ -116,7 +40,10 @@ const useMdEditorFunctions = () => {
         to: to,
         insert: selectedText.slice(wrapperLength, -wrapperLength),
       },
-      selection: { anchor: from, head: to - wrapperLength * 2 }, // Adjust selection length after unbolding
+      selection: selectionRange || {
+        anchor: from,
+        head: to - wrapperLength * 2,
+      }, // Adjust selection length after unbolding
     });
     view.dispatch(transaction);
     view.focus();
@@ -148,19 +75,63 @@ const useMdEditorFunctions = () => {
     view.focus();
   };
 
-  // TODO Use standard code mirror methods to implement this
-  const toggleSelectionWrapper = (wrapper: string) => {
+  const findNodeTypeRange = (nodeType: MdNodeType) => {
     if (!view) return;
     const { state } = view;
-    let from, to;
-    ({ from, to } = state.selection.main);
-    // Check wrapping inclusive of wrapper
-    const delimiterRange = getDelimiterRange({ from, to, delimiter: wrapper });
+    const { from, to } = state.selection.main;
 
-    if (delimiterRange) {
-      const { start, end } = delimiterRange;
-      // If text is already wrapped, remove the wrapping formatting
-      unWrapRange({ from: start, to: end, wrapper });
+    let start = -1;
+    let end = -1;
+
+    // Walk through the syntax tree to find the NodeType node
+    syntaxTree(state).iterate({
+      from,
+      to,
+      enter: (node) => {
+        // Check if the current node is a NodeType (bold)
+        if (node.name === nodeType) {
+          start = node.from;
+          end = node.to;
+          return false; // Stop the iteration as we found the node
+        }
+      },
+    });
+
+    if (start === -1 && end === -1) return false;
+
+    return { start, end }; // Return the range of StrongEmphasis
+  };
+
+  const toggleMark = ({
+    wrapper,
+    nodeType,
+  }: {
+    wrapper: string;
+    nodeType: MdNodeType;
+  }) => {
+    if (!view) return;
+    const { state } = view;
+    const { from, to } = state.selection.main;
+    // Check wrapping inclusive of wrapper
+
+    const isNodeTypeActive = isNodeActive(nodeType);
+
+    if (isNodeTypeActive) {
+      const nodeTypeRange = findNodeTypeRange(nodeType);
+      if (nodeTypeRange) {
+        const { start, end } = nodeTypeRange;
+        // If text is already wrapped, remove the wrapping formatting
+        const isSelectionNarrowerThanMark =
+          to - from < end - start - wrapper.length * 2;
+        unWrapRange({
+          from: start,
+          to: end,
+          wrapper,
+          selectionRange: isSelectionNarrowerThanMark
+            ? { anchor: from - wrapper.length }
+            : undefined,
+        });
+      }
     } else {
       // If selection is not wrapped, add the wrapping formatting
       wrapRange({ from, to, wrapper });
@@ -378,10 +349,9 @@ const useMdEditorFunctions = () => {
   };
 
   return {
-    getDelimiterRange,
     getActiveHeading,
     getActiveList,
-    toggleSelectionWrapper,
+    toggleMark,
     toggleHeading,
     toggleBulletList,
     toggleOrderedList,
