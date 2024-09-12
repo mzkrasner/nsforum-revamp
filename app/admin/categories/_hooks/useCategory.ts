@@ -7,7 +7,7 @@ type Props = {
 };
 const useCategory = ({ id }: Props = {}) => {
   const categoryQuery = useQuery({
-    queryKey: ["category", { id }],
+    queryKey: ["admin", "category", { id }],
     queryFn: async () => {
       if (!id) return null;
       const categories = await fetchCategories({

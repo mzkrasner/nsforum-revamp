@@ -27,7 +27,7 @@ const useCategorySuggestion = ({
     if (!response?.id || !fetchOptions?.filter?.status) return;
     queryClient.setQueriesData(
       {
-        queryKey: ["category-suggestions", fetchOptions],
+        queryKey: ["admin","category-suggestions", fetchOptions],
       },
       produce(
         (

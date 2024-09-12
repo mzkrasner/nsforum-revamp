@@ -1,10 +1,12 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { isAddress } from "viem";
 import useOrbis from "./useOrbis";
 
 const useAuth = () => {
+  const queryClient = useQueryClient();
+
   const { ready, authenticated, logout, login, user } = usePrivy();
   const { wallets } = useWallets();
   const privyWallet = wallets.find(
@@ -63,6 +65,8 @@ const useAuth = () => {
     isLoggedIn: !!(authenticated && authInfo),
     logout: async () => {
       logout();
+      queryClient.resetQueries({ queryKey: ["profile"] });
+      queryClient.resetQueries({ queryKey: ["admin"] });
       await db?.disconnectUser();
     },
   };

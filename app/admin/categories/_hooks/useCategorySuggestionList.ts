@@ -12,7 +12,7 @@ const useCategorySuggestionList = (props: Props) => {
   const { fetchOptions } = props || {};
 
   const categorySuggestionListQuery = useInfiniteQuery({
-    queryKey: ["category-suggestions", fetchOptions],
+    queryKey: ["admin", "category-suggestions", fetchOptions],
     queryFn: ({ pageParam }) =>
       fetchCategorySuggestions({
         page: pageParam,
