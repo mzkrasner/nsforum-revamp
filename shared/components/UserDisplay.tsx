@@ -5,7 +5,7 @@ import useUser from "../hooks/useUser";
 import { cn } from "../lib/utils";
 
 type Props = { did: string; className?: string };
-const User = ({ did, className = "" }: Props) => {
+const UserDisplay = ({ did, className = "" }: Props) => {
   const { profile } = useProfile();
   const { user, query } = useUser({ did });
   if (query.isLoading) return "Loading...";
@@ -17,7 +17,10 @@ const User = ({ did, className = "" }: Props) => {
   return (
     <Link
       href={href}
-      className={cn("inline-flex items-center gap-1 leading-none", className)}
+      className={cn(
+        "link inline-flex items-center gap-1 leading-none",
+        className,
+      )}
     >
       {username}
       {verified && (
@@ -26,4 +29,4 @@ const User = ({ did, className = "" }: Props) => {
     </Link>
   );
 };
-export default User;
+export default UserDisplay;

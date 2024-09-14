@@ -12,9 +12,10 @@ import { OrbisDBRow } from "../types";
 import { Post } from "../types/post";
 import PostInfo from "./PostInfo";
 import PostTags from "./PostTags";
+import { HTMLAttributes } from "react";
 
-type Props = { post: OrbisDBRow<Post> };
-const PostCard = ({ post }: Props) => {
+type Props = { post: OrbisDBRow<Post> } & HTMLAttributes<HTMLDivElement>;
+const PostCard = ({ post, ...props }: Props) => {
   const { title, slug, tag_ids } = post || {};
   const { tags } = useTags({
     fetchTagsOptions: {
@@ -24,7 +25,7 @@ const PostCard = ({ post }: Props) => {
     },
   });
   return (
-    <Card>
+    <Card {...props}>
       <CardHeader className="space-y-0 p-3">
         <CardTitle className="text-base font-medium">
           <Link href={`/posts/${slug}`} className="link inline-block">

@@ -24,7 +24,7 @@ const ProfilePage = () => {
       <ProfileInfo />
       <section className="mt-10">
         <Tabs className="mb-5" defaultValue="drafts">
-          <TabsList className="mb-3">
+          <TabsList className="mx-auto mb-3 flex w-fit sm:mx-0">
             <TabsTrigger value="drafts">Drafts</TabsTrigger>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="comments">Comments</TabsTrigger>

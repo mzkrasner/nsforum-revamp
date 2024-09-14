@@ -30,7 +30,7 @@ const Search = () => {
   const { isLoading } = postListQuery;
 
   return (
-    <div ref={ref} className="relative">
+    <div className="relative">
       <SearchIcon
         size={16}
         strokeWidth={1.5}
@@ -44,35 +44,41 @@ const Search = () => {
         onFocus={() => setOpen(true)}
       />
       {open && searchTerm && (
-        <div className="absolute right-0 top-12 z-10 sm:min-w-80">
-          <ScrollArea className="h-80">
-            <ul className="flex flex-col gap-2 rounded-md border bg-white p-2">
-              {isLoading ? (
-                <li className="flex items-center justify-center">
-                  <Button
-                    variant="ghost"
-                    loading={true}
-                    loadingText="Searching..."
-                    loaderProps={{ className: "text-neutral-700" }}
-                    className="mx-auto w-fit"
-                  />
-                </li>
-              ) : !posts.length ? (
-                <li className="text-center text-sm text-neutral-500">
-                  No post found
-                </li>
-              ) : (
-                posts.map((post, i) => {
-                  return (
-                    <li key={i}>
-                      <PostCard post={post} />
-                    </li>
-                  );
-                })
-              )}
-            </ul>
-          </ScrollArea>
-        </div>
+        <>
+          <div className="fixed left-0 top-20 z-10 h-[calc(100vh_-_80px)] w-full bg-black/10"></div>
+          <div
+            ref={ref}
+            className="max-w-100vw fixed left-0 top-20 z-10 mx-8 w-[calc(100vw_-_80px)] sm:absolute sm:left-[unset] sm:right-0 sm:top-14 sm:mx-auto sm:w-fit sm:min-w-80 sm:p-0"
+          >
+            <ScrollArea className="h-fit">
+              <ul className="flex flex-col gap-2 rounded-md">
+                {isLoading ? (
+                  <li className="flex items-center justify-center">
+                    <Button
+                      variant="ghost"
+                      loading={true}
+                      loadingText="Searching..."
+                      loaderProps={{ className: "text-neutral-700" }}
+                      className="mx-auto w-fit"
+                    />
+                  </li>
+                ) : !posts.length ? (
+                  <li className="text-center text-sm text-neutral-500">
+                    No post found
+                  </li>
+                ) : (
+                  posts.map((post, i) => {
+                    return (
+                      <li key={i}>
+                        <PostCard post={post} onClick={() => setOpen(false)} />
+                      </li>
+                    );
+                  })
+                )}
+              </ul>
+            </ScrollArea>
+          </div>
+        </>
       )}
     </div>
   );

@@ -69,6 +69,12 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 .link {
   @apply cursor-pointer hover:underline;
 }

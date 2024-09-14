@@ -16,7 +16,11 @@ const CustomBreadcrumb = ({ items }: Props) => {
         {items.map(({ name, href, active = false }, i) => {
           let content = active ? <BreadcrumbPage>{name}</BreadcrumbPage> : name;
           if (href)
-            content = <BreadcrumbLink href={href}>{content}</BreadcrumbLink>;
+            content = (
+              <BreadcrumbLink className="link" href={href}>
+                {content}
+              </BreadcrumbLink>
+            );
           return (
             <Fragment key={i}>
               <BreadcrumbItem>{content}</BreadcrumbItem>

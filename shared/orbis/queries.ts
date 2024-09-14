@@ -165,8 +165,19 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
 
   const [result, error] = await catchError(() => selectStatement?.run());
   if (error) throw new Error(`Error while fetching categories: ${error}`);
-  const posts = result.rows;
-  return posts as OrbisDBRow<Category>[];
+  const categories = result.rows;
+  return categories as OrbisDBRow<Category>[];
+};
+
+export const fetchCategory = async (
+  filter: FetchCategoriesOptions["filter"],
+) => {
+  const res = await fetchCategories({
+    page: 0,
+    pageSize: 1,
+    filter,
+  });
+  return res.length ? res[0] : null;
 };
 
 export const fetchReactionCounter = async (filter: {

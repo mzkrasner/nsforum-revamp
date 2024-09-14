@@ -6,14 +6,17 @@ import {
 } from "@/shared/components/ui/card";
 import Link from "next/link";
 import { cn } from "../lib/utils";
+import { OrbisDBRow } from "../types";
 import { Category } from "../types/category";
 
-type Props = { category: Category; className?: string };
+type Props = { category: OrbisDBRow<Category>; className?: string };
 const CategoryCard = ({ category, className }: Props) => {
-  const { name, description } = category;
+  const { name, description, stream_id } = category;
   return (
-    <Link href="/categories/1" className="inline-block">
-      <Card className={cn(className, "cursor-pointer hover:bg-neutral-50")}>
+    <Link href={`/categories/${stream_id}`} className="block h-full">
+      <Card
+        className={cn(className, "h-full cursor-pointer hover:bg-neutral-50")}
+      >
         <CardHeader className="p-3">
           <CardTitle className="text-base font-semibold">{name}</CardTitle>
           <CardDescription>{description}</CardDescription>

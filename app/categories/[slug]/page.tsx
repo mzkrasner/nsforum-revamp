@@ -1,21 +1,43 @@
+import CustomBreadcrumb from "@/shared/components/CustomBreadcrumb";
 import PageHeading from "@/shared/components/PageHeading";
-import PostFilters from "@/shared/components/PostFilters";
+// import PostFilters from "@/shared/components/PostFilters";
 import PostList from "@/shared/components/PostList";
-import CategoryBreadcrumb from "../_components/CategoryBreadcrumb";
-import CategoryDescription from "../_components/CategoryDescription";
+import { fetchCategory } from "@/shared/orbis/queries";
 
-const CategoryPage = () => {
+type Props = {
+  params: { slug: string };
+};
+const CategoryPage = async ({ params: { slug } }: Props) => {
+  const category = await fetchCategory({ stream_id: slug });
+
+  const breadcrumbItems = [
+    {
+      name: "Home",
+      href: "/",
+    },
+    {
+      name: "Categories",
+      href: "/categories",
+    },
+    {
+      name: category?.name || "",
+      active: true,
+    },
+  ];
+
   return (
     <div className="container">
-      <CategoryBreadcrumb />
-      <PageHeading>General</PageHeading>
-      <div className="mb-10 md:grid md:grid-cols-[1fr_320px]">
+      <div className="mx-auto mb-10 max-w-2xl">
+        <CustomBreadcrumb items={breadcrumbItems} />
+        <PageHeading>{category?.name}</PageHeading>
         <section>
-          <CategoryDescription />
+          <p>{category?.description}</p>
           <div className="mb-5 mt-10 flex items-center justify-between">
-            <PostFilters category={false} />
+            {/* <PostFilters category={false} /> */}
           </div>
-          <PostList />
+          <PostList
+            fetchPostsOptions={{ filter: { category: category?.stream_id } }}
+          />
         </section>
       </div>
     </div>

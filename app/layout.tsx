@@ -26,7 +26,7 @@ const RootLayout = async ({
         <AppContextProvider>
           <TooltipProvider>
             <NavBar />
-            <div className="flex">
+            <div className="z-[5] flex pt-24">
               <Toaster />
               <Sidebar />
               <main className="flex h-full min-h-[calc(100vh_-_80px)] flex-1 flex-col">

@@ -18,7 +18,7 @@ const CategoryList = ({ renderCategory, emptyContent }: Props) => {
 
   return (
     <div>
-      <ul className="md:grid md:grid-cols-2 md:gap-3">
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {categories.map((category, i) => {
           return (
             <li key={i}>

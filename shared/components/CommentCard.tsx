@@ -15,7 +15,7 @@ import DateDisplay from "./DateDisplay";
 import DeleteCommentButton from "./DeleteCommentButton";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import User from "./User";
+import UserDisplay from "./UserDisplay";
 
 type Props = {
   comment: OrbisDBRow<CommentType>;
@@ -59,7 +59,7 @@ const CommentCard = ({
     <Card>
       <CardHeader className="p-2 text-sm">
         <div className="flex flex-row items-center gap-2 space-y-0 text-xs">
-          <User did={controller} className="text-neutral-800" />
+          <UserDisplay did={controller} className="text-neutral-800" />
           <span className="text-neutral-400">on</span>
           <DateDisplay dateString={indexed_at} className="text-xs" />
           <CardReaction content={comment} model="comments" />

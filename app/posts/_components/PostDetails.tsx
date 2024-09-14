@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
 import { useState } from "react";
 import PostActions from "./PostActions";
 import PostBody from "./PostBody";
@@ -14,11 +13,7 @@ const PostDetails = () => {
 
   return (
     <div>
-      <div
-        className={cn("container relative py-5 md:grid", {
-          "md:grid-cols-[280px_1fr]": isTableOfContentOpen,
-        })}
-      >
+      <div className="container relative py-5 md:grid md:grid-cols-[auto_1fr] md:grid-rows-[auto_auto]">
         <PostTableOfContents
           open={isTableOfContentOpen}
           setOpen={setIsTableOfContentOpen}
@@ -29,13 +24,7 @@ const PostDetails = () => {
           <PostBody />
           <PostReaction />
         </div>
-      </div>
-      <div
-        className={cn("container relative pb-10 pt-5 md:grid", {
-          "md:grid-cols-[280px_1fr]": isTableOfContentOpen,
-        })}
-      >
-        <div></div>
+        <div>{/* Comment table of content */}</div>
         <div className="mx-auto w-full max-w-[600px]">
           <PostComments />
         </div>

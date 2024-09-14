@@ -63,7 +63,6 @@ const useUser = ({ did }: Props) => {
       reader_did: profile?.controller,
       subscribed,
     } as Subscription);
-    console.log("Update subscription data: ", data);
     return data as Subscription;
   };
 

@@ -50,17 +50,17 @@ const HomePage = async ({ searchParams }: Props) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Header />
-      <div className="mb-10 md:grid md:grid-cols-[1fr_320px]">
-        <section className="container">
-          <div className="mb-5 flex items-center justify-between">
+      <section className="container mb-10">
+        <div className="mx-auto max-w-2xl">
+          <div className="xs:ml-0 xs:flex-row xs:justify-between mb-5 ml-auto flex flex-col items-end gap-5">
             <PostFilters />
             <Button size="sm" asChild>
               <Link href="/posts/new">Create Post</Link>
             </Button>
           </div>
           <PostList fetchPostsOptions={{ filter, orderBy }} />
-        </section>
-      </div>
+        </div>
+      </section>
     </HydrationBoundary>
   );
 };

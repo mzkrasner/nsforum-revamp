@@ -15,7 +15,7 @@ const PostComments = () => {
 
   return (
     <div>
-      <div className="mb-8 mt-10">
+      <div className="mb-8">
         <CommentForm fetchCommentsArg={fetchCommentsArg} />
       </div>
       <CommentList fetchCommentsArg={fetchCommentsArg} />

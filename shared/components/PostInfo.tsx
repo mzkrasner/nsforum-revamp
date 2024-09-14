@@ -3,7 +3,7 @@ import { OrbisDBRow } from "../types";
 import { Post } from "../types/post";
 import CategoryDisplay from "./CategoryDisplay";
 import DateDisplay from "./DateDisplay";
-import User from "./User";
+import UserDisplay from "./UserDisplay";
 
 type Props = { post: OrbisDBRow<Post> };
 const PostInfo = ({ post }: Props) => {
@@ -12,8 +12,8 @@ const PostInfo = ({ post }: Props) => {
   const category = categories.find((c) => c.stream_id === categoryId);
 
   return (
-    <div className="relative flex h-8 flex-row items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
-      <User did={controller} />
+    <div className="relative flex h-8 flex-row flex-wrap items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
+      <UserDisplay did={controller} />
       {category && (
         <>
           <span className="text-neutral-400">in</span>{" "}
