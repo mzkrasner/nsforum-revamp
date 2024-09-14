@@ -36,7 +36,8 @@ export const getHtmlContentPreview = (content: string) => {
   if (text.length <= maxLength) {
     return text + "...";
   }
-  return text.slice(0, maxLength) + "...";
+  const preview = text.slice(0, maxLength);
+  return preview + (preview.length < text.length ? "..." : "");
 };
 
 export const shortenAddress = (

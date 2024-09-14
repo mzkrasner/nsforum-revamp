@@ -57,7 +57,7 @@ const usePostForm = ({ isEditing }: Props) => {
 
   // Initialize author name
   useEffect(() => {
-    if (profile?.name) setValue("author_name", profile.name);
+    if (profile?.name) setValue("author_username", profile.username);
   }, [profile, setValue]);
 
   const createPostSlug = async (

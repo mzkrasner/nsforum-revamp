@@ -45,10 +45,7 @@ const useCommentForm = (props: Props) => {
   const { profile } = useProfile();
 
   const emptyFormValues: CommentType = {
-    author: {
-      username: profile?.username || "",
-      did: profile?.controller || "",
-    },
+    author_username: profile?.username || "",
     body: "",
     post_id: postId || "",
     parent_ids: parentIds.join("-"),
@@ -59,14 +56,10 @@ const useCommentForm = (props: Props) => {
     defaultValues: comment || emptyFormValues,
   });
   const { reset, watch, setValue } = form;
-  // console.log(form.formState.errors);
 
   useEffect(() => {
-    if (profile?.controller && !watch("author.did")) {
-      setValue("author", {
-        username: profile.username,
-        did: profile.controller,
-      });
+    if (profile?.controller && !watch("author_username")) {
+      setValue("author_username", profile.username);
     }
   }, [profile, watch]);
 

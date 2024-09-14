@@ -61,7 +61,7 @@ export const notifications = {
             stream_id: {
               type: "string",
             },
-            author_name: {
+            author_username: {
               type: "string",
             },
             author_did: {
@@ -85,17 +85,11 @@ export const notifications = {
             stream_id: {
               type: "string",
             },
-            author: {
-              type: "object",
-              properties: {
-                username: {
-                  type: "string",
-                },
-                did: {
-                  type: "string",
-                },
-              },
-              additionalProperties: false,
+            author_username: {
+              type: "string",
+            },
+            author_did: {
+              type: "string",
             },
             preview: {
               type: "string",
@@ -230,7 +224,7 @@ export const posts = {
       slug: {
         type: "string",
       },
-      author_name: {
+      author_username: {
         type: "string",
       },
       preview: {
@@ -272,17 +266,8 @@ export const comments = {
     type: "object",
     $schema: "https://json-schema.org/draft/2020-12/schema",
     properties: {
-      author: {
-        type: "object",
-        properties: {
-          username: {
-            type: "string",
-          },
-          did: {
-            type: "string",
-          },
-        },
-        additionalProperties: false,
+      author_username: {
+        type: "string",
       },
       body: {
         type: "string",

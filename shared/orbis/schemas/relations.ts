@@ -40,29 +40,26 @@ export const notificationReaderRelation: Relation<"notifications", "users"> = {
   referencedType: "single",
 };
 
-export const notificationsPostsRelation: Relation<
-  "notifications",
-  "notifications"
-> = {
-  referenceName: "posts",
-  table: models.notifications.id,
-  column: "posts",
-  referencedColumn: "posts",
-  referencedTable: models.notifications.id,
-  referencedType: "single",
-};
+// export const notificationsPostsRelation: Relation<"notifications", "posts"> = {
+//   referenceName: "posts",
+//   table: models.notifications.id,
+//   column: "posts",
+//   referencedColumn: "stream_id",
+//   referencedTable: models.posts.id,
+//   referencedType: "single",
+// };
 
-export const notificationsCommentsRelation: Relation<
-  "notifications",
-  "notifications"
-> = {
-  referenceName: "comments",
-  table: models.notifications.id,
-  column: "comments",
-  referencedColumn: "comments",
-  referencedTable: models.notifications.id,
-  referencedType: "single",
-};
+// export const notificationsCommentsRelation: Relation<
+//   "notifications",
+//   "comments"
+// > = {
+//   referenceName: "comments",
+//   table: models.notifications.id,
+//   column: "comments",
+//   referencedColumn: "comments",
+//   referencedTable: models.notifications.id,
+//   referencedType: "single",
+// };
 
 export const postTagsRelation: Relation<"posts", "tags"> = {
   referenceName: "tags",
@@ -74,8 +71,8 @@ export const postTagsRelation: Relation<"posts", "tags"> = {
 };
 
 const relations = {
-  // subscriptionReaderRelation,
-  // notificationReaderRelation,
+  subscriptionReaderRelation,
+  notificationReaderRelation,
   // notificationsPostsRelation,
   // notificationsCommentsRelation,
   postTagsRelation,

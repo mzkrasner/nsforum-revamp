@@ -1,20 +1,20 @@
 
 const models = {
   "posts": {
-    "id": "kjzl6hvfrbw6c8di5pm83vx6mrfgvwic8m3u0oe9j94cl5vu0paxxzd7221vzdd",
-    "name": "dev_posts_v10"
+    "id": "kjzl6hvfrbw6c96bjwlrj48cj4rotgfn7del5quck85615jrlwz92lfkq5xohy1",
+    "name": "dev_posts_v12"
   },
   "comments": {
-    "id": "kjzl6hvfrbw6c6k5b6rag4sg1jo12e9xeyec4j08q6pj7dlxohqp1vpqry74rzm",
-    "name": "dev_comments_v10"
+    "id": "kjzl6hvfrbw6c8paaenddvj5hyt8adqzsnl3av45827shmw0ng5gv79n6svavoz",
+    "name": "dev_comments_v12"
   },
   "subscriptions": {
     "id": "kjzl6hvfrbw6cb2lgmo38zs4lyr791pod6bhv1zqe6brtww699r4i6fm1jdxxh8",
     "name": "dev_subscriptions_v9"
   },
   "notifications": {
-    "id": "kjzl6hvfrbw6cb9ole8y1uwt2w2ow57w62mdolt9twj6cjmqdujqmlttaioqu6d",
-    "name": "dev_notifications_v16"
+    "id": "kjzl6hvfrbw6c5a7orzrmmrn6djgqc98s162jh8orpjpgylj8j7juzrti1h5s4r",
+    "name": "dev_notifications_v18"
   },
   "tags": {
     "id": "kjzl6hvfrbw6c8w4qyeb4ctzeh804w8ksrlg5mlpscevvmkiggbvgat6elnayto",

@@ -153,9 +153,9 @@ const PostForm = ({ isEditing }: Props) => {
           <Button
             type="submit"
             loading={publishMutation.isPending}
-            loadingText={`${isEditing ? "Editing" : "Creating"} post...`}
+            loadingText={`${isEditing ? "Updating" : "Creating"} post...`}
           >
-            {isEditing ? "Edit" : "Create"} Post
+            {isEditing ? "Update" : "Create"} Post
           </Button>
         </div>
       </form>
