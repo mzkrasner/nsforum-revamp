@@ -61,7 +61,7 @@ const CategorySuggestionForm = () => {
         </ToastAction>
       ),
     });
-  }, [toast, state]);
+  }, [toast, state, router]);
 
   return (
     <Form {...form}>

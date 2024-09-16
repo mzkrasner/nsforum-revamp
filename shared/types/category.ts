@@ -3,7 +3,7 @@ export type Category = {
   description: string;
 };
 
-export type CategorySuggestionStatus = "accepted" | "rejected";
+export type CategorySuggestionStatus = "accepted" | "rejected" | "pending";
 export type CategorySuggestion = {
   name: string;
   description: string;

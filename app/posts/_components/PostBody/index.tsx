@@ -66,7 +66,7 @@ const PostBody = () => {
             },
           }
         : undefined,
-    [data?.body],
+    [data?.body, addPostHeading],
   );
 
   if (isLoading) return "Loading...";

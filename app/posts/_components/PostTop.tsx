@@ -10,9 +10,7 @@ const PostTop = () => {
     post,
     postQuery: { isLoading },
   } = usePost();
-  if (isLoading) return "Loading...";
-  if (!post) return "No post found...";
-  const { title, tag_ids } = post;
+  const { title, tag_ids } = post || {};
   const { tags } = useTags({
     fetchTagsOptions: {
       filter: {
@@ -20,6 +18,10 @@ const PostTop = () => {
       },
     },
   });
+
+  if (isLoading) return "Loading...";
+  if (!post) return "No post found...";
+
   return (
     <div className="mb-5">
       <h2 className="font-serif text-3xl font-medium">{title}</h2>

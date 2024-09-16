@@ -65,10 +65,14 @@ export const createCategory = async (categoryData: CategorySchema) => {
     throw new Error("Unauthorized");
   }
 
+  await connectDbWithSeed();
+
   const existingCategory = await fetchCatgoryByName(categoryData.name);
   if (existingCategory) throw new Error("Category already exists");
 
-  return await insertRow({ model: "categories", value: categoryData });
+  return JSON.stringify(
+    await insertRow({ model: "categories", value: categoryData }),
+  );
 };
 
 export const editCategory = async ({
@@ -85,5 +89,5 @@ export const editCategory = async ({
 
   await connectDbWithSeed();
 
-  return await updateRow({ id: stream_id, set: categoryData });
+  return JSON.stringify(await updateRow({ id: stream_id, set: categoryData }));
 };

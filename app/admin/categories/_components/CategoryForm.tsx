@@ -55,8 +55,10 @@ const CategoryForm = ({ id }: Props = {}) => {
   const categoryMutation = useMutation({
     mutationKey: ["create-category"],
     mutationFn: async (values: CategorySchema) => {
-      if (id) return await editCategory({ ...values, stream_id: id });
-      return await createCategory(values);
+      if (id) {
+        return JSON.parse(await editCategory({ ...values, stream_id: id }));
+      }
+      return JSON.parse(await createCategory(values));
     },
     onSuccess: (response) => {
       if (!response?.id) return;
@@ -92,6 +94,7 @@ const CategoryForm = ({ id }: Props = {}) => {
       router.push("/admin/categories");
     },
   });
+  console.log(categoryMutation.error);
 
   if (categoryQuery.isLoading) return "Loading...";
 

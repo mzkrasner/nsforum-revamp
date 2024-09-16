@@ -5,6 +5,8 @@ const Comments = () => {
   const { profile } = useProfile();
   if (!profile) return null;
   const { controller } = profile;
-  return <CommentList fetchCommentsOptions={{ controller }} noReplies />;
+  return (
+    <CommentList fetchCommentsArg={{ filter: { controller } }} noReplies />
+  );
 };
 export default Comments;

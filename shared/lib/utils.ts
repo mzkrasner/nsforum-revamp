@@ -1,6 +1,5 @@
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
-import { htmlToText } from "html-to-text";
 import * as _ from "lodash-es";
 import { twMerge } from "tailwind-merge";
 import { pinata } from "../pinata/config";
@@ -28,6 +27,15 @@ export const generateRandomAlphaNumString = (length: number) => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   return _.sampleSize(characters, length).join("");
+};
+
+const htmlToText = (html: string) => {
+  // Create a new DOM element to parse the HTML string
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  // Use textContent to get only the text inside the HTML tags
+  return doc.body.textContent || "";
 };
 
 export const getHtmlContentPreview = (content: string) => {

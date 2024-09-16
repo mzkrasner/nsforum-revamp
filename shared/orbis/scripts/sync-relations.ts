@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { isEqual, isNil } from "lodash-es";
-import relations, { Relation, Schema } from "../schemas/relations";
+import relations, { Relation } from "../schemas/relations";
+import { Schema } from "../types";
 
 const fetchOrbisDBSettings = async () => {
   try {

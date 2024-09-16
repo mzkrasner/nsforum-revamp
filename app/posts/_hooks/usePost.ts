@@ -27,7 +27,7 @@ const usePost = () => {
 
   const queryClient = useQueryClient();
 
-  const queryOptions = { filter: { slug } };
+  const queryOptions = useMemo(() => ({ filter: { slug } }), [slug]);
   const postQuery = useQuery({
     queryKey: ["post", queryOptions],
     queryFn: async () => fetchPost(queryOptions),
@@ -87,7 +87,7 @@ const usePost = () => {
         );
       }
     },
-    [queryClient],
+    [queryClient, queryOptions],
   );
 
   const updateHeadingViewportPosition = useCallback(
@@ -109,7 +109,7 @@ const usePost = () => {
         }),
       );
     },
-    [queryClient],
+    [queryClient, queryOptions],
   );
 
   const postHeadings = postHeadingsQuery.data;

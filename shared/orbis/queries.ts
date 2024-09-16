@@ -69,7 +69,7 @@ export const fetchPosts = async (options?: FetchPostsOptions) => {
     filter = {},
     orderBy = [],
   } = options || {};
-  return await fetchRowsPage<Post>({
+  const posts = await fetchRowsPage<Post>({
     model: "posts",
     select: fields,
     where: {
@@ -80,6 +80,7 @@ export const fetchPosts = async (options?: FetchPostsOptions) => {
     page,
     pageSize,
   });
+  return posts;
 };
 
 export type FetchCategorySuggestionsOptions = PaginationOptions & {

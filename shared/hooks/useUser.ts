@@ -4,6 +4,7 @@ import { produce } from "immer";
 import { isNil } from "lodash-es";
 import { findRow } from "../orbis/utils";
 import { OrbisDBRow } from "../types";
+import { Profile } from "../types/profile";
 import { Subscription } from "../types/subscription";
 import useProfile from "./useProfile";
 
@@ -18,7 +19,7 @@ const useUser = ({ did }: Props) => {
 
   const fetchUser = async () => {
     if (!did) return null;
-    return await findRow({
+    return await findRow<Profile>({
       model: "users",
       where: {
         controller: did,

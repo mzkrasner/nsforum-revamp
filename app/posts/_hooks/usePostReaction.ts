@@ -1,3 +1,4 @@
+import { reactToContent } from "@/shared/actions/reactions";
 import useProfile from "@/shared/hooks/useProfile";
 import { fetchReaction, fetchReactionCounter } from "@/shared/orbis/queries";
 import { OrbisDBRow } from "@/shared/types";
@@ -8,7 +9,6 @@ import {
 } from "@/shared/types/reactions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { produce } from "immer";
-import { reactToContent } from "../actions";
 import usePost from "./usePost";
 
 const usePostReaction = () => {

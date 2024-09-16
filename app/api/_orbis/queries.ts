@@ -56,7 +56,7 @@ export const fetchSubscriberCount = async (did: string) => {
 export const suggestCategory = async (
   categorySuggestion: CategorySuggestionSchema,
 ) => {
-  return await insertRow({
+  return await insertRow<CategorySuggestion>({
     model: "categorySuggestions",
     value: { ...categorySuggestion, status: "pending" },
   });
