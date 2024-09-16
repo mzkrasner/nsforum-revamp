@@ -1,10 +1,7 @@
 import { OrbisDBFields } from "@/shared/types";
 import schemas from ".";
 import models from "../models";
-
-export type Schema = typeof schemas;
-
-export type Models = typeof models;
+import { Models, Schema } from "../types";
 
 export type TableField<T extends keyof Schema> =
   | keyof Schema[T]["schema"]["properties"]

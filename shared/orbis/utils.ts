@@ -1,4 +1,8 @@
+import { catchError } from "@useorbis/db-sdk/util";
+import { isNil } from "lodash-es";
+import { contexts, models, orbisdb } from ".";
 import { GenericCeramicDocument, OrbisDBRow } from "../types";
+import { ColumnName, ContextValue, ModelName } from "./types";
 
 /** Parse a seed from string, or return if it's already in the right format */
 export const parseDidSeed = (seed: string) => {
@@ -43,4 +47,97 @@ export const ceramicDocToOrbisRow = <T extends Record<string, any>>(
     ...ceramicDoc.content,
     indexed_at: new Date().toISOString(),
   } as OrbisDBRow<T>;
+};
+
+export type InsertRowArg<T> = {
+  model: ModelName;
+  value: T;
+  context?: ContextValue;
+};
+export const insertRow = async <T extends Record<string, any>>({
+  model,
+  value,
+  context = contexts.root,
+}: InsertRowArg<T>) => {
+  const statement = orbisdb
+    .insert(models[model].id)
+    .value(value)
+    .context(context);
+  const validation = await statement.validate();
+  if (!validation.valid) {
+    throw new Error(
+      `Error while validating insert data in ${model}: ${validation.error}`,
+    );
+  }
+  const [result, error] = await catchError(() => statement.run());
+  if (error) throw new Error(`Error while inserting row in ${model}: ${error}`);
+  return result as GenericCeramicDocument<typeof value>;
+};
+
+export type UpdateRowArg<T> = {
+  id: string;
+  set: Partial<T>;
+};
+export const updateRow = async <T extends Record<string, any>>({
+  id,
+  set,
+}: UpdateRowArg<T>) => {
+  const statement = orbisdb.update(id).set(set);
+  const [result, error] = await catchError(() => statement?.run());
+  if (error)
+    throw new Error(`Error while updating document with id ${id}: ${error}`);
+  return result as GenericCeramicDocument<T>;
+};
+
+export type FetchRowsArg<T extends Record<string, any>> = {
+  select?: (ColumnName<T> | any)[];
+  model: ModelName;
+  where?: Partial<Record<ColumnName<T>, any>>;
+  limit?: number;
+  offset?: number;
+  orderBy?: [ColumnName<T>, "asc" | "desc"][];
+};
+export const fetchRows = async <T extends Record<string, any>>({
+  select = [],
+  model,
+  where,
+  limit,
+  offset,
+  orderBy,
+}: FetchRowsArg<T>) => {
+  let statement = orbisdb.select(...select).from(models[model].id);
+  if (!isNil(where)) statement = statement.where(where);
+  if (!isNil(limit)) statement = statement.limit(limit);
+  if (!isNil(offset)) statement = statement.offset(offset);
+  if (!isNil(orderBy)) statement = statement.orderBy(...orderBy);
+
+  const [result, error] = await catchError(() => statement?.run());
+  if (error) throw new Error(`Error while fetching posts: ${error}`);
+  const rows = result.rows;
+  return rows as OrbisDBRow<T>[];
+};
+
+export type FetchRowsPageArg<T extends Record<string, any>> = Omit<
+  FetchRowsArg<T>,
+  "offset" | "limit"
+> & { page?: number; pageSize?: number };
+export const fetchRowsPage = async <T extends Record<string, any>>({
+  page = 0,
+  pageSize = 10,
+  ...arg
+}: FetchRowsPageArg<T>) => {
+  const offset = page * pageSize;
+  return await fetchRows({ ...arg, offset, limit: pageSize });
+};
+
+export type FindRowArg<T extends Record<string, any>> = Omit<
+  FetchRowsArg<T>,
+  "limit"
+>;
+export const findRow = async <T extends Record<string, any>>(
+  arg: FindRowArg<T>,
+) => {
+  const result = await fetchRows({ ...arg, limit: 1 });
+  if (result.length) return result[0];
+  return null;
 };

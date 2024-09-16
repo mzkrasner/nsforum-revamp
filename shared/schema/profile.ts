@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const profileSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
-  phone: z.string().optional().nullable(),
   username: z.string().trim().min(1, "Username is required"),
   email: z
     .string()

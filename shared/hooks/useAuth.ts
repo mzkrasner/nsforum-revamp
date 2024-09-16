@@ -2,6 +2,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { isAddress } from "viem";
+import { orbisdb } from "../orbis";
 import useOrbis from "./useOrbis";
 
 const useAuth = () => {
@@ -12,20 +13,20 @@ const useAuth = () => {
   const privyWallet = wallets.find(
     (wallet) => wallet.walletClientType === "privy",
   ); // Use the privy wallet to connect to authenticate orbis
-  const { db, authInfo, setAuthInfo } = useOrbis();
+  const { authInfo, setAuthInfo } = useOrbis();
 
   const connectOrbis = async () => {
     if (!(ready && authenticated && privyWallet)) return;
     try {
       let authInfo;
-      const connected = await db?.isUserConnected(privyWallet.address);
+      const connected = await orbisdb.isUserConnected(privyWallet.address);
       if (connected) {
-        authInfo = await db?.getConnectedUser();
+        authInfo = await orbisdb.getConnectedUser();
       } else {
         const provider = await privyWallet.getEthereumProvider();
         if (!provider) throw new Error("Unable to fetch provider");
         const auth = new OrbisEVMAuth(provider);
-        authInfo = await db?.connectUser({ auth });
+        authInfo = await orbisdb.connectUser({ auth });
       }
       if (!authInfo)
         throw new Error(
@@ -38,7 +39,7 @@ const useAuth = () => {
     }
   };
 
-  useQuery({
+  const connectOrbisQuery = useQuery({
     queryKey: ["connect-orbis", { privyWallet }],
     queryFn: connectOrbis,
     enabled: ready && authenticated && !!privyWallet,
@@ -61,13 +62,19 @@ const useAuth = () => {
     linkedXAcct,
     isVerified,
     linkedWallets,
-    login,
+    login: async () => {
+      if (!authenticated) {
+        login();
+      } else if (!authInfo) {
+        await connectOrbisQuery.refetch();
+      }
+    },
     isLoggedIn: !!(authenticated && authInfo),
     logout: async () => {
       logout();
       queryClient.resetQueries({ queryKey: ["profile"] });
       queryClient.resetQueries({ queryKey: ["admin"] });
-      await db?.disconnectUser();
+      await orbisdb.disconnectUser();
     },
   };
 };

@@ -1,9 +1,10 @@
-import useOrbis from "@/shared/hooks/useOrbis";
+import { orbisdb } from "@/shared/orbis";
 import { fetchPost } from "@/shared/orbis/queries";
+import { updateRow } from "@/shared/orbis/utils";
 import { PostStatus } from "@/shared/schema/post";
+import { Post } from "@/shared/types/post";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Level } from "@tiptap/extension-heading";
-import { catchError } from "@useorbis/db-sdk/util";
 import { produce } from "immer";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -24,8 +25,6 @@ const usePost = () => {
   const params = useParams();
   const slug = params.slug as string;
 
-  const { db } = useOrbis();
-
   const queryClient = useQueryClient();
 
   const queryOptions = { filter: { slug } };
@@ -38,18 +37,15 @@ const usePost = () => {
     // Orbis does not support delete statements yet
     // To delete a post change the deleted field to true
     const postId = postQuery.data?.stream_id;
-    if (!db || !postId) return;
-    if (!db.getConnectedUser()) {
+    if (!postId) return;
+    if (!orbisdb.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
     }
 
-    const insertStatement = db
-      .update(postId)
-      .set({ status: "deleted" as PostStatus });
-    const [result, error] = await catchError(() => insertStatement.run());
-    if (error) throw new Error(`Error during create post query: ${error}`);
-    if (!result) throw new Error("No result was returned from orbis");
-    return result;
+    return await updateRow<Post>({
+      id: postId,
+      set: { status: "deleted" as PostStatus },
+    });
   };
 
   const deletePostMutation = useMutation({

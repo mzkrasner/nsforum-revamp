@@ -1,10 +1,10 @@
 import useCategories from "@/shared/hooks/useCategories";
-import useOrbis from "@/shared/hooks/useOrbis";
 import useProfile from "@/shared/hooks/useProfile";
 import {
   generateRandomAlphaNumString,
   getHtmlContentPreview,
 } from "@/shared/lib/utils";
+import { orbisdb } from "@/shared/orbis";
 import { createPost, updatePost } from "@/shared/orbis/mutations";
 import { fetchPost } from "@/shared/orbis/queries";
 import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
@@ -20,7 +20,6 @@ type Props = { isEditing?: boolean };
 const usePostForm = ({ isEditing }: Props) => {
   const router = useRouter();
 
-  const { db } = useOrbis();
   const { categories } = useCategories();
   const { profile } = useProfile();
 
@@ -81,8 +80,8 @@ const usePostForm = ({ isEditing }: Props) => {
     formValues: PostFormType,
     status: PostStatus = "published",
   ) => {
-    if (!db || !formValues) return;
-    if (!db.getConnectedUser()) {
+    if (!formValues) return;
+    if (!orbisdb.getConnectedUser()) {
       throw new Error("Cannot create a post without connection to orbis");
     }
     const { body, title } = formValues;
@@ -95,12 +94,11 @@ const usePostForm = ({ isEditing }: Props) => {
           "No postId. Cannot update post without it's stream_id)",
         );
       return await updatePost({
-        orbisdb: db,
         postId,
         values,
       });
     }
-    return await createPost({ orbisdb: db, values });
+    return await createPost({ values });
   };
 
   const publishMutation = useMutation({
@@ -108,12 +106,6 @@ const usePostForm = ({ isEditing }: Props) => {
     mutationFn: saveFn,
     onSuccess: async (result) => {
       if (!result) return;
-      // // create notification
-      // await axios.post("/api/notifications/posts", {
-      //   authorId: profile?.stream_id,
-      //   authorName: profile?.name,
-      //   postId,
-      // });
       queryClient.invalidateQueries({
         queryKey: ["posts"],
       });
@@ -134,7 +126,7 @@ const usePostForm = ({ isEditing }: Props) => {
     onError: console.error,
   });
 
-  return { form, db, categories, publishMutation, draftMutation };
+  return { form, categories, publishMutation, draftMutation };
 };
 
 export default usePostForm;

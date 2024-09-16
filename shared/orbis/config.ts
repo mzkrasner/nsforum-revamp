@@ -7,6 +7,7 @@ const config: OrbisConfig = {
   nodes: [
     {
       gateway: process.env.NEXT_PUBLIC_ORBIS_NODE_URL as string,
+      env: process.env.NEXT_PUBLIC_ORBIS_ENVIRONMENT_ID,
     },
   ],
 };

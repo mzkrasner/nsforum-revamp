@@ -1,6 +1,6 @@
 import { OrbisDB } from "@useorbis/db-sdk";
 import config from "./config";
-import contexts from "./contexts.json";
+import contexts from "./contexts";
 import models from "./models";
 import * as mutations from "./mutations";
 import * as queries from "./queries";

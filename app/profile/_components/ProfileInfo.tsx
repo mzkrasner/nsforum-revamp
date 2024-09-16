@@ -40,7 +40,7 @@ const ProfileInfo = () => {
       <div className="flex flex-col items-center gap-2 sm:items-start">
         <div>
           <h3 className="text-2xl font-semibold">{name}</h3>
-          <div className="mx-auto flex w-fit items-center justify-start gap-2 text-neutral-500 sm:m-0">
+          <div className="mx-auto flex w-fit items-center justify-start gap-2 text-sm text-neutral-500 sm:m-0">
             <span>@{username}</span>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -78,7 +78,7 @@ const ProfileInfo = () => {
             </>
           )}
         </div>
-        <Button variant="secondary" size="sm" className="h-8 w-fit" asChild>
+        <Button variant="secondary" size="sm" className="h-8 w-full" asChild>
           <Link href="/profile/edit">Account settings</Link>
         </Button>
       </div>

@@ -26,7 +26,7 @@ const ProfileForm = () => {
   const { linkedPhone, linkedXAcct } = useAuth();
 
   const { profile, saveMutation } = useProfile();
-  const { name = "", username = "", email = "", phone = "" } = profile || {};
+  const { name = "", username = "", email = "" } = profile || {};
 
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(profileSchema),
@@ -34,14 +34,15 @@ const ProfileForm = () => {
       name,
       username,
       email: email || authEmail || "",
-      phone,
     },
   });
   const { handleSubmit, control, watch, setValue } = form;
 
   useEffect(() => {
     if (!watch("email") && authEmail) setValue("email", authEmail);
-  }, [watch, setValue, authEmail]);
+    if (!watch("name") && name) setValue("name", name);
+    if (!watch("username") && username) setValue("username", username);
+  }, [watch, setValue, authEmail, name, username]);
 
   if (!authenticated) return;
 

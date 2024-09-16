@@ -1,12 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { catchError } from "@useorbis/db-sdk/util";
 import axios from "axios";
 import { produce } from "immer";
 import { isNil } from "lodash-es";
-import { models } from "../orbis";
+import { findRow } from "../orbis/utils";
 import { OrbisDBRow } from "../types";
 import { Subscription } from "../types/subscription";
-import useOrbis from "./useOrbis";
 import useProfile from "./useProfile";
 
 type Props = {
@@ -17,18 +15,15 @@ const useUser = ({ did }: Props) => {
   const queryClient = useQueryClient();
 
   const { profile } = useProfile();
-  const { db } = useOrbis();
 
   const fetchUser = async () => {
-    if (!did || !db) return null;
-    const selectStatement = db.select().from(models.users.id).where({
-      controller: did,
+    if (!did) return null;
+    return await findRow({
+      model: "users",
+      where: {
+        controller: did,
+      },
     });
-    const [result, error] = await catchError(() => selectStatement?.run());
-    if (error) throw new Error(`Error while fetching user: ${error}`);
-    if (!result?.rows.length) return null;
-    const user = result.rows[0];
-    return user;
   };
 
   const query = useQuery({

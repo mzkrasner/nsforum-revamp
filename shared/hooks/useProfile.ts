@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { catchError } from "@useorbis/db-sdk/util";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { models } from "../orbis";
+import { findRow, insertRow, updateRow } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
-import { GenericCeramicDocument, OrbisDBRow } from "../types";
+import { OrbisDBRow } from "../types";
 import { Profile } from "../types/profile";
 import { SubscriptionData } from "../types/subscription";
 import useOrbis from "./useOrbis";
@@ -14,19 +13,15 @@ const useProfile = () => {
 
   const queryClient = useQueryClient();
 
-  const { db, authInfo } = useOrbis();
+  const { authInfo } = useOrbis();
   const did = authInfo?.user.did;
 
   const fetchProfile = async (did?: string) => {
-    if (!did || !db) return null;
-    const selectStatement = db
-      .select()
-      .from(models.users.id)
-      .where({ controller: did });
-    const [result, error] = await catchError(() => selectStatement?.run());
-    if (error) throw new Error(`Error while fetching profile: ${error}`);
-    if (!result?.rows.length) return null;
-    const profile = result.rows[0] as OrbisDBRow<Profile>;
+    if (!did) return null;
+    const profile = await findRow<Profile>({
+      model: "users",
+      where: { controller: did },
+    });
     return profile;
   };
 
@@ -42,7 +37,6 @@ const useProfile = () => {
     const { data } = await axios.get<SubscriptionData>("/api/subscription", {
       params: { author: did, reader: did },
     });
-    // console.log("Fetch subscription data: ", data);
     return data || null;
   };
 
@@ -53,37 +47,26 @@ const useProfile = () => {
   });
 
   const saveProfile = async (values: ProfileFormType) => {
-    if (!db || !did) return;
+    if (!did) return;
 
-    let statement;
     const existingProfile = await fetchProfile(did);
-    // console.log("Existing profile: ", existingProfile);
     if (existingProfile?.stream_id) {
-      // console.log("Updating profile");
-      // Update
-      statement = db.update(existingProfile.stream_id).set(values);
+      const result = await updateRow<Profile>({
+        id: existingProfile.stream_id,
+        set: values,
+      });
+      return result;
     } else {
-      // console.log("Creating new profile");
-      // Create new
       const newProfile: Profile = {
         ...values,
         verified: false,
       };
-      statement = db.insert(models.users.id).value(newProfile);
-      const validation = await statement.validate();
-      if (!validation.valid) {
-        throw new Error(
-          `Error during create profile validation: ${validation.error}`,
-        );
-      }
+      const result = await insertRow({
+        model: "users",
+        value: newProfile,
+      });
+      return result;
     }
-    // console.log("Running");
-    const [result, error] = await catchError(() => statement.run());
-    // console.log("Result: ", result);
-    // console.log("Error", error);
-    if (error) throw new Error(`Error during create profile query: ${error}`);
-    if (!result) throw new Error("No result was returned from orbis");
-    return result as GenericCeramicDocument<Profile>;
   };
 
   const saveMutation = useMutation({

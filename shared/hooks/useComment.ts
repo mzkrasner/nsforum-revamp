@@ -1,32 +1,25 @@
-import useOrbis from "@/shared/hooks/useOrbis";
 import { PostStatus } from "@/shared/schema/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { catchError } from "@useorbis/db-sdk/util";
 import { produce } from "immer";
-import { GenericCeramicDocument } from "../types";
+import { orbisdb } from "../orbis";
+import { updateRow } from "../orbis/utils";
 import { CommentType } from "../types/comment";
 
 type Props = { commentId: string };
 const useComment = ({ commentId }: Props) => {
   const queryClient = useQueryClient();
 
-  const { db } = useOrbis();
-
   const deleteComment = async () => {
     // Orbis does not support delete statements yet
     // To delete a comment change the deleted field to true
-    if (!db) return;
-    if (!db.getConnectedUser()) {
+    if (!orbisdb.getConnectedUser()) {
       throw new Error("Cannot create a comment without connection to orbis");
     }
 
-    const insertStatement = db
-      .update(commentId)
-      .set({ status: "deleted" as PostStatus });
-    const [result, error] = await catchError(() => insertStatement.run());
-    if (error) throw new Error(`Error during create comment query: ${error}`);
-    if (!result) throw new Error("No result was returned from orbis");
-    return result as GenericCeramicDocument<CommentType>;
+    return await updateRow<CommentType>({
+      id: commentId,
+      set: { status: "deleted" as PostStatus },
+    });
   };
 
   const deleteCommentMutation = useMutation({

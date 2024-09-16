@@ -16,7 +16,6 @@ import { commentFormSchema, CommentFormType } from "../schema/comment";
 import { PostStatus } from "../schema/post";
 import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
-import useOrbis from "./useOrbis";
 import useProfile from "./useProfile";
 
 type Props = {
@@ -41,7 +40,6 @@ const useCommentForm = (props: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { db } = useOrbis();
   const { profile } = useProfile();
 
   const emptyFormValues: CommentType = {
@@ -71,12 +69,11 @@ const useCommentForm = (props: Props) => {
     const values = { ..._values, preview, status };
     if (comment) {
       return await updateComment({
-        orbisdb: db,
         commentId: comment.stream_id,
         values,
       });
     } else {
-      return await createComment({ orbisdb: db, values });
+      return await createComment({ values });
     }
   };
 

@@ -38,7 +38,7 @@ const UserInfo = ({ did }: Props) => {
       <div className="flex flex-col items-center gap-2 sm:items-start">
         <div>
           <h3 className="text-2xl font-semibold">{name}</h3>
-          <div className="mx-auto flex w-fit items-center justify-start gap-2 text-neutral-500 sm:m-0">
+          <div className="mx-auto flex w-fit items-center justify-start gap-2 text-sm text-neutral-500 sm:m-0">
             @{username}
           </div>
         </div>
