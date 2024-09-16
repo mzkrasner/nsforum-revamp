@@ -26,8 +26,10 @@ const useAuth = () => {
         console.log("existing connected user: ", authInfo);
       } else {
         const provider = await privyWallet.getEthereumProvider();
+        console.log("provider: ", provider);
         if (!provider) throw new Error("Unable to fetch provider");
         const auth = new OrbisEVMAuth(provider);
+        console.log("auth: ", auth);
         authInfo = await orbisdb.connectUser({ auth });
         console.log("newly connected user: ", authInfo);
       }
