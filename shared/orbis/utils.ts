@@ -71,7 +71,9 @@ export const insertRow = async <T extends Record<string, any>>({
   }
   const [result, error] = await catchError(() => statement.run());
   if (error) throw new Error(`Error while inserting row in ${model}: ${error}`);
-  return result as GenericCeramicDocument<typeof value>;
+  return JSON.parse(JSON.stringify(result)) as GenericCeramicDocument<
+    typeof value
+  >;
 };
 
 export type UpdateRowArg<T> = {
@@ -86,7 +88,7 @@ export const updateRow = async <T extends Record<string, any>>({
   const [result, error] = await catchError(() => statement?.run());
   if (error)
     throw new Error(`Error while updating document with id ${id}: ${error}`);
-  return result as GenericCeramicDocument<T>;
+  return JSON.parse(JSON.stringify(result)) as GenericCeramicDocument<T>;
 };
 
 export type FetchRowsArg<T extends Record<string, any>> = {
@@ -114,7 +116,7 @@ export const fetchRows = async <T extends Record<string, any>>({
   const [result, error] = await catchError(() => statement?.run());
   if (error) throw new Error(`Error while fetching posts: ${error}`);
   const rows = result.rows;
-  return rows as OrbisDBRow<T>[];
+  return JSON.parse(JSON.stringify(rows)) as OrbisDBRow<T>[];
 };
 
 export type FetchRowsPageArg<T extends Record<string, any>> = Omit<
@@ -138,6 +140,6 @@ export const findRow = async <T extends Record<string, any>>(
   arg: FindRowArg<T>,
 ) => {
   const result = await fetchRows({ ...arg, limit: 1 });
-  if (result.length) return result[0];
+  if (result.length) return JSON.parse(JSON.stringify(result[0]));
   return null;
 };

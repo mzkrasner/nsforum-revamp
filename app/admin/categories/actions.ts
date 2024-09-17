@@ -70,9 +70,7 @@ export const createCategory = async (categoryData: CategorySchema) => {
   const existingCategory = await fetchCatgoryByName(categoryData.name);
   if (existingCategory) throw new Error("Category already exists");
 
-  return JSON.stringify(
-    await insertRow({ model: "categories", value: categoryData }),
-  );
+  return await insertRow({ model: "categories", value: categoryData });
 };
 
 export const editCategory = async ({
@@ -89,5 +87,5 @@ export const editCategory = async ({
 
   await connectDbWithSeed();
 
-  return JSON.stringify(await updateRow({ id: stream_id, set: categoryData }));
+  return await updateRow({ id: stream_id, set: categoryData });
 };

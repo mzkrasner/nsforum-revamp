@@ -22,9 +22,6 @@ const PostReaction = () => {
     downvoteMutation,
   } = useReaction({ contentId: post?.stream_id, model: "posts" });
 
-  if (!post || reactionCounterQuery.isLoading || reactionQuery.isLoading)
-    return null;
-
   const guardReaction = (fn: Function) => () => {
     if (!isVerified) {
       setIsVerificationModalOpen(true);
@@ -41,8 +38,14 @@ const PostReaction = () => {
     downvotes: 0,
   };
 
-  const isPending = upvoteMutation.isPending || downvoteMutation.isPending;
-  const isAuthor = profile?.controller === post.controller;
+  const isDisabled =
+    !post ||
+    reactionCounterQuery.isLoading ||
+    reactionQuery.isLoading ||
+    upvoteMutation.isPending ||
+    downvoteMutation.isPending;
+
+  const isAuthor = profile?.controller === post?.controller;
 
   return (
     <div className="flex items-center justify-center py-5">
@@ -59,7 +62,7 @@ const PostReaction = () => {
           loading={upvoteMutation.isPending}
           loadingText=""
           loaderProps={{ className: "text-neutral-600" }}
-          disabled={isPending || !profile || isAuthor}
+          disabled={isDisabled || !profile || isAuthor}
         >
           <ChevronUpIcon
             size={upvoted ? 24 : 18}
@@ -75,7 +78,7 @@ const PostReaction = () => {
           loading={downvoteMutation.isPending}
           loadingText=""
           loaderProps={{ className: "text-neutral-600" }}
-          disabled={isPending || !profile || isAuthor}
+          disabled={isDisabled || !profile || isAuthor}
         >
           <ChevronDownIcon
             size={downvoted ? 24 : 18}

@@ -56,9 +56,9 @@ const CategoryForm = ({ id }: Props = {}) => {
     mutationKey: ["create-category"],
     mutationFn: async (values: CategorySchema) => {
       if (id) {
-        return JSON.parse(await editCategory({ ...values, stream_id: id }));
+        return await editCategory({ ...values, stream_id: id });
       }
-      return JSON.parse(await createCategory(values));
+      return await createCategory(values);
     },
     onSuccess: (response) => {
       if (!response?.id) return;

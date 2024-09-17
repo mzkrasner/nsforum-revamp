@@ -46,6 +46,10 @@ export const getCurrentUser = async () => {
     const authTokenClaim = await getAuthTokenClaim();
     if (!authTokenClaim) return null;
     const userId = authTokenClaim.userId;
+    const privy = new PrivyClient(
+      process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
+      process.env.PRIVY_APP_SECRET!,
+    );
     const user = await privy.getUser(userId);
     return user;
   } catch (error) {

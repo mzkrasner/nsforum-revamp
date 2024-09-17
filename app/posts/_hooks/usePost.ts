@@ -28,8 +28,9 @@ const usePost = () => {
   const queryClient = useQueryClient();
 
   const queryOptions = useMemo(() => ({ filter: { slug } }), [slug]);
+  const postQueryKey = ["post", queryOptions];
   const postQuery = useQuery({
-    queryKey: ["post", queryOptions],
+    queryKey: postQueryKey,
     queryFn: async () => fetchPost(queryOptions),
   });
 
@@ -134,6 +135,7 @@ const usePost = () => {
   return {
     post: postQuery.data,
     postQuery,
+    postQueryKey,
     deletePostMutation,
     postHeadingsQuery,
     postHeadings,
