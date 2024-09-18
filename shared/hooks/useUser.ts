@@ -8,7 +8,7 @@ import { Subscription } from "../types/subscription";
 import useProfile from "./useProfile";
 
 type Props = {
-  did: `did:${string}`;
+  did: string;
 };
 
 const useUser = ({ did }: Props) => {

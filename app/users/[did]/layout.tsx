@@ -15,7 +15,7 @@ export const generateMetadata = async ({
   const cachedFetchUser = cache(
     async () =>
       await fetchUser({
-        controller: decodeURIComponent(did) as `did:${string}`,
+        controller: decodeURIComponent(did) as string,
       }),
   );
 

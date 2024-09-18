@@ -4,7 +4,7 @@ import Link from "next/link";
 import useUser from "../hooks/useUser";
 import { cn } from "../lib/utils";
 
-type Props = { did: `did:${string}`; className?: string; placeholder?: string };
+type Props = { did: string; className?: string; placeholder?: string };
 const UserDisplay = ({ did, className = "", placeholder }: Props) => {
   const { profile } = useProfile();
   const { user, query } = useUser({ did });
