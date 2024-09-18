@@ -5,7 +5,7 @@ export type OnlyStringFields<T> = {
 };
 
 export type OrbisDBRow<T extends Record<string, any>> = {
-  controller: DIDAny;
+  controller: DIDAny | string;
   indexed_at: string;
   stream_id: string;
   // TODO: add plugins_data and _metadata_context type
