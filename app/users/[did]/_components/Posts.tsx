@@ -1,7 +1,7 @@
 import PostList from "@/shared/components/PostList";
 import useUser from "@/shared/hooks/useUser";
 
-type Props = { did: string };
+type Props = { did: `did:${string}` };
 const Posts = ({ did }: Props) => {
   const { user } = useUser({ did });
   // console.log("User: ", user);
