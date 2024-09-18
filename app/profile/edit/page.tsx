@@ -1,7 +1,11 @@
 import PageHeading from "@/shared/components/PageHeading";
 import SectionHeading from "@/shared/components/SectionHeading";
+import { Metadata } from "next";
 import ProfileForm from "../_components/ProfileForm";
-import Verification from "../_components/Verification";
+
+export const metadata: Metadata = {
+  title: "Account Settings",
+};
 
 const EditProfilePage = () => {
   return (
@@ -9,8 +13,6 @@ const EditProfilePage = () => {
       <PageHeading back="/profile">Account Settings</PageHeading>
       <SectionHeading>Profile</SectionHeading>
       <ProfileForm />
-      {/* <SectionHeading id="verification">Verification</SectionHeading>
-      <Verification /> */}
     </>
   );
 };

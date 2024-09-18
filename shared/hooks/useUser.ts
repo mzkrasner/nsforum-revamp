@@ -2,14 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { produce } from "immer";
 import { isNil } from "lodash-es";
-import { findRow } from "../orbis/utils";
+import { fetchUser } from "../orbis/queries";
 import { OrbisDBRow } from "../types";
-import { Profile } from "../types/profile";
 import { Subscription } from "../types/subscription";
 import useProfile from "./useProfile";
 
 type Props = {
-  did: string;
+  did: `did:${string}`;
 };
 
 const useUser = ({ did }: Props) => {
@@ -17,31 +16,21 @@ const useUser = ({ did }: Props) => {
 
   const { profile } = useProfile();
 
-  const fetchUser = async () => {
-    if (!did) return null;
-    return await findRow<Profile>({
-      model: "users",
-      where: {
-        controller: did,
-      },
-    });
-  };
-
   const query = useQuery({
     queryKey: ["user", { did }],
-    queryFn: fetchUser,
+    queryFn: async () => await fetchUser({ controller: did }),
+    enabled: !!did,
   });
 
   type SubscriptionData = {
     subscription: OrbisDBRow<Subscription> | null;
-    subscribedToCount: number;
-    subscriberCount: number;
+    subscribedToCount: number | string;
+    subscriberCount: number | string;
   };
   const fetchSubscriptionData = async () => {
     const { data } = await axios.get<SubscriptionData>("/api/subscription", {
       params: { author: did, reader: profile?.controller },
     });
-    // console.log("Fetch subscription data: ", data);
     return data || null;
   };
 
@@ -53,7 +42,6 @@ const useUser = ({ did }: Props) => {
 
   const updateSubscriptionFn = async (subscribed: boolean) => {
     if (isNil(subscribed)) return null;
-    console.log("Updating subscription");
     const { data } = await axios.post(`/api/subscription`, {
       author_did: did,
       reader_did: profile?.controller,
@@ -74,7 +62,7 @@ const useUser = ({ did }: Props) => {
           produce(staleSubscriptionData, (draft) => {
             if (!isNil(draft?.subscriberCount)) {
               const { subscriberCount } = draft;
-              draft.subscriberCount = subscriberCount + (subscribed ? 1 : -1);
+              draft.subscriberCount = +subscriberCount + (subscribed ? 1 : -1);
             }
             if (!isNil(draft?.subscription?.subscribed)) {
               draft.subscription.subscribed = subscribed;
@@ -92,7 +80,7 @@ const useUser = ({ did }: Props) => {
             if (!isNil(draft?.subscribedToCount)) {
               const { subscribedToCount } = draft;
               draft.subscribedToCount =
-                subscribedToCount + (subscribed ? 1 : -1);
+                +subscribedToCount + (subscribed ? 1 : -1);
             }
             if (!isNil(draft?.subscription?.subscribed)) {
               draft.subscription.subscribed = subscribed;

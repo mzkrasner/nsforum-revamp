@@ -1,11 +1,11 @@
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/shared/components/ui/breadcrumb";
+import Link from "next/link";
 import { Fragment } from "react";
 
 type Props = { items: { name: string; href?: string; active?: boolean }[] };
@@ -17,9 +17,9 @@ const CustomBreadcrumb = ({ items }: Props) => {
           let content = active ? <BreadcrumbPage>{name}</BreadcrumbPage> : name;
           if (href)
             content = (
-              <BreadcrumbLink className="link" href={href}>
+              <Link className="link" href={href}>
                 {content}
-              </BreadcrumbLink>
+              </Link>
             );
           return (
             <Fragment key={i}>

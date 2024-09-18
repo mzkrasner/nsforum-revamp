@@ -8,6 +8,7 @@ import { OnlyStringFields, OrbisDBRow } from "../types";
 import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
+import { Profile } from "../types/profile";
 import { Reaction, ReactionCounter } from "../types/reactions";
 import { Tag } from "../types/tag";
 import { fetchRowsPage, findRow, insertRow, updateRow } from "./utils";
@@ -15,6 +16,13 @@ import { fetchRowsPage, findRow, insertRow, updateRow } from "./utils";
 export type PaginationOptions = {
   page?: number;
   pageSize?: number;
+};
+
+export const fetchUser = async (filter: Partial<Omit<OrbisDBRow<Profile>, "image">>) => {
+  return await findRow<Profile>({
+    model: "users",
+    where: filter,
+  });
 };
 
 export type FetchPostArg = {

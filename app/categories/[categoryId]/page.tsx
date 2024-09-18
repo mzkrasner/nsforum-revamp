@@ -3,12 +3,37 @@ import PageHeading from "@/shared/components/PageHeading";
 // import PostFilters from "@/shared/components/PostFilters";
 import PostList from "@/shared/components/PostList";
 import { fetchCategory } from "@/shared/orbis/queries";
+import { cache } from "react";
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { categoryId: string };
+}) => {
+  const categoryId = params?.categoryId;
+  const defaultMetaData = {
+    title: "Category",
+  };
+  if (!categoryId) return defaultMetaData;
+
+  const cachedFetchCategory = cache(
+    async () => await fetchCategory({ stream_id: categoryId }),
+  );
+
+  const category = await cachedFetchCategory();
+  if (!category) return defaultMetaData;
+
+  return {
+    title: category?.name ? `${category.name} category` : defaultMetaData.title,
+    description: category?.description || undefined,
+  };
+};
 
 type Props = {
-  params: { slug: string };
+  params: { categoryId: string };
 };
-const CategoryPage = async ({ params: { slug } }: Props) => {
-  const category = await fetchCategory({ stream_id: slug });
+const CategoryPage = async ({ params: { categoryId } }: Props) => {
+  const category = await fetchCategory({ stream_id: categoryId });
 
   const breadcrumbItems = [
     {

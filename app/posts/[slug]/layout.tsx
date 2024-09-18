@@ -1,30 +1,35 @@
 import { fetchPost } from "@/shared/orbis/queries";
-import { PropsWithChildren } from "react";
+import { cache, PropsWithChildren } from "react";
 
-const PostLayout = ({ children }: PropsWithChildren) => {
-  return children;
-};
-export default PostLayout;
-
-export async function generateMetadata({
+export const generateMetadata = async ({
   params,
 }: {
   params: { slug: string };
-}) {
+}) => {
   const slug = params?.slug;
   const defaultMetaData = {
-    title: "Post page",
+    title: "Post",
   };
   if (!slug) return defaultMetaData;
 
-  const post = await fetchPost({
-    filter: { slug },
-    columns: ["title", "preview"],
-  });
+  const cachedFetchPost = cache(
+    async () =>
+      await fetchPost({
+        filter: { slug },
+        columns: ["title", "preview"],
+      }),
+  );
+
+  const post = await cachedFetchPost();
   if (!post) return defaultMetaData;
 
   return {
     title: post.title || defaultMetaData.title,
     description: post.preview || undefined,
   };
-}
+};
+
+const PostLayout = ({ children }: PropsWithChildren) => {
+  return children;
+};
+export default PostLayout;

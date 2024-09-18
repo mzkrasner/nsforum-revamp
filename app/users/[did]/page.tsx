@@ -8,7 +8,7 @@ import UserInfo from "./_components/UserInfo";
 
 const UserPage = () => {
   const params = useParams();
-  const did = decodeURIComponent(params.did as string);
+  const did = decodeURIComponent(params.did as string) as `did:${string}`;
 
   const { user, query } = useUser({ did });
 

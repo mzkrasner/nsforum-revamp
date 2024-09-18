@@ -1,6 +1,6 @@
 "use client";
 
-import CategoryFilters from "@/shared/components/CategoryFilters";
+// import CategoryFilters from "@/shared/components/CategoryFilters";
 import CategoryList from "@/shared/components/CategoryList";
 import CustomBreadcrumb from "@/shared/components/CustomBreadcrumb";
 import PageHeading from "@/shared/components/PageHeading";
@@ -44,8 +44,8 @@ const AdminCategoriesPage = () => {
           </TabsList>
           <TabsContent value="categories">
             <div className="mb-5 flex items-center justify-between">
-              <CategoryFilters />
-              <Button size="sm" asChild>
+              {/* <CategoryFilters /> */}
+              <Button size="sm" className="ml-auto" asChild>
                 <Link href="/admin/categories/new">Create Category</Link>
               </Button>
             </div>

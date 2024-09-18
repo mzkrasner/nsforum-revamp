@@ -25,7 +25,7 @@ const ProfileForm = () => {
   const { linkPhone, linkTwitter } = useLinkAccount();
   const { linkedPhone, linkedXAcct } = useAuth();
 
-  const { profile, saveMutation } = useProfile();
+  const { profile, saveMutation, profileQuery } = useProfile();
   const { name = "", username = "", email = "" } = profile || {};
 
   const form = useForm<ProfileFormType>({
@@ -45,6 +45,8 @@ const ProfileForm = () => {
   }, [watch, setValue, authEmail, name, username]);
 
   if (!authenticated) return;
+
+  if (profileQuery.isLoading) return "Loading...";
 
   return (
     <Form {...form}>

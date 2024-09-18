@@ -15,12 +15,12 @@ type Props = { category: OrbisDBRow<Category>; className?: string };
 const AdminCategoryCard = ({ category, className }: Props) => {
   const { name, description, stream_id } = category;
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader className="p-3">
         <CardTitle className="text-base font-semibold">{name}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardFooter className="justify-end gap-2 p-3">
+      <CardFooter className="mt-auto justify-end gap-2 p-3">
         <Button
           size="sm"
           variant="outline"

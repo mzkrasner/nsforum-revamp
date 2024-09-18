@@ -9,7 +9,7 @@ import useUser from "@/shared/hooks/useUser";
 import { getAvatarInitials } from "@/shared/lib/utils";
 
 type Props = {
-  did: string;
+  did: `did:${string}`;
 };
 const UserInfo = ({ did }: Props) => {
   const { profile } = useProfile();

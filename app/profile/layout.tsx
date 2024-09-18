@@ -1,4 +1,12 @@
+import { Metadata } from "next";
 import { PropsWithChildren } from "react";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Network Society Forum",
+    default: "Profile",
+  },
+};
 
 const ProfileLayout = ({ children }: PropsWithChildren) => {
   return (

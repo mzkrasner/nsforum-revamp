@@ -3,7 +3,12 @@ import CategoryList from "@/shared/components/CategoryList";
 import CustomBreadcrumb from "@/shared/components/CustomBreadcrumb";
 import PageHeading from "@/shared/components/PageHeading";
 import { Button } from "@/shared/components/ui/button";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Categories",
+};
 
 const breadcrumbItems = [
   {
@@ -22,7 +27,7 @@ const CategoriesPage = () => {
         <CustomBreadcrumb items={breadcrumbItems} />
         <PageHeading>Categories</PageHeading>
         <section>
-          <div className="xs:ml-0 xs:flex-row xs:justify-between mb-5 ml-auto flex items-end gap-5">
+          <div className="mb-5 ml-auto flex items-end gap-5 xs:ml-0 xs:flex-row xs:justify-between">
             {/* <CategoryFilters /> */}
             <Button size="sm" className="ml-auto" asChild>
               <Link href="/categories/suggest">Suggest Category</Link>
