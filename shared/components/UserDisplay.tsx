@@ -4,11 +4,12 @@ import Link from "next/link";
 import useUser from "../hooks/useUser";
 import { cn } from "../lib/utils";
 
-type Props = { did: string; className?: string };
-const UserDisplay = ({ did, className = "" }: Props) => {
+type Props = { did: string; className?: string; placeholder?: string };
+const UserDisplay = ({ did, className = "", placeholder }: Props) => {
   const { profile } = useProfile();
   const { user, query } = useUser({ did });
-  if (query.isLoading) return "Loading...";
+
+  if (query.isLoading && !placeholder) return "Loading...";
 
   const { username = "", verified = false } = user || {};
 
@@ -22,7 +23,7 @@ const UserDisplay = ({ did, className = "" }: Props) => {
         className,
       )}
     >
-      {username}
+      {username || placeholder}
       {verified && (
         <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
       )}

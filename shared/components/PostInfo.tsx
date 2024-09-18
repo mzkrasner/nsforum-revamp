@@ -7,13 +7,18 @@ import UserDisplay from "./UserDisplay";
 
 type Props = { post: OrbisDBRow<Post> };
 const PostInfo = ({ post }: Props) => {
-  const { indexed_at, controller, category: categoryId } = post;
+  const {
+    indexed_at,
+    controller,
+    category: categoryId,
+    author_username,
+  } = post;
   const { categories } = useCategories();
   const category = categories.find((c) => c.stream_id === categoryId);
 
   return (
     <div className="relative flex h-8 flex-row flex-wrap items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
-      <UserDisplay did={controller} />
+      <UserDisplay did={controller} placeholder={author_username} />
       {category && (
         <>
           <span className="text-neutral-400">in</span>{" "}

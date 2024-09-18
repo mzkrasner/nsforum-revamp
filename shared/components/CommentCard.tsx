@@ -33,7 +33,7 @@ const CommentCard = ({
   const [replying, setReplying] = useState(false);
 
   const { profile } = useProfile();
-  const { indexed_at, controller, body } = comment;
+  const { indexed_at, controller, body, author_username } = comment;
 
   const content = editing ? (
     <CommentForm
@@ -59,7 +59,11 @@ const CommentCard = ({
     <Card>
       <CardHeader className="p-2 text-sm">
         <div className="flex flex-row items-center gap-2 space-y-0 text-xs">
-          <UserDisplay did={controller} className="text-neutral-800" />
+          <UserDisplay
+            did={controller}
+            className="text-neutral-800"
+            placeholder={author_username}
+          />
           <span className="text-neutral-400">on</span>
           <DateDisplay dateString={indexed_at} className="text-xs" />
           <CardReaction content={comment} model="comments" />
