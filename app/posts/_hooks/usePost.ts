@@ -7,7 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Level } from "@tiptap/extension-heading";
 import { produce } from "immer";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
+import { PostContext } from "../context";
 
 export type PostHeadingTagName = "h2" | "h3" | "h4" | "h5" | "h6";
 export type PostHeadingViewportPosition = "above" | "below" | "in-view";
@@ -20,6 +21,8 @@ export type PostHeading = {
 };
 
 const usePost = () => {
+  const { initialData } = useContext(PostContext);
+
   const router = useRouter();
 
   const params = useParams();
@@ -30,6 +33,7 @@ const usePost = () => {
   const queryOptions = useMemo(() => ({ filter: { slug } }), [slug]);
   const postQueryKey = ["post", queryOptions];
   const postQuery = useQuery({
+    initialData,
     queryKey: postQueryKey,
     queryFn: async () => fetchPost(queryOptions),
   });

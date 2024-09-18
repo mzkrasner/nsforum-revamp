@@ -5,25 +5,28 @@ import { slugToString } from "@/shared/lib/utils";
 import { fetchPosts } from "@/shared/orbis/queries";
 import { OrbisDBRow } from "@/shared/types";
 import { Post } from "@/shared/types/post";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { like } from "@useorbis/db-sdk/operators";
 import { isNil, omitBy } from "lodash-es";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import Header from "./_components/Header";
 import { config } from "./_providers/react-query/config";
 
+export const revalidate = 3600; // Every hour
+
+type SortBy = "newest" | "oldest";
 type Props = {
   searchParams: {
-    category: string;
+    category?: string;
+    sortBy?: SortBy;
     [key: string]: string | string[] | undefined;
   };
 };
 const HomePage = async ({ searchParams }: Props) => {
-  const { category, sortBy } = searchParams;
+  const { category = "", sortBy = "" } = searchParams;
+
+  const queryClient = new QueryClient(config);
   const filter = omitBy(
     {
       category: category ? like(slugToString(category)) : undefined,
@@ -38,30 +41,38 @@ const HomePage = async ({ searchParams }: Props) => {
         ? [["indexed_at", "asc"]]
         : undefined;
 
-  const queryClient = new QueryClient(config);
-
-  await queryClient.prefetchInfiniteQuery({
-    initialPageParam: 0,
-    queryKey: ["posts"],
-    queryFn: ({ pageParam }) =>
-      fetchPosts({ page: pageParam, filter, orderBy }),
-  });
+  const getInitialPostsData = unstable_cache(
+    async () => {
+      return await queryClient.fetchInfiniteQuery({
+        initialPageParam: 0,
+        queryKey: ["posts"],
+        queryFn: ({ pageParam }) =>
+          fetchPosts({ page: pageParam, filter, orderBy }),
+      });
+    },
+    [category, sortBy],
+    { tags: ["posts", "homepage-posts", category, sortBy] },
+  );
+  const initialPostsData = await getInitialPostsData();
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Header />
       <section className="container mb-10">
         <div className="mx-auto max-w-2xl">
-          <div className="xs:ml-0 xs:flex-row xs:justify-between mb-5 ml-auto flex flex-col items-end gap-5">
+          <div className="mb-5 ml-auto flex flex-col items-end gap-5 xs:ml-0 xs:flex-row xs:justify-between">
             <PostFilters />
             <Button size="sm" asChild>
               <Link href="/posts/new">Create Post</Link>
             </Button>
           </div>
-          <PostList fetchPostsOptions={{ filter, orderBy }} />
+          <PostList
+            fetchPostsOptions={{ filter, orderBy }}
+            initialData={initialPostsData}
+          />
         </div>
       </section>
-    </HydrationBoundary>
+    </>
   );
 };
 

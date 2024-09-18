@@ -7,6 +7,7 @@ import {
   ReactionCounter,
   ReactionType,
 } from "@/shared/types/reactions";
+import { revalidateTag } from "next/cache";
 import { findRow, insertRow, updateRow } from "../orbis/utils";
 import { reactionSchema } from "../schema/reaction";
 import { isUserVerified } from "./auth";
@@ -104,4 +105,8 @@ export const reactToContent = async (reaction: Reaction) => {
           : Math.max(0, +staleReactionCounter.downvotes - 1),
     });
   }
+};
+
+export const revalidateTagFromClient = async (tag: string) => {
+  revalidateTag(tag);
 };

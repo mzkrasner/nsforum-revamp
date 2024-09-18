@@ -1,3 +1,4 @@
+import { revalidateTagFromClient } from "@/shared/actions/reactions";
 import useCategories from "@/shared/hooks/useCategories";
 import useProfile from "@/shared/hooks/useProfile";
 import {
@@ -117,6 +118,12 @@ const usePostForm = ({ isEditing }: Props) => {
           if (oldPost) Object.assign(oldPost, result.content);
         }),
       );
+      // Revalidate posts
+      await revalidateTagFromClient("homepage-posts");
+      if (isEditing && post?.slug) {
+        // Revalidate post page
+        await revalidateTagFromClient(post.slug);
+      }
       router.push(`/posts/${result?.content?.slug}`);
     },
     onError: console.error,

@@ -140,6 +140,7 @@ export const findRow = async <T extends Record<string, any>>(
   arg: FindRowArg<T>,
 ) => {
   const result = await fetchRows({ ...arg, limit: 1 });
-  if (result.length) return JSON.parse(JSON.stringify(result[0]));
+  if (result.length)
+    return JSON.parse(JSON.stringify(result[0])) as OrbisDBRow<T>;
   return null;
 };
