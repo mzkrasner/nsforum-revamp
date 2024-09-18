@@ -4,8 +4,10 @@ import { Button } from "@/shared/components/ui/button";
 import useSidebar from "@/shared/hooks/useSidebar";
 import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
+import logo from "../../../public/icon.png";
 import NavUser from "./components/NavUser";
 // import Notifications from "./components/Notifications";
+import Image from "next/image";
 import Search from "./components/Search";
 
 const NavBar = () => {
@@ -32,7 +34,7 @@ const NavBar = () => {
               href="/"
               className="flex items-center gap-2 text-nowrap text-lg font-semibold"
             >
-              <span>NS</span>
+              <Image src={logo} height={32} width={32} alt="logo" />
               <span className="hidden md:inline">Network Society Forum</span>
             </Link>
           </h1>
