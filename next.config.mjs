@@ -5,6 +5,7 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  swcMinify: false,
 };
 
 export default nextConfig;
