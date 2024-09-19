@@ -128,6 +128,9 @@ export const subscriptions = {
       subscribed: {
         type: "boolean",
       },
+      post_notifications: {
+        type: "boolean",
+      },
     },
     additionalProperties: false,
   },
