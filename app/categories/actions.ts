@@ -1,9 +1,9 @@
 "use server";
 
+import { suggestCategory } from "@/shared/actions/categories";
 import { categorySuggestionSchema } from "@/shared/schema/categorySuggestion";
 import { GenericCeramicDocument } from "@/shared/types";
 import { CategorySuggestion } from "@/shared/types/category";
-import { suggestCategory } from "../../shared/actions/queries";
 import { connectDbWithSeed } from "../api/_orbis";
 
 // Handle when suggestion exists
