@@ -7,6 +7,8 @@ import { Button } from "@/shared/components/ui/button";
 import useProfile from "@/shared/hooks/useProfile";
 import useUser from "@/shared/hooks/useUser";
 import { getAvatarInitials } from "@/shared/lib/utils";
+import { isNil } from "lodash-es";
+import { BellIcon, BellOffIcon } from "lucide-react";
 
 type Props = {
   did: string;
@@ -28,6 +30,8 @@ const UserInfo = ({ did }: Props) => {
   if (!user) return null;
 
   const { image, name, username } = user;
+
+  const recieveNotification = false;
 
   return (
     <div className="mx-auto flex w-fit flex-col items-center gap-5 sm:flex-row">
@@ -52,23 +56,35 @@ const UserInfo = ({ did }: Props) => {
               <div className="flex items-center gap-1">
                 {subscriberCount}
                 <span className="text-sm text-neutral-500">
-                  Follower{subscriberCount !== 1 ? "s" : ""}
+                  Followers
+                  {!isNil(subscriberCount) && +subscriberCount > 1 ? "s" : ""}
                 </span>
               </div>
             </>
           )}
         </div>
         {subscriptionDataQuery.isSuccess && !!profile && (
-          <Button
-            size="sm"
-            variant={isSubscribed ? "secondary" : "default"}
-            className="h-8 w-full"
-            onClick={() => updateSubscriptionMutation.mutate(!isSubscribed)}
-            loaderProps={{ className: isSubscribed ? "text-neutral-800" : "" }}
-            loading={updateSubscriptionMutation.isPending}
-          >
-            {isSubscribed ? "Unsubscribe" : "Subscribe"}
-          </Button>
+          <div className="flex w-full justify-between gap-2">
+            <Button
+              size="sm"
+              variant={isSubscribed ? "secondary" : "default"}
+              className="h-8 flex-1"
+              onClick={() => updateSubscriptionMutation.mutate(!isSubscribed)}
+              loaderProps={{
+                className: isSubscribed ? "text-neutral-800" : "",
+              }}
+              loading={updateSubscriptionMutation.isPending}
+            >
+              {isSubscribed ? "Unfollow" : "Follow"}
+            </Button>
+            <Button variant="secondary" size="icon" className="h-8 w-8">
+              {recieveNotification ? (
+                <BellIcon size={16} className="fill-neutral-700" />
+              ) : (
+                <BellOffIcon size={16} />
+              )}
+            </Button>
+          </div>
         )}
       </div>
     </div>

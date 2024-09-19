@@ -23,7 +23,8 @@ const UserDisplay = ({ did, className = "", placeholder }: Props) => {
         className,
       )}
     >
-      {username || placeholder}
+      {username || placeholder}{" "}
+      {user?.controller === profile?.controller ? " (You)" : ""}
       {verified && (
         <BadgeCheckIcon className="w-5 fill-gray-700 stroke-white" />
       )}
