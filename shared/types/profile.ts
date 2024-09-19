@@ -5,4 +5,5 @@ export type Profile = {
   username: string;
   email: string;
   verified: boolean;
+  privy_id: string;
 };

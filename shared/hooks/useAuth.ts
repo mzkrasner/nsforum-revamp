@@ -51,15 +51,15 @@ const useAuth = () => {
   );
 
   const linkedPhone = user?.linkedAccounts.find((acc) => acc.type === "phone");
-  const linkedXAcct = user?.linkedAccounts.find(
+  const linkedTwitterAcct = user?.linkedAccounts.find(
     (acc) => acc.type === "twitter_oauth",
   );
 
-  const isVerified = !!(linkedPhone || linkedXAcct);
+  const isVerified = !!(linkedPhone || linkedTwitterAcct);
 
   return {
     linkedPhone,
-    linkedXAcct,
+    linkedTwitterAcct,
     isVerified,
     linkedWallets,
     login: async () => {

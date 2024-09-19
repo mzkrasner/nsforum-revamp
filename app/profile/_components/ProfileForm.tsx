@@ -23,7 +23,7 @@ const ProfileForm = () => {
   const { user, authenticated } = usePrivy();
   const authEmail = user?.email?.address;
   const { linkPhone, linkTwitter } = useLinkAccount();
-  const { linkedPhone, linkedXAcct } = useAuth();
+  const { linkedPhone, linkedTwitterAcct } = useAuth();
 
   const { profile, saveMutation, profileQuery } = useProfile();
   const { name = "", username = "", email = "" } = profile || {};
@@ -133,7 +133,7 @@ const ProfileForm = () => {
             <div className="flex items-center gap-3">
               <Input
                 placeholder="No account added"
-                value={linkedXAcct?.username || ""}
+                value={linkedTwitterAcct?.username || ""}
                 readOnly
               />
               <Button

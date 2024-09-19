@@ -46,7 +46,6 @@ const useUser = ({ did }: Props) => {
     if (isNil(subscribed)) return null;
     return await updateSubscription({
       author_did: did,
-      reader_did: profile?.controller as string,
       subscribed,
     });
   };

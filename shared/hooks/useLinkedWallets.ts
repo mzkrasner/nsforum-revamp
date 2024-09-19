@@ -1,12 +1,9 @@
 import { usePrivy } from "@privy-io/react-auth";
 
 const useLinkedWallets = () => {
-  const { ready, authenticated, user } = usePrivy();
+  const { user } = usePrivy();
   const linkedWallets =
-    (ready &&
-      authenticated &&
-      user?.linkedAccounts.filter((acct) => acct.type === "wallet")) ||
-    [];
+    user?.linkedAccounts.filter((acct) => acct.type === "wallet") || [];
   return {
     linkedWallets,
   };

@@ -1,17 +1,20 @@
+import { usePrivy } from "@privy-io/react-auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import { fetchSubscriptionData } from "../actions/subscriptions";
 import { findRow, insertRow, updateRow } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
 import { OrbisDBRow } from "../types";
 import { Profile } from "../types/profile";
-import { SubscriptionData } from "../types/subscription";
 import useOrbis from "./useOrbis";
 
 const useProfile = () => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
+
+  const { user } = usePrivy();
+  const privyId = user?.id;
 
   const { authInfo } = useOrbis();
   const did = authInfo?.user.did;
@@ -32,22 +35,20 @@ const useProfile = () => {
     },
     enabled: !!did,
   });
-
-  const fetchSubscriptionData = async () => {
-    const { data } = await axios.get<SubscriptionData>("/api/subscription", {
-      params: { author: did, reader: did },
-    });
-    return data || null;
-  };
+  const profile = profileQuery.data;
 
   const subscriptionDataQuery = useQuery({
     queryKey: ["profile-subscription-data"],
-    queryFn: fetchSubscriptionData,
+    queryFn: async () => {
+      return await fetchSubscriptionData({
+        author_did: profile?.controller as string,
+      });
+    },
     enabled: !!did,
   });
 
   const saveProfile = async (values: ProfileFormType) => {
-    if (!did) return;
+    if (!did || !privyId) return;
 
     const existingProfile = await fetchProfile(did);
     if (existingProfile?.stream_id) {
@@ -60,6 +61,7 @@ const useProfile = () => {
       const newProfile: Profile = {
         ...values,
         verified: false,
+        privy_id: privyId,
       };
       const result = await insertRow({
         model: "users",
@@ -94,7 +96,7 @@ const useProfile = () => {
   });
 
   return {
-    profile: profileQuery.data,
+    profile,
     profileQuery,
     isSubscribed: subscriptionDataQuery.data?.subscription?.subscribed,
     subscribedToCount: subscriptionDataQuery.data?.subscribedToCount,
