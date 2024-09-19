@@ -63,10 +63,13 @@ export const fetchSubscriptionData = async (query: FetchSubscriptionArg) => {
 
 const updateSubscriptionSchema = z.object({
   author_did: z.string().trim().min(1),
-  subscribed: z.boolean(),
+  subscribed: z.boolean().optional().nullable(),
+  post_notifications: z.boolean().optional().nullable(),
 });
 export const updateSubscription = async (
-  subscription: Omit<Subscription, "reader_did">,
+  subscription: Omit<Partial<Subscription>, "reader_did"> & {
+    author_did: string;
+  },
 ) => {
   const isValid = updateSubscriptionSchema.safeParse(subscription).success;
   if (!isValid) throw new Error("Invalid data");
@@ -89,7 +92,12 @@ export const updateSubscription = async (
   } else {
     return await insertRow<Subscription>({
       model: "subscriptions",
-      value: { ...subscription, reader_did: profile.controller },
+      value: {
+        subscribed: false,
+        post_notifications: false,
+        ...subscription,
+        reader_did: profile.controller,
+      },
     });
   }
 };

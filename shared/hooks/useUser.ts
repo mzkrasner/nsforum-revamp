@@ -39,69 +39,84 @@ const useUser = ({ did }: Props) => {
         reader_did: profile?.controller as string,
       });
     },
-    enabled: !!profile?.controller,
+    enabled: !!profile?.controller && !!did,
   });
 
-  const updateSubscriptionFn = async (subscribed: boolean) => {
-    if (isNil(subscribed)) return null;
-    return await updateSubscription({
-      author_did: did,
-      subscribed,
+  const onSubscriptionDataUpdate = (
+    data?: GenericCeramicDocument<Subscription> | null,
+  ) => {
+    if (!data?.content) return;
+
+    const newSubscription = data.content;
+    const { subscribed } = newSubscription;
+    queryClient.setQueryData(
+      ["subscription-data", { did }],
+      (staleSubscriptionData: SubscriptionData | undefined) =>
+        produce(staleSubscriptionData, (draft) => {
+          if (
+            !isNil(draft?.subscriberCount) &&
+            draft.subscription &&
+            draft.subscription.subscribed !== newSubscription.subscribed
+          ) {
+            const { subscriberCount } = draft;
+            draft.subscriberCount = +subscriberCount + (subscribed ? 1 : -1);
+          }
+          if (!isNil(draft?.subscription)) {
+            Object.assign(draft.subscription, newSubscription);
+          }
+        }),
+    );
+    queryClient.invalidateQueries({
+      queryKey: ["subscription-data", { did }],
+    });
+
+    queryClient.setQueryData(
+      ["profile-subscription-data"],
+      (staleSubscriptionData: SubscriptionData | undefined) =>
+        produce(staleSubscriptionData, (draft) => {
+          if (!isNil(draft?.subscribedToCount)) {
+            const { subscribedToCount } = draft;
+            draft.subscribedToCount =
+              +subscribedToCount + (subscribed ? 1 : -1);
+          }
+          if (!isNil(draft?.subscription?.subscribed)) {
+            draft.subscription.subscribed = subscribed;
+          }
+        }),
+    );
+    queryClient.invalidateQueries({
+      queryKey: ["profile-subscription-data"],
     });
   };
 
   const updateSubscriptionMutation = useMutation({
     mutationKey: ["update-subscription", { did }],
-    mutationFn: updateSubscriptionFn,
-    onSuccess: (data?: GenericCeramicDocument<Subscription> | null) => {
-      if (!data?.content) return;
-      const { subscribed } = data.content;
-      queryClient.setQueryData(
-        ["subscription-data", { did }],
-        (staleSubscriptionData: SubscriptionData | undefined) =>
-          produce(staleSubscriptionData, (draft) => {
-            if (!isNil(draft?.subscriberCount)) {
-              const { subscriberCount } = draft;
-              draft.subscriberCount = +subscriberCount + (subscribed ? 1 : -1);
-            }
-            if (!isNil(draft?.subscription?.subscribed)) {
-              draft.subscription.subscribed = subscribed;
-            }
-          }),
-      );
-      queryClient.invalidateQueries({
-        queryKey: ["subscription-data", { did }],
-      });
-
-      queryClient.setQueryData(
-        ["profile-subscription-data"],
-        (staleSubscriptionData: SubscriptionData | undefined) =>
-          produce(staleSubscriptionData, (draft) => {
-            if (!isNil(draft?.subscribedToCount)) {
-              const { subscribedToCount } = draft;
-              draft.subscribedToCount =
-                +subscribedToCount + (subscribed ? 1 : -1);
-            }
-            if (!isNil(draft?.subscription?.subscribed)) {
-              draft.subscription.subscribed = subscribed;
-            }
-          }),
-      );
-      queryClient.invalidateQueries({
-        queryKey: ["profile-subscription-data"],
+    mutationFn: async (subscribed: boolean) => {
+      return await updateSubscription({
+        subscribed,
+        post_notifications: true,
+        author_did: did,
       });
     },
+    onSuccess: onSubscriptionDataUpdate,
+    onError: console.error,
+  });
+
+  const updatePostNotificationsMutation = useMutation({
+    mutationKey: ["update-post-notifications", { did }],
+    mutationFn: async (post_notifications: boolean) => {
+      return await updateSubscription({ post_notifications, author_did: did });
+    },
+    onSuccess: onSubscriptionDataUpdate,
     onError: console.error,
   });
 
   return {
     user: query.data,
     query,
-    isSubscribed: subscriptionDataQuery.data?.subscription?.subscribed,
-    subscribedToCount: subscriptionDataQuery.data?.subscribedToCount,
-    subscriberCount: subscriptionDataQuery.data?.subscriberCount,
     subscriptionDataQuery,
     updateSubscriptionMutation,
+    updatePostNotificationsMutation,
   };
 };
 
