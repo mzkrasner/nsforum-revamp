@@ -1,9 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { produce } from "immer";
 import { isNil } from "lodash-es";
+import {
+  fetchSubscriptionData,
+  updateSubscription,
+} from "../actions/subscriptions";
 import { fetchUser } from "../orbis/queries";
-import { OrbisDBRow } from "../types";
+import { GenericCeramicDocument, OrbisDBRow } from "../types";
 import { Subscription } from "../types/subscription";
 import useProfile from "./useProfile";
 
@@ -27,35 +30,33 @@ const useUser = ({ did }: Props) => {
     subscribedToCount: number | string;
     subscriberCount: number | string;
   };
-  const fetchSubscriptionData = async () => {
-    const { data } = await axios.get<SubscriptionData>("/api/subscription", {
-      params: { author: did, reader: profile?.controller },
-    });
-    return data || null;
-  };
 
   const subscriptionDataQuery = useQuery({
     queryKey: ["subscription-data", { did }],
-    queryFn: fetchSubscriptionData,
+    queryFn: async () => {
+      return await fetchSubscriptionData({
+        author_did: did,
+        reader_did: profile?.controller as string,
+      });
+    },
     enabled: !!profile?.controller,
   });
 
   const updateSubscriptionFn = async (subscribed: boolean) => {
     if (isNil(subscribed)) return null;
-    const { data } = await axios.post(`/api/subscription`, {
+    return await updateSubscription({
       author_did: did,
-      reader_did: profile?.controller,
+      reader_did: profile?.controller as string,
       subscribed,
-    } as Subscription);
-    return data as Subscription;
+    });
   };
 
   const updateSubscriptionMutation = useMutation({
     mutationKey: ["update-subscription", { did }],
     mutationFn: updateSubscriptionFn,
-    onSuccess: (data?: Subscription | null) => {
-      if (!data) return;
-      const { subscribed } = data;
+    onSuccess: (data?: GenericCeramicDocument<Subscription> | null) => {
+      if (!data?.content) return;
+      const { subscribed } = data.content;
       queryClient.setQueryData(
         ["subscription-data", { did }],
         (staleSubscriptionData: SubscriptionData | undefined) =>

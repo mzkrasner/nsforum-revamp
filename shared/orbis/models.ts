@@ -25,8 +25,8 @@ const models = {
     "name": "dev_categories_v8"
   },
   "users": {
-    "id": "kjzl6hvfrbw6c5kev3fm2hv3qdzs8r8vdtl9aurv9ow4pp1ko3ph5uok37ht98k",
-    "name": "dev_users_v8"
+    "id": "kjzl6hvfrbw6c5qkfothti3ui3vlj2nge7tc6j7ymegsaal7ct3rrcx4yyeezfm",
+    "name": "dev_users_v9"
   },
   "categorySuggestions": {
     "id": "kjzl6hvfrbw6c6ix42so2hua7agmw3qwlant9tkf7fl1av74yq5zq744dgu6rfa",

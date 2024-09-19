@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import fs from "fs";
 import models from "../models";
-import { subscriptions } from "../schemas";
+import { users } from "../schemas";
 
 const writeFile = (path: string, content: string) => {
   fs.writeFile(path, content, "utf8", (err: unknown) => {
@@ -32,7 +32,7 @@ const updateModelVersion = (modelName: string) => {
 
 const syncModels = async () => {
   const seedString = process.env.ORBIS_SEED;
-  const newSchemas = { subscriptions };
+  const newSchemas = { users };
   const newModels: any = {};
   for (const modelName in newSchemas) {
     if (Object.prototype.hasOwnProperty.call(newSchemas, modelName)) {

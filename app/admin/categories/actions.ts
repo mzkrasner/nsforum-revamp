@@ -1,8 +1,8 @@
 "use server";
 
 import { connectDbWithSeed } from "@/app/api/_orbis";
-import { fetchCategorySuggestion } from "@/app/api/_orbis/queries";
 import { checkAdminAuth } from "@/shared/actions/auth";
+import { fetchCategorySuggestion } from "@/shared/actions/queries";
 import { findRow, insertRow, updateRow } from "@/shared/orbis/utils";
 import { CategorySchema } from "@/shared/schema/category";
 import {

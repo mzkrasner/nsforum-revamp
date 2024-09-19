@@ -3,8 +3,8 @@
 import { categorySuggestionSchema } from "@/shared/schema/categorySuggestion";
 import { GenericCeramicDocument } from "@/shared/types";
 import { CategorySuggestion } from "@/shared/types/category";
+import { suggestCategory } from "../../shared/actions/queries";
 import { connectDbWithSeed } from "../api/_orbis";
-import { suggestCategory } from "../api/_orbis/queries";
 
 // Handle when suggestion exists
 

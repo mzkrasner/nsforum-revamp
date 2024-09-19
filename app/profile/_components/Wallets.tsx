@@ -16,7 +16,6 @@ const Wallets = () => {
   const { ready, authenticated, connectWallet } = usePrivy();
   const { wallets } = useWallets();
   const { linkedWallets } = useLinkedWallets();
-  console.log(linkedWallets);
 
   const allWallets = useMemo(() => {
     const isPrivyWallet = (w: ConnectedWallet | WalletWithMetadata) =>

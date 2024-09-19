@@ -9,7 +9,7 @@ const privy = new PrivyClient(
   process.env.PRIVY_APP_SECRET!,
 );
 
-const getAuthTokenClaim = async () => {
+const getAuthTokenClaims = async () => {
   if (!isServer) return null;
 
   const cookieStore = cookies();
@@ -25,14 +25,20 @@ const getAuthTokenClaim = async () => {
   }
 };
 
+export const getCurrentUserId = async () => {
+  const authTokenClaims = await getAuthTokenClaims();
+  if (!authTokenClaims) return null;
+  return authTokenClaims.userId;
+};
+
 export const checkAdminAuth = async () => {
   if (!isServer) return null;
 
   try {
-    const authTokenClaim = await getAuthTokenClaim();
-    if (!authTokenClaim) return false;
+    const authTokenClaims = await getAuthTokenClaims();
+    if (!authTokenClaims) return false;
 
-    const userId = authTokenClaim.userId.replace("did:privy:", "");
+    const userId = authTokenClaims.userId.replace("did:privy:", "");
     const adminIds = JSON.parse(process.env.ADMIN_DIDS! || "[]") || [];
     return adminIds.includes(userId);
   } catch (error) {
@@ -43,9 +49,9 @@ export const checkAdminAuth = async () => {
 
 export const getCurrentUser = async () => {
   try {
-    const authTokenClaim = await getAuthTokenClaim();
-    if (!authTokenClaim) return null;
-    const userId = authTokenClaim.userId;
+    const authTokenClaims = await getAuthTokenClaims();
+    if (!authTokenClaims) return null;
+    const userId = authTokenClaims.userId;
     const privy = new PrivyClient(
       process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
       process.env.PRIVY_APP_SECRET!,
