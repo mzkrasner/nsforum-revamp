@@ -119,15 +119,13 @@ const usePostForm = ({ isEditing }: Props) => {
           if (oldPost) Object.assign(oldPost, result.content);
         }),
       );
-      // TODO: remove, this should only happen on post creation
-      await notifySubscribers(result.id);
       // Revalidate posts
       await revalidateTagFromClient("homepage-posts");
       if (isEditing) {
         // Revalidate post page
         if (post?.slug) await revalidateTagFromClient(post.slug);
       } else {
-        // await notifySubscribers(result.id);
+        await notifySubscribers(result.id);
       }
       router.push(`/posts/${result?.content?.slug}`);
     },
