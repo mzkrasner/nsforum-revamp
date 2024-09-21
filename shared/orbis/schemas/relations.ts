@@ -72,7 +72,7 @@ const relations = {
   notificationReaderRelation,
   // notificationsPostsRelation,
   // notificationsCommentsRelation,
-  postTagsRelation,
+  // postTagsRelation,
 } as const;
 
 export default relations;

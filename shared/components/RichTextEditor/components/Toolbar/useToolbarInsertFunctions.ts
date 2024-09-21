@@ -77,7 +77,7 @@ const useToolbarInsertFunctions = () => {
     }
 
     const podcastId = getSpotifyId(url);
-    const spotifyIframe = `<div data-spotify-podcast="">
+    const spotifyIframe = `<div data-spotify-podcast="" class="iframe-wrapper">
   <iframe style="height: 80px; width: 500px; max-width: 100%; border-radius: 14px; margin: 0 auto;" src="https://open.spotify.com/embed/episode/${podcastId}?utm_source=generator" width="100%" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 </div>
 `;

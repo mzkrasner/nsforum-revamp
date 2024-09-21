@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import usePost from "../../_hooks/usePost";
+import { notifySubscribers } from "../../actions";
 
 type Props = { isEditing?: boolean };
 const usePostForm = ({ isEditing }: Props) => {
@@ -94,7 +95,7 @@ const usePostForm = ({ isEditing }: Props) => {
     if (isEditing) {
       if (!postId)
         throw new Error(
-          "No postId. Cannot update post without it's stream_id)",
+          "No postId. Cannot update post without it's stream_id.",
         );
       return await updatePost({
         postId,
@@ -118,11 +119,15 @@ const usePostForm = ({ isEditing }: Props) => {
           if (oldPost) Object.assign(oldPost, result.content);
         }),
       );
+      // TODO: remove, this should only happen on post creation
+      await notifySubscribers(result.id);
       // Revalidate posts
       await revalidateTagFromClient("homepage-posts");
-      if (isEditing && post?.slug) {
+      if (isEditing) {
         // Revalidate post page
-        await revalidateTagFromClient(post.slug);
+        if (post?.slug) await revalidateTagFromClient(post.slug);
+      } else {
+        // await notifySubscribers(result.id);
       }
       router.push(`/posts/${result?.content?.slug}`);
     },

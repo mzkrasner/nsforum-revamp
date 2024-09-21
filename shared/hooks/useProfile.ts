@@ -41,7 +41,7 @@ const useProfile = () => {
     queryKey: ["profile-subscription-data"],
     queryFn: async () => {
       return await fetchSubscriptionData({
-        author_did: profile?.controller as string,
+        author_did: did as string,
       });
     },
     enabled: !!did,
