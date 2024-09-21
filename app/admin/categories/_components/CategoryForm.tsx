@@ -94,7 +94,7 @@ const CategoryForm = ({ id }: Props = {}) => {
       router.push("/admin/categories");
     },
   });
-  console.log(categoryMutation.error);
+  // console.log(categoryMutation.error);
 
   if (categoryQuery.isLoading) return "Loading...";
 
