@@ -4,6 +4,7 @@ import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { isAddress } from "viem";
 import { orbisdb } from "../orbis";
 import useOrbis from "./useOrbis";
+import { revalidateTagsFromClient } from "../actions/utils";
 
 const useAuth = () => {
   const queryClient = useQueryClient();
@@ -14,6 +15,7 @@ const useAuth = () => {
     (wallet) => wallet.walletClientType === "privy",
   ); // Use the privy wallet to connect to authenticate orbis
   const { authInfo, setAuthInfo } = useOrbis();
+  const did = authInfo?.user.did;
 
   const connectOrbis = async () => {
     if (!(ready && authenticated && privyWallet)) return;
@@ -74,7 +76,12 @@ const useAuth = () => {
       logout();
       queryClient.resetQueries({ queryKey: ["profile"] });
       queryClient.resetQueries({ queryKey: ["admin"] });
+      queryClient.resetQueries({ queryKey: [{did}] });
       await orbisdb.disconnectUser();
+      await revalidateTagsFromClient([
+        "auth-token-claims",
+        "current-privy-user",
+      ]);
     },
   };
 };

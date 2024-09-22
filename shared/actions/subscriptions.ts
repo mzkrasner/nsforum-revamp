@@ -5,7 +5,7 @@ import { findRow, insertRow, updateRow } from "@/shared/orbis/utils";
 import { Subscription } from "@/shared/types/subscription";
 import { count } from "@useorbis/db-sdk/operators";
 import { z } from "zod";
-import { fetchCurrentUserProfile } from "./auth";
+import { fetchCurrentUserProfile } from "./profile";
 
 export const fetchSubscription = async (query: {
   author_did: string;
