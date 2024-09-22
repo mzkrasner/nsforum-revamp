@@ -1,4 +1,5 @@
 import { CeramicDocument, DIDAny } from "@useorbis/db-sdk";
+import { ORBIS_DB_FIELDS } from "../orbis/constants";
 
 export type OnlyStringFields<T> = {
   [K in keyof T as T[K] extends string ? K : never]: T[K];
@@ -11,12 +12,7 @@ export type OrbisDBRow<T extends Record<string, any>> = {
   // TODO: add plugins_data and _metadata_context type
 } & T;
 
-export type OrbisDBFields =
-  | "controller"
-  | "indexed_at"
-  | "stream_id"
-  | "_metadata_context"
-  | "plugins_data";
+export type OrbisDBFields = (typeof ORBIS_DB_FIELDS)[number];
 
 export type GenericCeramicDocument<T extends Record<string, any>> = Omit<
   CeramicDocument,

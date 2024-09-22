@@ -1,4 +1,4 @@
-import { revalidateTagFromClient } from "@/shared/actions/reactions";
+import { revalidateTagFromClient } from "@/shared/actions/utils";
 import useCategories from "@/shared/hooks/useCategories";
 import useProfile from "@/shared/hooks/useProfile";
 import {

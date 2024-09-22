@@ -16,8 +16,11 @@ const PostReaction = () => {
   const { isVerified } = useAuth();
 
   const {
-    reactionQuery,
-    reactionCounterQuery,
+    reactionDataQuery,
+    upvoted,
+    downvoted,
+    upvotes,
+    downvotes,
     upvoteMutation,
     downvoteMutation,
   } = useReaction({ contentId: post?.stream_id, model: "posts" });
@@ -30,18 +33,9 @@ const PostReaction = () => {
     fn();
   };
 
-  const { type } = reactionQuery.data || { type: "none" };
-  const upvoted = type === "upvote";
-  const downvoted = type === "downvote";
-  const { upvotes, downvotes } = reactionCounterQuery.data || {
-    upvotes: 0,
-    downvotes: 0,
-  };
-
   const isDisabled =
     !post ||
-    reactionCounterQuery.isLoading ||
-    reactionQuery.isLoading ||
+    reactionDataQuery.isLoading ||
     upvoteMutation.isPending ||
     downvoteMutation.isPending;
 

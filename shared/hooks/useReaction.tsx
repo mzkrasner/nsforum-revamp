@@ -1,14 +1,18 @@
-import { reactToContent } from "@/shared/actions/reactions";
 import useProfile from "@/shared/hooks/useProfile";
-import { fetchReaction, fetchReactionCounter } from "@/shared/orbis/queries";
-import { OrbisDBRow } from "@/shared/types";
-import {
-  Reaction,
-  ReactionCounter,
-  ReactionModel,
-} from "@/shared/types/reactions";
+import { Reaction, ReactionModel } from "@/shared/types/reactions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { produce } from "immer";
+import { reactToContent } from "../actions/reactions";
+import { fetchReactionTypeCounts } from "../orbis/queries";
+import { findRow } from "../orbis/utils";
+import { OrbisDBRow } from "../types";
+import useOrbis from "./useOrbis";
+
+type ReactionData = {
+  reaction: OrbisDBRow<Reaction>;
+  upvotes: number;
+  downvotes: number;
+};
 
 type Props = {
   contentId?: string;
@@ -20,87 +24,109 @@ const useReaction = ({ contentId, model }: Props) => {
   const { profile } = useProfile();
   const userId = profile?.stream_id;
 
+  const { authInfo } = useOrbis();
+  const did = authInfo?.user.did;
+
   const [content_id, user_id] = [contentId, userId];
 
-  const reactionQueryKey = ["reaction", { contentId, userId }];
-  const reactionQuery = useQuery({
-    queryKey: reactionQueryKey,
+  const queryKey = ["reaction", { contentId, userId }];
+  const reactionDataQuery = useQuery({
+    queryKey,
     queryFn: async () => {
       if (!content_id || !user_id) return null;
-      return await fetchReaction({ content_id, user_id });
+      const reaction = await findRow<Reaction>({
+        model: "reactions",
+        where: { content_id, user_id, model },
+      });
+      const reactionTypeCounts = await fetchReactionTypeCounts({
+        model,
+        content_id,
+      });
+
+      return {
+        reaction,
+        ...reactionTypeCounts,
+      } as ReactionData;
     },
+    enabled: !!did,
   });
+  const reactionData = reactionDataQuery.data;
+  const { upvotes = 0, downvotes = 0, reaction } = reactionData || {};
 
-  const updateReactionQuery = (newReactionData: Partial<Reaction>) => {
+  const updateReactionQuery = (newReactionData: ReactionData) => {
     queryClient.setQueryData(
-      reactionQueryKey,
-      produce((staleData: OrbisDBRow<Reaction>) => {
-        if (staleData) Object.assign(staleData, newReactionData);
-      }),
-    );
-  };
-
-  const reactionCounterQueryKey = ["reaction_counter", { contentId }];
-  const reactionCounterQuery = useQuery({
-    queryKey: reactionCounterQueryKey,
-    queryFn: async () => {
-      if (!content_id) return null;
-      return await fetchReactionCounter({ content_id, model });
-    },
-  });
-
-  const updateReactionCounterQuery = (newCounterData: ReactionCounter) => {
-    queryClient.setQueryData(
-      reactionCounterQueryKey,
-      produce((staleData: OrbisDBRow<ReactionCounter>) => {
-        if (staleData) Object.assign(staleData, newCounterData);
+      queryKey,
+      produce((staleData: ReactionData) => {
+        if (staleData && newReactionData) {
+          Object.assign(staleData, newReactionData);
+        }
       }),
     );
   };
 
   const upvoteMutation = useMutation({
-    mutationKey: ["upvote", { contentId }],
+    mutationKey: ["upvote", { content_id, user_id }],
     mutationFn: async () => {
       if (!content_id || !user_id) return null;
-      return await reactToContent({
+      const res = await reactToContent({
         content_id,
         user_id,
-        type: "upvote",
+        type: reaction?.type === "upvote" ? "none" : "upvote",
         model,
       });
-    },
-    onSuccess: (res) => {
-      if (!res) return;
-      updateReactionCounterQuery(res.content);
-      updateReactionQuery({
-        type: reactionQuery.data?.type === "upvote" ? "none" : "upvote",
+      const reactionTypeCounts = await fetchReactionTypeCounts({
+        model,
+        content_id,
       });
+
+      return {
+        reaction: res.content,
+        ...reactionTypeCounts,
+      } as ReactionData;
+    },
+    onSuccess: (newReactionData) => {
+      if (!newReactionData) return;
+      updateReactionQuery(newReactionData);
     },
   });
 
   const downvoteMutation = useMutation({
-    mutationKey: ["downvote", { contentId }],
+    mutationKey: ["downvote", { content_id, user_id }],
     mutationFn: async () => {
       if (!content_id || !user_id) return null;
-      return await reactToContent({
+      const res = await reactToContent({
         content_id,
         user_id,
-        type: "downvote",
+        type: reaction?.type === "downvote" ? "none" : "downvote",
         model,
       });
-    },
-    onSuccess: (res) => {
-      if (!res) return;
-      updateReactionCounterQuery(res.content);
-      updateReactionQuery({
-        type: reactionQuery.data?.type === "downvote" ? "none" : "downvote",
+      const reactionTypeCounts = await fetchReactionTypeCounts({
+        model,
+        content_id,
       });
+
+      return {
+        reaction: res.content,
+        ...reactionTypeCounts,
+      } as ReactionData;
+    },
+    onSuccess: (newReactionData) => {
+      if (!newReactionData) return;
+      updateReactionQuery(newReactionData);
     },
   });
 
+  const { type } = reaction || {};
+  const upvoted = type === "upvote";
+  const downvoted = type === "downvote";
+
   return {
-    reactionQuery,
-    reactionCounterQuery,
+    reactionDataQuery,
+    reaction,
+    upvoted,
+    downvoted,
+    upvotes,
+    downvotes,
     upvoteMutation,
     downvoteMutation,
   };

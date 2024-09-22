@@ -45,7 +45,7 @@ export const ceramicDocToOrbisRow = <T extends Record<string, any>>(
     model,
     context,
     ...ceramicDoc.content,
-    indexed_at: new Date().toISOString(),
+    indexed_at: new Date().toISOString(), // TODO: check out if you can get the actual date
   } as OrbisDBRow<T>;
 };
 
@@ -143,4 +143,20 @@ export const findRow = async <T extends Record<string, any>>(
   if (result.length)
     return JSON.parse(JSON.stringify(result[0])) as OrbisDBRow<T>;
   return null;
+};
+
+export type UpsertRowArg<T extends Record<string, any>> = {
+  query: Omit<FindRowArg<T>, "model" | "select">;
+} & InsertRowArg<T>;
+export const upsertRow = async <T extends Record<string, any>>({
+  model,
+  query,
+  value,
+  context,
+}: UpsertRowArg<T>) => {
+  const row = await findRow<T>({ ...query, model, select: ["stream_id"] });
+  if (row?.stream_id) {
+    return await updateRow<T>({ id: row.stream_id, set: value });
+  }
+  return await insertRow<T>({ model, value, context });
 };

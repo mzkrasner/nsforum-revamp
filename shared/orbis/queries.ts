@@ -1,7 +1,7 @@
 // "use server";
 
 import { CeramicDocument } from "@useorbis/db-sdk";
-import { ilike } from "@useorbis/db-sdk/operators";
+import { count, ilike } from "@useorbis/db-sdk/operators";
 import { isNil, omitBy } from "lodash-es";
 import { escapeSQLLikePattern } from "../lib/utils";
 import { OnlyStringFields, OrbisDBRow } from "../types";
@@ -9,7 +9,7 @@ import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
 import { Post } from "../types/post";
 import { Profile } from "../types/profile";
-import { Reaction, ReactionCounter } from "../types/reactions";
+import { Reaction } from "../types/reactions";
 import { Tag } from "../types/tag";
 import { fetchRowsPage, findRow, insertRow, updateRow } from "./utils";
 
@@ -18,7 +18,9 @@ export type PaginationOptions = {
   pageSize?: number;
 };
 
-export const fetchUser = async (filter: Partial<Omit<OrbisDBRow<Profile>, "image">>) => {
+export const fetchUser = async (
+  filter: Partial<Omit<OrbisDBRow<Profile>, "image">>,
+) => {
   return await findRow<Profile>({
     model: "users",
     where: filter,
@@ -130,16 +132,6 @@ export const fetchCategory = async (
   return await findRow<Category>({ model: "categories", where: filter });
 };
 
-export const fetchReactionCounter = async (filter: {
-  content_id: string;
-  model: string;
-}) => {
-  return await findRow<ReactionCounter>({
-    model: "reaction_counter",
-    where: filter,
-  });
-};
-
 export const fetchReaction = async (filter: {
   content_id: string;
   user_id: string;
@@ -186,4 +178,28 @@ export const fetchTags = async (options: FetchTagsOptions) => {
     page,
     pageSize,
   });
+};
+
+export const fetchReactionTypeCounts = async ({
+  model,
+  content_id,
+}: {
+  model: string;
+  content_id: string;
+}) => {
+  const upvotes = await findRow<{ count: string }>({
+    model: "reactions",
+    select: [count("stream_id", "count")],
+    where: { model, content_id, type: "upvote" },
+  });
+  const downvotes = await findRow<{ count: string }>({
+    model: "reactions",
+    select: [count("stream_id", "count")],
+    where: { model, content_id, type: "downvote" },
+  });
+
+  return {
+    upvotes: upvotes?.count ? +upvotes.count : 0,
+    downvotes: downvotes?.count ? +downvotes.count : 0,
+  };
 };

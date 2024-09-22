@@ -22,13 +22,16 @@ const CardReaction = ({ content, model }: Props) => {
   const { isVerified } = useAuth();
 
   const {
-    reactionQuery,
-    reactionCounterQuery,
+    reactionDataQuery,
+    upvoted,
+    downvoted,
+    upvotes,
+    downvotes,
     upvoteMutation,
     downvoteMutation,
   } = useReaction({ contentId: content.stream_id, model });
 
-  if (reactionCounterQuery.isLoading || reactionQuery.isLoading) return null;
+  if (reactionDataQuery.isLoading) return null;
 
   const guardReaction = (fn: Function) => () => {
     if (!isVerified) {
@@ -36,14 +39,6 @@ const CardReaction = ({ content, model }: Props) => {
       return;
     }
     fn();
-  };
-
-  const { type } = reactionQuery.data || { type: "none" };
-  const upvoted = type === "upvote";
-  const downvoted = type === "downvote";
-  const { upvotes, downvotes } = reactionCounterQuery.data || {
-    upvotes: 0,
-    downvotes: 0,
   };
 
   const isPending = upvoteMutation.isPending || downvoteMutation.isPending;
