@@ -2,30 +2,33 @@
 
 import { PrivyClient } from "@privy-io/server-auth";
 import { isServer } from "@tanstack/react-query";
+import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
-import { findRow } from "../orbis/utils";
-import { Profile } from "../types/profile";
 
 const privy = new PrivyClient(
   process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
   process.env.PRIVY_APP_SECRET!,
 );
 
-const getAuthTokenClaims = async () => {
-  if (!isServer) return null;
+const getAuthTokenClaims = unstable_cache(
+  async () => {
+    if (!isServer) return null;
 
-  const cookieStore = cookies();
-  const privyCookie = cookieStore.get("privy-token");
-  if (!privyCookie) return null;
-  const { value: token } = privyCookie;
+    const cookieStore = cookies();
+    const privyCookie = cookieStore.get("privy-token");
+    if (!privyCookie) return null;
+    const { value: token } = privyCookie;
 
-  try {
-    return await privy.verifyAuthToken(token);
-  } catch (error) {
-    console.log(`Token verification failed with error ${error}.`);
-    return false;
-  }
-};
+    try {
+      return await privy.verifyAuthToken(token);
+    } catch (error) {
+      console.log(`Token verification failed with error ${error}.`);
+      return false;
+    }
+  },
+  undefined,
+  { tags: ["auth-token-claims"], revalidate: 60 * 5 },
+);
 
 export const getCurrentPrivyUserId = async () => {
   const authTokenClaims = await getAuthTokenClaims();
@@ -49,22 +52,26 @@ export const checkAdminAuth = async () => {
   }
 };
 
-export const getCurrentPrivyUser = async () => {
-  try {
-    const authTokenClaims = await getAuthTokenClaims();
-    if (!authTokenClaims) return null;
-    const userId = authTokenClaims.userId;
-    const privy = new PrivyClient(
-      process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
-      process.env.PRIVY_APP_SECRET!,
-    );
-    const user = await privy.getUser(userId);
-    return user;
-  } catch (error) {
-    console.log(`Error while getting current user: ${error}`);
-    return null;
-  }
-};
+export const getCurrentPrivyUser = unstable_cache(
+  async () => {
+    try {
+      const authTokenClaims = await getAuthTokenClaims();
+      if (!authTokenClaims) return null;
+      const userId = authTokenClaims.userId;
+      const privy = new PrivyClient(
+        process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
+        process.env.PRIVY_APP_SECRET!,
+      );
+      const user = await privy.getUser(userId);
+      return user;
+    } catch (error) {
+      console.log(`Error while getting current user: ${error}`);
+      return null;
+    }
+  },
+  undefined,
+  { tags: ["current-privy-user"], revalidate: 60 * 5 },
+);
 
 export const isUserVerified = async () => {
   try {
@@ -80,13 +87,4 @@ export const isUserVerified = async () => {
     console.log(`Error while checking user verification: ${error}`);
     return null;
   }
-};
-
-export const fetchCurrentUserProfile = async () => {
-  const privyId = await getCurrentPrivyUserId();
-  if (!privyId) return null;
-  return await findRow<Profile>({
-    model: "users",
-    where: { privy_id: privyId },
-  });
 };

@@ -4,14 +4,14 @@ import {
   AvatarImage,
 } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/shared/components/ui/tooltip";
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipTrigger,
+// } from "@/shared/components/ui/tooltip";
 import useProfile from "@/shared/hooks/useProfile";
 import { getAvatarInitials } from "@/shared/lib/utils";
-import { LockOpenIcon } from "lucide-react";
+// import { LockOpenIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -42,7 +42,7 @@ const ProfileInfo = () => {
           <h3 className="text-2xl font-semibold">{name}</h3>
           <div className="mx-auto flex w-fit items-center justify-start gap-2 text-sm text-neutral-500 sm:m-0">
             <span>@{username}</span>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
@@ -54,12 +54,12 @@ const ProfileInfo = () => {
                   <LockOpenIcon size={12} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent className="w-[200px]">
                 You can verify your account using your X (formerly twitter)
                 account. This allows you to lock your username and react to
                 posts <span className="link">Learn more</span>
               </TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </div>
         <div className="flex h-5 items-center space-x-4 text-sm">

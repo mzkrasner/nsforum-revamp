@@ -1,4 +1,3 @@
-import { revalidateTagFromClient } from "@/shared/actions/utils";
 import useCategories from "@/shared/hooks/useCategories";
 import useProfile from "@/shared/hooks/useProfile";
 import {
@@ -120,10 +119,10 @@ const usePostForm = ({ isEditing }: Props) => {
         }),
       );
       // Revalidate posts
-      await revalidateTagFromClient("homepage-posts");
+      await revalidateTagsFromClient("homepage-posts");
       if (isEditing) {
         // Revalidate post page
-        if (post?.slug) await revalidateTagFromClient(post.slug);
+        if (post?.slug) await revalidateTagsFromClient(post.slug);
       } else {
         await notifySubscribers(result.id);
       }
