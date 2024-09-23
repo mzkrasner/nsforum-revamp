@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/ui/button";
 import { slugToString } from "@/shared/lib/utils";
 import { fetchPosts } from "@/shared/orbis/queries";
 import { OrbisDBRow } from "@/shared/types";
-import { Post } from "@/shared/types/post";
+import { Post, SortPostOption } from "@/shared/types/post";
 import { QueryClient } from "@tanstack/react-query";
 import { like } from "@useorbis/db-sdk/operators";
 import { isNil, omitBy } from "lodash-es";
@@ -15,11 +15,10 @@ import { config } from "./_providers/react-query/config";
 
 export const revalidate = 3600; // Every hour
 
-type SortBy = "newest" | "oldest";
 type Props = {
   searchParams: {
     category?: string;
-    sortBy?: SortBy;
+    sortBy?: SortPostOption;
     [key: string]: string | string[] | undefined;
   };
 };
@@ -39,7 +38,7 @@ const HomePage = async ({ searchParams }: Props) => {
       ? [["indexed_at", "desc"]]
       : sortBy === "oldest"
         ? [["indexed_at", "asc"]]
-        : undefined;
+        : [["indexed_at", "desc"]]; // By default, sort by newest
 
   const getInitialPostsData = unstable_cache(
     async () => {
@@ -69,6 +68,7 @@ const HomePage = async ({ searchParams }: Props) => {
           <PostList
             fetchPostsOptions={{ filter, orderBy }}
             initialData={initialPostsData}
+            tags={["homepage-posts"]}
           />
         </div>
       </section>
