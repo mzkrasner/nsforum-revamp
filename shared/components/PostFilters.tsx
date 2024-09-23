@@ -11,9 +11,10 @@ import {
 import { useSearchParams } from "next/navigation";
 import useCategories from "../hooks/useCategories";
 import useUpdateQueryParams from "../hooks/useUpdateQueryParams";
+import { SortPostOption } from "../types/post";
 
-type Props = { category?: boolean };
-const PostFilters = ({ category = true }: Props) => {
+type Props = { category?: boolean; defaultSortBy?: SortPostOption };
+const PostFilters = ({ category = true, defaultSortBy = "newest" }: Props) => {
   const updateQueryParams = useUpdateQueryParams();
 
   const searchParams = useSearchParams();
@@ -47,7 +48,7 @@ const PostFilters = ({ category = true }: Props) => {
         />
       )}
       <Select
-        defaultValue={searchParams.get("sortBy") || undefined}
+        defaultValue={searchParams.get("sortBy") || defaultSortBy}
         onValueChange={(sortBy) =>
           updateQueryParams({
             sortBy,

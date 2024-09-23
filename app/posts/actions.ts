@@ -2,7 +2,7 @@
 
 import postToEmail from "@/shared/lib/postToEmail";
 import { fetchPost } from "@/shared/orbis/queries";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const notifySubscribers = async (streamId: string) => {
   const post = await fetchPost({ filter: { stream_id: streamId } });
@@ -10,11 +10,17 @@ export const notifySubscribers = async (streamId: string) => {
 
   const emailContent = await postToEmail(post);
 
-  const { data } = await axios.post(
-    `${process.env.NEXT_PUBLIC_SST_URL}/posts/${streamId}/notify-subscribers`,
-    {
-      emailContent,
-    },
-  );
-  return data;
+  try {
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_SST_URL}/posts/${streamId}/notify-subscribers`,
+      {
+        emailContent,
+      },
+    );
+    return data;
+  } catch (error: unknown) {
+    const message =
+      (error as AxiosError).response?.data || (error as Error).message;
+    console.log("Error while notifying subscribers: ", message);
+  }
 };

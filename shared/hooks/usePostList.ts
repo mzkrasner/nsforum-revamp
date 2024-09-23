@@ -6,13 +6,20 @@ import { Post } from "../types/post";
 type Props = {
   fetchPostsOptions?: FetchPostsOptions;
   initialData?: InfiniteData<OrbisDBRow<Post>[], number>;
+  tags?: string[]; // pass to react-query queryKey, for invalidation
 };
-const usePostList = ({ fetchPostsOptions, initialData }: Props = {}) => {
+const usePostList = ({
+  fetchPostsOptions,
+  initialData,
+  tags = [],
+}: Props = {}) => {
   const postListQuery = useInfiniteQuery({
     initialData,
-    queryKey: ["posts", fetchPostsOptions],
-    queryFn: ({ pageParam }) =>
-      fetchPosts({ page: pageParam, ...fetchPostsOptions }),
+    queryKey: tags || ["posts", fetchPostsOptions],
+    queryFn: async ({ pageParam }) => {
+      console.log("fetching posts");
+      return await fetchPosts({ page: pageParam, ...fetchPostsOptions });
+    },
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       return lastPage.length ? pages.length : undefined;

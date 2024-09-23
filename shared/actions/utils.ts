@@ -1,3 +1,5 @@
+'use server'
+
 import { revalidateTag } from "next/cache";
 
 export const revalidateTagsFromClient = async (tags: string | string[]) => {

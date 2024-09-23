@@ -42,7 +42,7 @@ const usePostForm = ({ isEditing }: Props) => {
   });
   const { setValue, reset } = form;
 
-  const { postQuery, postQueryKey } = usePost();
+  const { postQuery } = usePost();
   const { data: post, isLoading: isLoadingPost } = postQuery;
   const postId = post?.stream_id;
 
@@ -110,19 +110,20 @@ const usePostForm = ({ isEditing }: Props) => {
     mutationFn: saveFn,
     onSuccess: async (result) => {
       if (!result) return;
+      const slug = result.content.slug;
       queryClient.invalidateQueries({
-        queryKey: postQueryKey,
+        queryKey: ["homepage-posts"],
       });
-      queryClient.setQueryData(
-        postQueryKey,
-        produce((oldPost: OrbisDBRow<Post>) => {
-          if (oldPost) Object.assign(oldPost, result.content);
-        }),
-      );
       // Revalidate posts
       await revalidateTagsFromClient("homepage-posts");
       if (isEditing) {
         // Revalidate post page
+        queryClient.setQueryData(
+          ["post", { filter: { slug } }],
+          produce((oldPost: OrbisDBRow<Post>) => {
+            if (oldPost) Object.assign(oldPost, result.content);
+          }),
+        );
         if (post?.slug) await revalidateTagsFromClient(post.slug);
       } else {
         await notifySubscribers(result.id);

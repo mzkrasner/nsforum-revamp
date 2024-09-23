@@ -11,3 +11,5 @@ export type Post = {
   status: PostStatus;
   stream_id?: string;
 };
+
+export type SortPostOption = "newest" | "oldest";

@@ -14,11 +14,18 @@ type Props = {
   fetchPostsOptions?: FetchPostsOptions;
   emptyContent?: ReactNode;
   initialData?: InfiniteData<OrbisDBRow<Post>[], number>;
+  tags?: string[];
 };
-const PostList = ({ fetchPostsOptions, emptyContent, initialData }: Props) => {
+const PostList = ({
+  fetchPostsOptions,
+  emptyContent,
+  initialData,
+  tags,
+}: Props) => {
   const { posts, postListQuery } = usePostList({
     fetchPostsOptions,
     initialData,
+    tags,
   });
   const { hasNextPage, isLoading, fetchNextPage } = postListQuery;
 
