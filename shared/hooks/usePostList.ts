@@ -15,9 +15,8 @@ const usePostList = ({
 }: Props = {}) => {
   const postListQuery = useInfiniteQuery({
     initialData,
-    queryKey: tags || ["posts", fetchPostsOptions],
+    queryKey: tags.length ? tags : ["posts", fetchPostsOptions],
     queryFn: async ({ pageParam }) => {
-      console.log("fetching posts");
       return await fetchPosts({ page: pageParam, ...fetchPostsOptions });
     },
     initialPageParam: 0,
