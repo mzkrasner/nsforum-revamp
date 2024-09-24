@@ -101,9 +101,11 @@ const Search = () => {
                 )}
               </div>
             </CommandGroup>
-            <CommandGroup className="flex items-center justify-center">
-              <div ref={infiniteScrollRef}></div>
-            </CommandGroup>
+            {searchTerm && (
+              <CommandGroup className="flex items-center justify-center">
+                <div ref={infiniteScrollRef}></div>
+              </CommandGroup>
+            )}
           </ScrollArea>
         </CommandList>
       </CommandDialog>
