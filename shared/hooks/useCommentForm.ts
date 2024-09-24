@@ -57,7 +57,7 @@ const useCommentForm = (props: Props) => {
 
   useEffect(() => {
     if (profile?.controller && !watch("author_username")) {
-      setValue("author_username", profile.username);
+      setValue("author_username", profile?.username || "");
     }
   }, [profile, watch]);
 
