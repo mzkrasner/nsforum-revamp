@@ -1,6 +1,5 @@
 "use client";
 
-import { suggestCategory } from "@/shared/actions/categories";
 import { Button } from "@/shared/components/ui/button";
 import {
   Form,
@@ -12,6 +11,7 @@ import {
 import { useToast } from "@/shared/components/ui/hooks/use-toast";
 import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { suggestCategory } from "@/shared/orbis/queries";
 import {
   CategorySuggestionSchema,
   categorySuggestionSchema,

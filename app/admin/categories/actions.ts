@@ -2,7 +2,7 @@
 
 import { connectDbWithSeed } from "@/app/api/_orbis";
 import { checkAdminAuth } from "@/shared/actions/auth";
-import { fetchCategorySuggestion } from "@/shared/actions/categories";
+import { fetchCategorySuggestion } from "@/shared/orbis/queries";
 import { findRow, insertRow, updateRow } from "@/shared/orbis/utils";
 import { CategorySchema } from "@/shared/schema/category";
 import {

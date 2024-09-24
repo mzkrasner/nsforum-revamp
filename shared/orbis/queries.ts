@@ -4,6 +4,7 @@ import { CeramicDocument } from "@useorbis/db-sdk";
 import { count, ilike } from "@useorbis/db-sdk/operators";
 import { isNil, omitBy } from "lodash-es";
 import { escapeSQLLikePattern } from "../lib/utils";
+import { CategorySuggestionSchema } from "../schema/categorySuggestion";
 import { OnlyStringFields, OrbisDBRow } from "../types";
 import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
@@ -202,4 +203,20 @@ export const fetchReactionTypeCounts = async ({
     upvotes: upvotes?.count ? +upvotes.count : 0,
     downvotes: downvotes?.count ? +downvotes.count : 0,
   };
+};
+
+export const suggestCategory = async (
+  categorySuggestion: CategorySuggestionSchema,
+) => {
+  return await insertRow<CategorySuggestion>({
+    model: "categorySuggestions",
+    value: { ...categorySuggestion, status: "pending" },
+  });
+};
+
+export const fetchCategorySuggestion = async (id: string) => {
+  return await findRow({
+    model: "categorySuggestions",
+    where: { stream_id: id },
+  });
 };
