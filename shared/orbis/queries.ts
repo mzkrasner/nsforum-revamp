@@ -96,16 +96,18 @@ export const fetchPosts = async (options?: FetchPostsOptions) => {
 
 export type FetchCategorySuggestionsOptions = PaginationOptions & {
   filter?: Record<string, any>;
+  orderBy?: [keyof OrbisDBRow<CategorySuggestion>, "asc" | "desc"][];
 };
 
 export const fetchCategorySuggestions = async (
   options: FetchCategorySuggestionsOptions = {},
 ) => {
-  const { page = 0, pageSize = 10, filter = {} } = options;
+  const { page = 0, pageSize = 10, filter = {}, orderBy = [] } = options;
   return await fetchRowsPage<CategorySuggestion>({
     model: "categorySuggestions",
     where: filter,
     pageSize,
+    orderBy,
     page,
   });
 };
