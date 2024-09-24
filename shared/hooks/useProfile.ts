@@ -1,6 +1,7 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { checkAdminAuth } from "../actions/auth";
 import { fetchSubscriptionData } from "../actions/subscriptions";
 import { findRow, insertRow, updateRow } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
@@ -25,7 +26,8 @@ const useProfile = () => {
       model: "users",
       where: { controller: did },
     });
-    return profile;
+    const isAdmin = await checkAdminAuth();
+    return { ...profile, is_admin: isAdmin };
   };
 
   const profileQuery = useQuery({
@@ -75,7 +77,6 @@ const useProfile = () => {
     mutationKey: ["save-profile"],
     mutationFn: saveProfile,
     onSuccess: (result) => {
-      // console.log("Profile: ", result);
       if (!result) return;
       queryClient.setQueryData(
         ["profile"],

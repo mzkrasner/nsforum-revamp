@@ -1,7 +1,6 @@
 "use server";
 
 import { PrivyClient } from "@privy-io/server-auth";
-import { isServer } from "@tanstack/react-query";
 import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -10,25 +9,27 @@ const privy = new PrivyClient(
   process.env.PRIVY_APP_SECRET!,
 );
 
-const getAuthTokenClaims = unstable_cache(
-  async () => {
-    if (!isServer) return null;
+const getAuthTokenClaims = async () => {
+  const cookieStore = cookies();
+  const privyCookie = cookieStore.get("privy-token");
+  if (!privyCookie) return null;
+  const { value: token } = privyCookie;
 
-    const cookieStore = cookies();
-    const privyCookie = cookieStore.get("privy-token");
-    if (!privyCookie) return null;
-    const { value: token } = privyCookie;
-
-    try {
-      return await privy.verifyAuthToken(token);
-    } catch (error) {
-      console.log(`Token verification failed with error ${error}.`);
-      return false;
-    }
-  },
-  undefined,
-  { tags: ["auth-token-claims"], revalidate: 60 * 5 },
-);
+  try {
+    const verifyAuthToken = unstable_cache(
+      async () => await privy.verifyAuthToken(token),
+      undefined,
+      {
+        tags: ["auth-token-claims"],
+        revalidate: 60 * 5,
+      },
+    );
+    return await verifyAuthToken();
+  } catch (error) {
+    console.log(`Token verification failed with error ${error}.`);
+    return false;
+  }
+};
 
 export const getCurrentPrivyUserId = async () => {
   const authTokenClaims = await getAuthTokenClaims();
@@ -37,14 +38,13 @@ export const getCurrentPrivyUserId = async () => {
 };
 
 export const checkAdminAuth = async () => {
-  if (!isServer) return null;
-
   try {
     const authTokenClaims = await getAuthTokenClaims();
     if (!authTokenClaims) return false;
 
     const userId = authTokenClaims.userId.replace("did:privy:", "");
-    const adminIds = JSON.parse(process.env.ADMIN_DIDS! || "[]") || [];
+    const adminIds: string[] =
+      JSON.parse(process.env.ADMIN_DIDS! || "[]") || [];
     return adminIds.includes(userId);
   } catch (error) {
     console.log(`Admin auth verification failed with error ${error}.`);
