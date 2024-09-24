@@ -1,5 +1,6 @@
 "use client";
 
+import { suggestCategory } from "@/shared/actions/categories";
 import { Button } from "@/shared/components/ui/button";
 import {
   Form,
@@ -11,70 +12,47 @@ import {
 import { useToast } from "@/shared/components/ui/hooks/use-toast";
 import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { ToastAction } from "@/shared/components/ui/toast";
 import {
   CategorySuggestionSchema,
   categorySuggestionSchema,
 } from "@/shared/schema/categorySuggestion";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { useFormState, useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
-import { onSuggestCategory } from "../actions";
 
 const CategorySuggestionForm = () => {
-  const [state, formAction] = useFormState(onSuggestCategory, {
-    message: "",
-  });
-  const { pending } = useFormStatus();
-
   const router = useRouter();
-
-  const ref = useRef<HTMLFormElement>(null);
 
   const form = useForm<CategorySuggestionSchema>({
     resolver: zodResolver(categorySuggestionSchema),
     defaultValues: {
       name: "",
       description: "",
-      ...(state?.fields ?? {}),
     },
   });
   const { control, handleSubmit } = form;
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    const { message } = state;
-    if (!message) return;
-
-    toast({
-      title: "Message",
-      description: message,
-      action: (
-        <ToastAction
-          altText="Go back"
-          onClick={() => router.push("/categories")}
-        >
-          Back
-        </ToastAction>
-      ),
-    });
-  }, [toast, state, router]);
+  const submitMutation = useMutation({
+    mutationKey: ["create-category-suggection"],
+    mutationFn: suggestCategory,
+    onSuccess: (res) => {
+      if (!res.id) return;
+      toast({
+        title: "Message",
+        description: "Your suggestion has been registered",
+      });
+      router.push("/categories");
+    },
+  });
 
   return (
     <Form {...form}>
       <form
-        ref={ref}
         className="w-full space-y-5"
-        action={formAction}
-        onSubmit={(evt) => {
-          evt.preventDefault();
-          handleSubmit(() => {
-            formAction(new FormData(ref.current!));
-          })(evt);
-        }}
+        onSubmit={handleSubmit((values) => submitMutation.mutate(values))}
       >
         <FormField
           control={control}
@@ -112,7 +90,11 @@ const CategorySuggestionForm = () => {
           }}
         />
         <div className="flex justify-end gap-3">
-          <Button type="submit" loading={pending} loadingText={"Suggesting"}>
+          <Button
+            type="submit"
+            loading={submitMutation.isPending}
+            loadingText={"Suggesting"}
+          >
             Suggest
           </Button>
         </div>

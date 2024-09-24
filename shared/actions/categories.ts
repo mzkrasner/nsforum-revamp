@@ -1,5 +1,6 @@
 "use server";
 
+import { connectDbWithSeed } from "@/app/api/_orbis";
 import { findRow, insertRow } from "@/shared/orbis/utils";
 import { CategorySuggestionSchema } from "@/shared/schema/categorySuggestion";
 import { CategorySuggestion } from "@/shared/types/category";
@@ -7,6 +8,7 @@ import { CategorySuggestion } from "@/shared/types/category";
 export const suggestCategory = async (
   categorySuggestion: CategorySuggestionSchema,
 ) => {
+  await connectDbWithSeed();
   return await insertRow<CategorySuggestion>({
     model: "categorySuggestions",
     value: { ...categorySuggestion, status: "pending" },
@@ -14,23 +16,6 @@ export const suggestCategory = async (
 };
 
 export const fetchCategorySuggestion = async (id: string) => {
-  //   const graphql = `{
-  //     ${models.categorySuggestions.name}(filter: { stream_id: "${id}" }) {
-  //       stream_id
-  //       name
-  //       description
-  //     }
-  //   }
-  // `;
-  //   const { data } = await axios.post(
-  //     `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/global/graphql`,
-  //     {
-  //       query: graphql,
-  //     },
-  //   );
-  //   const categorySuggestions: CategorySuggestion[] =
-  //     data?.data?.[models.categorySuggestions.name] || [];
-  //   return categorySuggestions.length ? categorySuggestions[0] : null;
   return await findRow({
     model: "categorySuggestions",
     where: { stream_id: id },
