@@ -6,4 +6,5 @@ export type Profile = {
   email: string;
   verified: boolean;
   privy_id: string;
+  is_admin?: boolean;
 };

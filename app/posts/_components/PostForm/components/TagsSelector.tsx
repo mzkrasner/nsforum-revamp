@@ -49,7 +49,7 @@ const TagsSelector = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<OrbisDBRow<Tag>[]>([]);
 
-  const commandRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   const { tags, searchTerm, setSearchTerm, tagsQuery } = useTags();
   const { hasNextPage, fetchNextPage } = tagsQuery;
@@ -57,7 +57,7 @@ const TagsSelector = ({
   const { ref: infiniteScrollRef } = useInfiniteScroll({
     observerOptions: {
       threshold: 0,
-      root: commandRef.current,
+      root: popoverRef.current,
     },
     hasNextPage,
     fetchNextPage,
@@ -141,7 +141,7 @@ const TagsSelector = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            ref={commandRef}
+            ref={popoverRef}
             className="w-[200px] p-0"
             align="start"
           >

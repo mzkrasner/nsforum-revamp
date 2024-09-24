@@ -27,6 +27,7 @@ const NavUser = () => {
   const { ready, authenticated, user } = usePrivy();
   const { logout } = useAuth();
   const { profile } = useProfile();
+  const { is_admin } = profile || {};
   const email = profile?.email || user?.email?.address || "";
 
   if (!ready)
@@ -74,6 +75,11 @@ const NavUser = () => {
           </DropdownMenuItem>
           <DropdownMenuItem>Notifications</DropdownMenuItem>
           <DropdownMenuItem>Subscriptions</DropdownMenuItem>
+          {is_admin && (
+            <DropdownMenuItem>
+              <Link href="/admin">Go to admin</Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
