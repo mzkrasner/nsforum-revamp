@@ -82,9 +82,6 @@ export const editCategory = async ({
     throw new Error("Unauthorized");
   }
 
-  const existingCategory = await fetchCatgoryByName(categoryData.name);
-  if (existingCategory) throw new Error("Category already exists");
-
   await connectDbWithSeed();
 
   return await updateRow({ id: stream_id, set: categoryData });
