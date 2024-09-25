@@ -1,5 +1,5 @@
 export const users = {
-  name: "dev_users",
+  name: "users",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -35,7 +35,7 @@ export const users = {
 } as const;
 
 export const notifications = {
-  name: "dev_notifications",
+  name: "notifications",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -104,7 +104,7 @@ export const notifications = {
 } as const;
 
 export const subscriptions = {
-  name: "dev_subscriptions",
+  name: "subscriptions",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -134,7 +134,7 @@ export const subscriptions = {
 } as const;
 
 export const categories = {
-  name: "dev_categories",
+  name: "categories",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -158,7 +158,7 @@ export const categories = {
 } as const;
 
 export const categorySuggestions = {
-  name: "dev_category_suggestions",
+  name: "category_suggestions",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -185,7 +185,7 @@ export const categorySuggestions = {
 } as const;
 
 export const tags = {
-  name: "dev_tags",
+  name: "tags",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -209,7 +209,7 @@ export const tags = {
 } as const;
 
 export const posts = {
-  name: "dev_posts",
+  name: "posts",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -254,7 +254,7 @@ export const posts = {
 } as const;
 
 export const comments = {
-  name: "dev_comments",
+  name: "comments",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -290,7 +290,7 @@ export const comments = {
 } as const;
 
 export const reactions = {
-  name: "dev_reactions",
+  name: "reactions",
   version: "2.0",
   interface: false,
   immutableFields: [],
@@ -320,7 +320,7 @@ export const reactions = {
 } as const;
 
 export const reaction_counter = {
-  name: "dev_reaction_counter",
+  name: "reaction_counter",
   version: "2.0",
   interface: false,
   immutableFields: [],

@@ -1,52 +1,40 @@
 
 const models = {
-  "posts": {
-    "id": "kjzl6hvfrbw6c6268y6lkrl545c2abfp0n9ubbufo61zyqw6swji8y9pmrcdidw",
-    "name": "dev_posts_v14"
-  },
-  "comments": {
-    "id": "kjzl6hvfrbw6c9yqzmgvmjfdr48pkbuouesq1ym1xy7mgd145fw2muau0tx6anh",
-    "name": "dev_comments_v15"
+  "users": {
+    "id": "kjzl6hvfrbw6c6wh671urzbvuxb4fzvuasel5b3y3vjm3jycq2r0171r4cc1slw",
+    "name": "users_v0"
   },
   "subscriptions": {
-    "id": "kjzl6hvfrbw6c6cjy0gjxmj9rz50lm1pd2bg3p0hxh31jw39l7iv3g3abglentg",
-    "name": "dev_subscriptions_v12"
+    "id": "kjzl6hvfrbw6c8dylt7m2wnqp4n1rhoza1hgq5wbbg9t4rss2ztxpxawll5hmyj",
+    "name": "subscriptions_v0"
   },
   "notifications": {
-    "id": "kjzl6hvfrbw6c6h5fzfr111kpk1eohthz8rg7o4n7j0kr8c5ioeebzy9f0om3kt",
-    "name": "dev_notifications_v20"
+    "id": "kjzl6hvfrbw6ca271kk22omul58lyf98lrus8vo3gngv2gng8k55pvmhpzn1kdc",
+    "name": "notifications_v0"
   },
   "tags": {
-    "id": "kjzl6hvfrbw6cacullh2weq1a2arocworpuzv6w3j8je9z88c43w4kq7d8mtj5n",
-    "name": "dev_tags_v8"
+    "id": "kjzl6hvfrbw6c8sqo1tf08t1imq4h3ncp1didk6kqr1zld4nod9i7ku08sgsy94",
+    "name": "tags_v0"
   },
   "categories": {
-    "id": "kjzl6hvfrbw6c5w5k4geic1odi1kjv3ymc5i8ks16hj871nwnuaizd1r4apv1mn",
-    "name": "dev_categories_v8"
-  },
-  "users": {
-    "id": "kjzl6hvfrbw6c5qkfothti3ui3vlj2nge7tc6j7ymegsaal7ct3rrcx4yyeezfm",
-    "name": "dev_users_v9"
+    "id": "kjzl6hvfrbw6c91mtgvdlz64m2smtnv9dtx9om6iqb1pjwj0is6ijtqczeyfxzo",
+    "name": "categories_v0"
   },
   "categorySuggestions": {
-    "id": "kjzl6hvfrbw6c6ix42so2hua7agmw3qwlant9tkf7fl1av74yq5zq744dgu6rfa",
-    "name": "dev_category_suggestions_v3"
+    "id": "kjzl6hvfrbw6cb6l0vcqx7doj61edsrgoowz8fq9lu1e4mpmm6ltw2xi06dzr4x",
+    "name": "category_suggestions_v0"
+  },
+  "posts": {
+    "id": "kjzl6hvfrbw6c5k4gv2k339349o5u56xt3294p77uhcozp1exfrb6e30wp4eclj",
+    "name": "posts_v0"
+  },
+  "comments": {
+    "id": "kjzl6hvfrbw6ca1pzm9g5paym7z9p3xep6zq0o69uo2qbhwlebdgg648smur9ic",
+    "name": "comments_v0"
   },
   "reactions": {
-    "id": "kjzl6hvfrbw6c9m1f29anxwxw2h8indtbdfxz5fhztafepy2mt75y445w6fkibr",
-    "name": "dev_reactions_v12"
-  },
-  "post_reactions": {
-    "id": "kjzl6hvfrbw6c9qitg25tb9r9aos2c5g55j8xixkc6bges9pbo5ukjjb187wlbe",
-    "name": "dev_post_reactions_v1"
-  },
-  "comment_reactions": {
-    "id": "kjzl6hvfrbw6c6p8y9douq78lyqn3jarzjohr45o7ju25jdsmo0fwjxjoaxq6lx",
-    "name": "dev_comment_reactions_v1"
-  },
-  "reaction_counter": {
-    "id": "kjzl6hvfrbw6c5q2ca95w5lvkmfoce11pudi9lveiqxk0ar75yrx5acdfo45nz1",
-    "name": "dev_reaction_counter_v0"
+    "id": "kjzl6hvfrbw6c52rchv0irftqvbqe20z1bkwwemqn00gcj9t0kgyazi9thf1vc4",
+    "name": "reactions_v0"
   }
 } as const;
 
