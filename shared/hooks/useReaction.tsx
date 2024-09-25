@@ -33,11 +33,14 @@ const useReaction = ({ contentId, model }: Props) => {
   const reactionDataQuery = useQuery({
     queryKey,
     queryFn: async () => {
-      if (!content_id || !user_id) return null;
-      const reaction = await findRow<Reaction>({
-        model: "reactions",
-        where: { content_id, user_id, model },
-      });
+      if (!content_id) return null;
+      let reaction;
+      if (user_id) {
+        reaction = await findRow<Reaction>({
+          model: "reactions",
+          where: { content_id, user_id, model },
+        });
+      }
       const reactionTypeCounts = await fetchReactionTypeCounts({
         model,
         content_id,
@@ -48,7 +51,6 @@ const useReaction = ({ contentId, model }: Props) => {
         ...reactionTypeCounts,
       } as ReactionData;
     },
-    enabled: !!did,
   });
   const reactionData = reactionDataQuery.data;
   const { upvotes = 0, downvotes = 0, reaction } = reactionData || {};
