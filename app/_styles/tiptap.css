@@ -41,7 +41,7 @@
 .tiptap h6 {
   line-height: 1.1;
   text-wrap: pretty;
-  scroll-margin-top: 20px;
+  scroll-margin-top: 100px;
   @apply font-serif font-medium;
 }
 
