@@ -22,8 +22,10 @@ import { usePrivy } from "@privy-io/react-auth";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { LoaderIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 const NavUser = () => {
+  const [open, setOpen] = useState(false);
   const { ready, authenticated, user } = usePrivy();
   const { logout } = useAuth();
   const { profile } = useProfile();
@@ -43,7 +45,7 @@ const NavUser = () => {
   if (!authenticated) return <SignInButton />;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -71,13 +73,17 @@ const NavUser = () => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/profile">Profile</Link>
+            <Link href="/profile" onClick={() => setOpen(false)}>
+              Profile
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>Notifications</DropdownMenuItem>
-          <DropdownMenuItem>Subscriptions</DropdownMenuItem>
+          {/* <DropdownMenuItem>Notifications</DropdownMenuItem>
+          <DropdownMenuItem>Subscriptions</DropdownMenuItem> */}
           {is_admin && (
             <DropdownMenuItem>
-              <Link href="/admin">Go to admin</Link>
+              <Link href="/admin" onClick={() => setOpen(false)}>
+                Go to admin
+              </Link>
             </DropdownMenuItem>
           )}
         </DropdownMenuGroup>

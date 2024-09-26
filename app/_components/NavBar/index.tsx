@@ -11,7 +11,7 @@ import Image from "next/image";
 import Search from "./components/Search";
 
 const NavBar = () => {
-  const { isSidebarOpen, toggleSidebar } = useSidebar();
+  const { isSidebarOpen, setIsSidebarOpen, toggleSidebar } = useSidebar();
 
   return (
     <div className="fixed left-0 top-0 z-20 flex h-20 w-full items-center border-b border-neutral-300 bg-white">
