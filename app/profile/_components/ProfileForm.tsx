@@ -114,6 +114,7 @@ const ProfileForm = () => {
               <Input
                 placeholder="No phone number added"
                 value={linkedPhone?.number || ""}
+                className="border-0"
                 readOnly
               />
               <Button
@@ -134,6 +135,7 @@ const ProfileForm = () => {
               <Input
                 placeholder="No account added"
                 value={linkedTwitterAcct?.username || ""}
+                className="border-0"
                 readOnly
               />
               <Button

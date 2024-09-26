@@ -1,6 +1,8 @@
 "use client";
 
+import AddProfileButton from "@/shared/components/AddProfileButton";
 import SignInButton from "@/shared/components/SignInButton";
+import SignOutButton from "@/shared/components/SignOutButton";
 import {
   Avatar,
   AvatarFallback,
@@ -48,12 +50,14 @@ const NavUser = () => {
 
   if (!authenticated) return <SignInButton />;
 
-  if (!profile?.controller)
+  if (!profile?.controller) {
     return (
-      <Button asChild>
-        <Link href="/profile/edit">Add profile</Link>
-      </Button>
+      <div className="flex items-center gap-2">
+        <AddProfileButton />
+        <SignOutButton />
+      </div>
     );
+  }
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
