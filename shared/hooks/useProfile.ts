@@ -41,7 +41,7 @@ const useProfile = () => {
   const profile = profileQuery.data;
 
   const subscriptionDataQuery = useQuery({
-    queryKey: ["profile", "profile-subscription-data"],
+    queryKey: ["profile", "profile-subscription-data", { did }],
     queryFn: async () => {
       return await fetchSubscriptionData({
         author_did: did as string,

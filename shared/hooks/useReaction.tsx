@@ -29,7 +29,7 @@ const useReaction = ({ contentId, model }: Props) => {
 
   const [content_id, user_id] = [contentId, userId];
 
-  const queryKey = ["reaction", { contentId, userId }];
+  const queryKey = ["reaction", { content_id, user_id, model }];
   const reactionDataQuery = useQuery({
     queryKey,
     queryFn: async () => {

@@ -1,4 +1,4 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { ConnectedWallet, usePrivy, useWallets } from "@privy-io/react-auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { isAddress } from "viem";
@@ -17,8 +17,16 @@ const useAuth = () => {
   const { authInfo, setAuthInfo } = useOrbis();
   const did = authInfo?.user.did;
 
-  const connectOrbis = async () => {
-    if (!(ready && authenticated && privyWallet)) return;
+  const connectOrbis = async ({
+    ready,
+    authenticated,
+    privyWallet,
+  }: {
+    ready: boolean;
+    authenticated: boolean;
+    privyWallet: ConnectedWallet;
+  }) => {
+    if (!(ready && authenticated && privyWallet)) return null;
     try {
       let authInfo;
       const connected = await orbisdb.isUserConnected(privyWallet.address);
@@ -38,12 +46,16 @@ const useAuth = () => {
       return authInfo;
     } catch (error) {
       console.error(error);
+      return null;
     }
   };
 
   const connectOrbisQuery = useQuery({
-    queryKey: ["connect-orbis", { privyWallet }],
-    queryFn: connectOrbis,
+    queryKey: ["connect-orbis", { ready, authenticated, privyWallet }],
+    queryFn: async () => {
+      if (!privyWallet) return null;
+      return await connectOrbis({ ready, authenticated, privyWallet });
+    },
     enabled: ready && authenticated && !!privyWallet,
   });
 

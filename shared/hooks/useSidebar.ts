@@ -1,16 +1,7 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 const useSidebar = () => {
-  const queryClient = useQueryClient();
-
-  const { data: isSidebarOpen } = useQuery({
-    queryKey: ["sidebar-state"],
-    queryFn: () => false,
-  });
-
-  const setIsSidebarOpen = (isSidebarOpen: boolean) => {
-    queryClient.setQueryData(["sidebar-state"], isSidebarOpen);
-  };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
