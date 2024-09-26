@@ -27,7 +27,8 @@ const useProfile = () => {
       where: { controller: did },
     });
     const isAdmin = await checkAdminAuth();
-    return { ...profile, is_admin: isAdmin };
+    if (profile) return { ...profile, is_admin: isAdmin };
+    return null;
   };
 
   const profileQuery = useQuery({

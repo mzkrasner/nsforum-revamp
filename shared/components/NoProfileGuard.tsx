@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
+import AddProfileButton from "./AddProfileButton";
 
 type Props = { displayMessage?: string };
 const NoProfileGuard = ({
@@ -8,9 +7,7 @@ const NoProfileGuard = ({
   return (
     <div className="m-auto flex flex-col gap-5 text-center text-neutral-500">
       {displayMessage}
-      <Button className="mx-auto" asChild>
-        <Link href="/profile/edit">Add profile</Link>
-      </Button>
+      <AddProfileButton className="mx-auto" />
     </div>
   );
 };

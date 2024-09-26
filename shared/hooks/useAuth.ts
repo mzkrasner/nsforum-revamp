@@ -2,9 +2,9 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { isAddress } from "viem";
+import { revalidateTagsFromClient } from "../actions/utils";
 import { orbisdb } from "../orbis";
 import useOrbis from "./useOrbis";
-import { revalidateTagsFromClient } from "../actions/utils";
 
 const useAuth = () => {
   const queryClient = useQueryClient();
@@ -74,9 +74,7 @@ const useAuth = () => {
     isLoggedIn: !!(authenticated && authInfo),
     logout: async () => {
       logout();
-      queryClient.resetQueries({ queryKey: ["profile"] });
-      queryClient.resetQueries({ queryKey: ["admin"] });
-      queryClient.resetQueries({ queryKey: [{did}] });
+      queryClient.resetQueries();
       await orbisdb.disconnectUser();
       await revalidateTagsFromClient([
         "auth-token-claims",

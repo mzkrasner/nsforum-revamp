@@ -28,11 +28,15 @@ const NavUser = () => {
   const [open, setOpen] = useState(false);
   const { ready, authenticated, user } = usePrivy();
   const { logout } = useAuth();
-  const { profile } = useProfile();
+  const { profile, profileQuery } = useProfile();
   const { is_admin } = profile || {};
   const email = profile?.email || user?.email?.address || "";
 
-  if (!ready)
+  if (
+    !ready ||
+    (!profileQuery.isFetched && authenticated) ||
+    profileQuery.isLoading
+  )
     return (
       <Button
         variant="ghost"
@@ -43,6 +47,13 @@ const NavUser = () => {
     );
 
   if (!authenticated) return <SignInButton />;
+
+  if (!profile?.controller)
+    return (
+      <Button asChild>
+        <Link href="/profile/edit">Add profile</Link>
+      </Button>
+    );
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
