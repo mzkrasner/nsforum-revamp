@@ -10,6 +10,7 @@ import {
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { ceramicDocToOrbisRow } from "@/shared/orbis/utils";
 import { CategorySchema, categorySchema } from "@/shared/schema/category";
 import { OrbisDBRow } from "@/shared/types";
 import { Category } from "@/shared/types/category";
@@ -62,39 +63,59 @@ const CategoryForm = ({ id }: Props = {}) => {
     },
     onSuccess: (response) => {
       if (!response?.id) return;
-      // Update category list queries
-      queryClient.setQueriesData(
-        {
-          queryKey: ["categories"],
-        },
-        produce((categories?: InfiniteData<OrbisDBRow<Category>[]>) => {
-          if (!categories) return;
-          const { pages } = categories;
-          outerLoop: for (let i = 0; i < pages.length; i++) {
-            const page = pages[i];
-            for (let j = 0; j < page.length; j++) {
-              const category = page[j];
-              if (category.stream_id === id) {
-                Object.assign(category, response.content);
-                break outerLoop;
+      if (id) {
+        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        // Update category list queries
+        queryClient.setQueriesData(
+          {
+            queryKey: ["categories"],
+          },
+          produce((categories?: InfiniteData<OrbisDBRow<Category>[]>) => {
+            if (!categories) return;
+            const { pages } = categories;
+            outerLoop: for (let i = 0; i < pages.length; i++) {
+              const page = pages[i];
+              for (let j = 0; j < page.length; j++) {
+                const category = page[j];
+                if (category.stream_id === id) {
+                  Object.assign(category, response.content);
+                  break outerLoop;
+                }
               }
             }
-          }
-        }),
-      );
+          }),
+        );
 
-      // Update category query
-      queryClient.setQueryData(
-        ["category", { id }],
-        produce((staleData: OrbisDBRow<Category>) => {
-          if (staleData && staleData.stream_id === response.id)
-            Object.assign(staleData, response.content);
-        }),
-      );
+        // Update category query
+        queryClient.setQueryData(
+          ["category", { id }],
+          produce((staleData: OrbisDBRow<Category>) => {
+            if (staleData && staleData.stream_id === response.id)
+              Object.assign(staleData, response.content);
+          }),
+        );
+      } else {
+        const newCategory = ceramicDocToOrbisRow(response);
+        queryClient.setQueriesData(
+          {
+            queryKey: ["categories"],
+          },
+          produce((categories?: InfiniteData<OrbisDBRow<Category>[]>) => {
+            if (!categories) return;
+            const { pages = [] } = categories;
+            if (pages) {
+              if (pages.length) {
+                pages[pages.length - 1].unshift(newCategory);
+              } else {
+                pages[0] = [newCategory];
+              }
+            }
+          }),
+        );
+      }
       router.push("/admin/categories");
     },
   });
-  // console.log(categoryMutation.error);
 
   if (categoryQuery.isLoading) return "Loading...";
 

@@ -97,7 +97,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
       content: value || "",
       editorProps: {
         attributes: {
-          class: "p-3 min-h-full pb-6 outline-none focus:border-gray-9",
+          class: "p-3 min-h-full flex-1 pb-6 outline-none focus:border-gray-9",
         },
       },
       onUpdate({ editor }) {
@@ -149,7 +149,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
             }
           }}
           className={cn(
-            "border-gray-1 relative h-fit rounded-md border",
+            "border-gray-1 relative flex h-fit flex-col rounded-md border",
             {
               "border-black outline-none ring-2 ring-ring ring-offset-2":
                 focused,
@@ -164,7 +164,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
             editor={editor}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            className={cn({
+            className={cn("flex flex-1 flex-col", {
               "-z-1 pointer-events-none h-0 w-0 opacity-0": isMdEditorActive,
             })}
           />

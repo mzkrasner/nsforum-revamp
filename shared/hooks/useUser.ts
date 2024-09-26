@@ -32,7 +32,10 @@ const useUser = ({ did }: Props) => {
   };
 
   const subscriptionDataQuery = useQuery({
-    queryKey: ["subscription-data", { did }],
+    queryKey: [
+      "subscription-data",
+      { did, profileController: profile?.controller },
+    ],
     queryFn: async () => {
       return await fetchSubscriptionData({
         author_did: did,

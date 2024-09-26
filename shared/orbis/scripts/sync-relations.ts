@@ -15,7 +15,7 @@ const fetchOrbisDBSettings = async () => {
     );
     return data?.settings;
   } catch (error) {
-    console.log(
+    console.error(
       "Error occured while fetching orbisdb settings: ",
       (error as AxiosError)?.response?.data || (error as Error)?.message,
     );

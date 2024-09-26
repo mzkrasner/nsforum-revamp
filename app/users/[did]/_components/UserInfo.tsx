@@ -4,6 +4,7 @@ import {
   AvatarImage,
 } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
+import useAuth from "@/shared/hooks/useAuth";
 import useProfile from "@/shared/hooks/useProfile";
 import useUser from "@/shared/hooks/useUser";
 import { getAvatarInitials } from "@/shared/lib/utils";
@@ -14,6 +15,7 @@ type Props = {
   did: string;
 };
 const UserInfo = ({ did }: Props) => {
+  const { isLoggedIn } = useAuth();
   const { profile } = useProfile();
   const {
     user,
@@ -58,43 +60,47 @@ const UserInfo = ({ did }: Props) => {
               <div className="flex items-center gap-1">
                 {subscriberCount}
                 <span className="text-sm text-neutral-500">
-                  Followers
+                  Follower
                   {!isNil(subscriberCount) && +subscriberCount > 1 ? "s" : ""}
                 </span>
               </div>
             </div>
-            <div className="flex w-full justify-between gap-2">
-              <Button
-                size="sm"
-                variant={subscribed ? "secondary" : "default"}
-                className="h-8 flex-1"
-                onClick={() => updateSubscriptionMutation.mutate(!subscribed)}
-                loaderProps={{
-                  className: subscribed ? "text-neutral-800" : "",
-                }}
-                loading={updateSubscriptionMutation.isPending}
-              >
-                {subscribed ? "Unfollow" : "Follow"}
-              </Button>
-              {subscribed && (
+            {isLoggedIn && !!profile?.controller && (
+              <div className="flex w-full justify-between gap-2">
                 <Button
-                  variant="secondary"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() =>
-                    updatePostNotificationsMutation.mutate(!post_notifications)
-                  }
+                  size="sm"
+                  variant={subscribed ? "secondary" : "default"}
+                  className="h-8 flex-1"
+                  onClick={() => updateSubscriptionMutation.mutate(!subscribed)}
+                  loaderProps={{
+                    className: subscribed ? "text-neutral-800" : "",
+                  }}
+                  loading={updateSubscriptionMutation.isPending}
                 >
-                  {updatePostNotificationsMutation.isPending ? (
-                    <LoaderIcon size={16} className="animate-spin" />
-                  ) : post_notifications ? (
-                    <BellIcon size={16} className="fill-neutral-700" />
-                  ) : (
-                    <BellOffIcon size={16} />
-                  )}
+                  {subscribed ? "Unfollow" : "Follow"}
                 </Button>
-              )}
-            </div>
+                {subscribed && (
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() =>
+                      updatePostNotificationsMutation.mutate(
+                        !post_notifications,
+                      )
+                    }
+                  >
+                    {updatePostNotificationsMutation.isPending ? (
+                      <LoaderIcon size={16} className="animate-spin" />
+                    ) : post_notifications ? (
+                      <BellIcon size={16} className="fill-neutral-700" />
+                    ) : (
+                      <BellOffIcon size={16} />
+                    )}
+                  </Button>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

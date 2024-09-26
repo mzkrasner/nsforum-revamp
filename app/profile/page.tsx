@@ -17,7 +17,7 @@ const ProfilePage = () => {
 
   if (!isLoggedIn) return <AuthGuard />;
 
-  if (!profile) return <NoProfileGuard />;
+  if (!profile?.controller) return <NoProfileGuard />;
 
   return (
     <div className="pt-10">

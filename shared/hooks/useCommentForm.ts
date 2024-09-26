@@ -84,18 +84,14 @@ const useCommentForm = (props: Props) => {
       if (!result?.content) return;
       reset(emptyFormValues);
       const { id, content, controller } = result;
-      // console.log("Result: ", result);
       const queryKey = ["comments", omitBy(fetchCommentsArg, isNil)];
-      // console.log("Query key: ", queryKey);
       const commentsQueryData =
         queryClient.getQueryData<InfiniteData<OrbisDBRow<CommentType>[]>>(
           queryKey,
         );
-      // console.log("Existing comments b4: ", commentsQueryData);
       const isNew = !comment;
       if (commentsQueryData) {
         if (isNew) {
-          // console.log("Adding comment");
           queryClient.setQueryData(
             queryKey,
             produce(commentsQueryData, (draft) => {
@@ -108,7 +104,6 @@ const useCommentForm = (props: Props) => {
             }),
           );
         } else {
-          // console.log("Updating comment state");
           queryClient.setQueryData(
             queryKey,
             produce(commentsQueryData, (draft) => {
@@ -123,13 +118,11 @@ const useCommentForm = (props: Props) => {
                   }
                 }
               }
-              // console.log("Stale comment: ", staleComment);
               if (staleComment) Object.assign(staleComment, result.content);
             }),
           );
         }
       }
-      // console.log("Comments after: ", queryClient.getQueryData(queryKey));
       onSave && onSave();
     },
     onError: console.error,

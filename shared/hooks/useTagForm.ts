@@ -6,7 +6,8 @@ import {
 } from "@tanstack/react-query";
 import { produce } from "immer";
 import { useForm } from "react-hook-form";
-import { createNewTag, fetchTagByName, updateTag } from "../orbis/queries";
+import { createTag } from "../actions/tags";
+import { fetchTagByName, updateTag } from "../orbis/queries";
 import { ceramicDocToOrbisRow } from "../orbis/utils";
 import { TagSchema, tagSchema } from "../schema/tag";
 import { OrbisDBRow } from "../types";
@@ -36,7 +37,7 @@ const useTagForm = ({ tag, onSave }: Props) => {
     if (tag?.stream_id) {
       return await updateTag(tag.stream_id, values);
     } else {
-      return await createNewTag(values);
+      return await createTag(values);
     }
   };
 

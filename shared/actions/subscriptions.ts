@@ -13,7 +13,10 @@ export const fetchSubscription = async (query: {
 }) => {
   const { author_did, reader_did } = query;
   if (!author_did || !reader_did) throw new Error("Invalid query");
-  return await findRow<Subscription>({ model: "subscriptions", where: query });
+  return await findRow<Subscription>({
+    model: "subscriptions",
+    where: { ...query, controller: process.env.NEXT_PUBLIC_APP_DID },
+  });
 };
 
 export const fetchSubscribedToCount = async (did: string) => {
@@ -23,6 +26,7 @@ export const fetchSubscribedToCount = async (did: string) => {
     where: {
       reader_did: did,
       subscribed: true,
+      controller: process.env.NEXT_PUBLIC_APP_DID,
     },
   });
   return result?.count || 0;
@@ -35,6 +39,7 @@ export const fetchSubscriberCount = async (did: string) => {
     where: {
       author_did: did,
       subscribed: true,
+      controller: process.env.NEXT_PUBLIC_APP_DID,
     },
   });
   return result?.count || 0;

@@ -26,7 +26,6 @@ const useComment = ({ commentId }: Props) => {
     mutationKey: ["delete-comment"],
     mutationFn: deleteComment,
     onSuccess: (result) => {
-      // console.log("Deletion result: ", result);
       if (!result?.content) return;
       const queryKey = ["comments"]; // All queries that have 'comments'
       queryClient.setQueriesData({ queryKey }, (data: any) =>
@@ -39,10 +38,7 @@ const useComment = ({ commentId }: Props) => {
               for (let j = 0; j < commentPage.length; j++) {
                 const c = commentPage[j];
                 if (c.stream_id === result.id) {
-                  // console.log("Matched");
-                  // console.log("Draft page before: ", draft.pages[i]);
                   draft.pages[i].splice(j, 1);
-                  // console.log("Draft page after: ", draft.pages[i]);
                   break outerLoop;
                 }
               }
@@ -50,12 +46,6 @@ const useComment = ({ commentId }: Props) => {
           }
         }),
       );
-      // console.log(
-      //   "After optimistic update: ",
-      //   queryClient.getQueryData<InfiniteData<OrbisDBRow<CommentType>[]>>(
-      //     queryKey,
-      //   ),
-      // );
     },
   });
 

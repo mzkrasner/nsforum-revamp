@@ -22,7 +22,7 @@ const CategorySuggestionCard = ({
   fetchOptions,
   className,
 }: Props) => {
-  const { name, description, stream_id } = categorySuggestion;
+  const { name, description, stream_id, status } = categorySuggestion;
 
   const { acceptCategorySuggestionMutation, rejectCategorySuggestionMutation } =
     useCategorySuggestion({ id: stream_id, fetchOptions });
@@ -34,17 +34,19 @@ const CategorySuggestionCard = ({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter className="justify-end gap-2 p-3">
-        <Button
-          size="sm"
-          variant="outline"
-          className="gap-2 px-2 text-sm"
-          onClick={() => rejectCategorySuggestionMutation.mutate()}
-          loadingText="Rejecting..."
-          loading={rejectCategorySuggestionMutation.isPending}
-        >
-          <XIcon size={14} />
-          Reject
-        </Button>
+        {status !== "rejected" && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2 px-2 text-sm"
+            onClick={() => rejectCategorySuggestionMutation.mutate()}
+            loadingText="Rejecting..."
+            loading={rejectCategorySuggestionMutation.isPending}
+          >
+            <XIcon size={14} />
+            Reject
+          </Button>
+        )}
         <Button
           size="sm"
           variant="outline"

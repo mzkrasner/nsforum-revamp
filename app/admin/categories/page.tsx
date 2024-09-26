@@ -56,7 +56,10 @@ const AdminCategoriesPage = () => {
           <TabsContent value="pending-suggestions">
             {/* Add a searchbar */}
             <CategorySuggestionList
-              fetchOptions={{ filter: { status: "pending" } }}
+              fetchOptions={{
+                filter: { status: "pending" },
+                orderBy: [["indexed_at", "desc"]],
+              }}
             />
           </TabsContent>
           <TabsContent value="rejected-suggestions">

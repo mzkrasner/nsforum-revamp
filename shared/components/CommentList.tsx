@@ -2,10 +2,10 @@
 
 import { ReactNode } from "react";
 import useCommentList from "../hooks/useCommentList";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import { FetchCommentsArg } from "../orbis/queries";
 import CommentCard from "./CommentCard";
 import { Button } from "./ui/button";
-import { InfiniteScroll } from "./ui/infinite-scroll";
 
 type Props = {
   fetchCommentsArg: FetchCommentsArg;
@@ -20,7 +20,15 @@ const CommentList = ({
   parentIds = [],
 }: Props) => {
   const { comments, commentListQuery } = useCommentList({ fetchCommentsArg });
-  const { hasNextPage, isLoading, fetchNextPage } = commentListQuery;
+  const { hasNextPage, isFetching, fetchNextPage } = commentListQuery;
+
+  const { ref: infiniteScrollRef } = useInfiniteScroll({
+    observerOptions: {
+      threshold: 0,
+    },
+    hasNextPage,
+    fetchNextPage,
+  });
 
   return (
     <div>
@@ -38,24 +46,18 @@ const CommentList = ({
           );
         })}
       </ul>
-      <InfiniteScroll
-        hasMore={hasNextPage}
-        isLoading={isLoading}
-        next={fetchNextPage}
-        threshold={1}
-      >
-        {isLoading && (
-          <Button
-            variant="ghost"
-            className="mx-auto flex"
-            loading={true}
-            loadingText="Loading comments..."
-            loaderProps={{ className: "text-primary" }}
-          />
-        )}
-      </InfiniteScroll>
+      <div ref={infiniteScrollRef}></div>
+      {isFetching && (
+        <Button
+          variant="ghost"
+          className="mx-auto flex gap-2"
+          loading={true}
+          loadingText="Loading..."
+          loaderProps={{ className: "text-primary" }}
+        />
+      )}
       {!comments.length &&
-        !isLoading &&
+        !isFetching &&
         (emptyContent || (
           <div className="py-10 text-center text-neutral-500">
             No comment found
