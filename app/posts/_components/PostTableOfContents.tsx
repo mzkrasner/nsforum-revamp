@@ -42,7 +42,7 @@ const PostTableOfContents = ({ open, setOpen }: Props) => {
         },
       )}
     >
-      <div className="sticky top-10 flex h-fit flex-col-reverse md:block">
+      <div className="sticky top-[120px] flex h-fit flex-col-reverse md:block">
         <div className="flex justify-end pt-4 md:block md:pb-4 md:pt-0">
           <Button
             variant="secondary"
