@@ -58,7 +58,7 @@ const UserInfo = ({ did }: Props) => {
               <div className="flex items-center gap-1">
                 {subscriberCount}
                 <span className="text-sm text-neutral-500">
-                  Followers
+                  Follower
                   {!isNil(subscriberCount) && +subscriberCount > 1 ? "s" : ""}
                 </span>
               </div>

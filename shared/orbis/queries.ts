@@ -11,7 +11,7 @@ import { Post } from "../types/post";
 import { Profile } from "../types/profile";
 import { Reaction } from "../types/reactions";
 import { Tag } from "../types/tag";
-import { fetchRowsPage, findRow, insertRow, updateRow } from "./utils";
+import { fetchRowsPage, findRow, updateRow } from "./utils";
 
 export type PaginationOptions = {
   page?: number;
@@ -162,10 +162,6 @@ export const fetchTagByName = async (name: string) => {
       controller: process.env.NEXT_PUBLIC_APP_DID,
     },
   });
-};
-
-export const createNewTag = async (data: Tag) => {
-  return await insertRow({ model: "tags", value: data });
 };
 
 export const updateTag = async (tagId: string, data: Tag) => {
