@@ -18,7 +18,7 @@ const getAuthTokenClaims = async () => {
   try {
     const verifyAuthToken = unstable_cache(
       async () => await privy.verifyAuthToken(token),
-      undefined,
+      [token],
       {
         tags: ["auth-token-claims"],
         revalidate: 60 * 5,

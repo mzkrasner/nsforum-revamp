@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/shared/components/ui/button";
-import { InfiniteScroll } from "@/shared/components/ui/infinite-scroll";
 import { ReactNode } from "react";
 import useCategories from "../hooks/useCategories";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import { OrbisDBRow } from "../types";
 import { Category } from "../types/category";
 import CategoryCard from "./CategoryCard";
@@ -15,6 +15,14 @@ type Props = {
 const CategoryList = ({ renderCategory, emptyContent }: Props) => {
   const { categories, categoriesListQuery } = useCategories();
   const { hasNextPage, isLoading, fetchNextPage } = categoriesListQuery;
+
+  const { ref: infiniteScrollRef } = useInfiniteScroll({
+    observerOptions: {
+      threshold: 0,
+    },
+    hasNextPage,
+    fetchNextPage,
+  });
 
   return (
     <div>
@@ -31,22 +39,16 @@ const CategoryList = ({ renderCategory, emptyContent }: Props) => {
           );
         })}
       </ul>
-      <InfiniteScroll
-        hasMore={hasNextPage}
-        isLoading={isLoading}
-        next={fetchNextPage}
-        threshold={1}
-      >
-        {isLoading && (
-          <Button
-            variant="ghost"
-            className="mx-auto flex gap-2"
-            loading={true}
-            loadingText="Loading..."
-            loaderProps={{ className: "text-primary" }}
-          />
-        )}
-      </InfiniteScroll>
+      <div ref={infiniteScrollRef}></div>
+      {isLoading && (
+        <Button
+          variant="ghost"
+          className="mx-auto flex gap-2"
+          loading={true}
+          loadingText="Loading..."
+          loaderProps={{ className: "text-primary" }}
+        />
+      )}
       {!categories.length &&
         !isLoading &&
         (emptyContent || (

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/components/ui/button";
-import { InfiniteScroll } from "@/shared/components/ui/infinite-scroll";
+import useInfiniteScroll from "@/shared/hooks/useInfiniteScroll";
 import { FetchCategorySuggestionsOptions } from "@/shared/orbis/queries";
 import { ReactNode } from "react";
 import useCategorySuggestionList from "../_hooks/useCategorySuggestionList";
@@ -19,7 +19,18 @@ const CategorySuggestionList = ({
     useCategorySuggestionList({
       fetchOptions,
     });
-  const { hasNextPage, isLoading, fetchNextPage } = categorySuggestionListQuery;
+  const { hasNextPage, isFetching, fetchNextPage } =
+    categorySuggestionListQuery;
+  console.log("has next page: ", hasNextPage);
+  console.log("is fetching: ", isFetching);
+
+  const { ref: infiniteScrollRef } = useInfiniteScroll({
+    observerOptions: {
+      threshold: 0,
+    },
+    hasNextPage,
+    fetchNextPage,
+  });
 
   return (
     <div>
@@ -35,24 +46,18 @@ const CategorySuggestionList = ({
           );
         })}
       </ul>
-      <InfiniteScroll
-        hasMore={hasNextPage}
-        isLoading={isLoading}
-        next={fetchNextPage}
-        threshold={1}
-      >
-        {isLoading && (
-          <Button
-            variant="ghost"
-            className="mx-auto flex gap-2"
-            loading={true}
-            loadingText="Loading..."
-            loaderProps={{ className: "text-primary" }}
-          />
-        )}
-      </InfiniteScroll>
+      <div ref={infiniteScrollRef}></div>
+      {isFetching && (
+        <Button
+          variant="ghost"
+          className="mx-auto flex gap-2"
+          loading={true}
+          loadingText="Loading..."
+          loaderProps={{ className: "text-primary" }}
+        />
+      )}
       {!categorySuggestions.length &&
-        !isLoading &&
+        !isFetching &&
         (emptyContent || (
           <div className="py-10 text-center text-neutral-500">
             No category suggestion found

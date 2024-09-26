@@ -21,13 +21,14 @@ const useCategorySuggestion = ({
 }) => {
   const queryClient = useQueryClient();
 
-  const updateCategorySuggestions = (
+  const onUpdateCategorySuggestions = (
     response?: GenericCeramicDocument<CategorySuggestion>,
   ) => {
     if (!response?.id || !fetchOptions?.filter?.status) return;
+    queryClient.invalidateQueries({ queryKey: ["category-suggestions"] });
     queryClient.setQueriesData(
       {
-        queryKey: ["admin","category-suggestions", fetchOptions],
+        queryKey: ["admin", "category-suggestions", fetchOptions],
       },
       produce(
         (
@@ -63,7 +64,7 @@ const useCategorySuggestion = ({
       if (!response) return;
       const { content, controller } = response;
 
-      updateCategorySuggestions(response);
+      onUpdateCategorySuggestions(response);
       // Add category
       queryClient.setQueryData(
         ["categories", undefined],
@@ -87,7 +88,7 @@ const useCategorySuggestion = ({
       if (!id) throw new Error("No category suggestion id");
       return await updateCategorySuggestionStatus(id, "rejected");
     },
-    onSuccess: updateCategorySuggestions,
+    onSuccess: onUpdateCategorySuggestions,
   });
 
   return { acceptCategorySuggestionMutation, rejectCategorySuggestionMutation };

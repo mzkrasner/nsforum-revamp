@@ -4,7 +4,6 @@ import { CeramicDocument } from "@useorbis/db-sdk";
 import { count, ilike } from "@useorbis/db-sdk/operators";
 import { isNil, omitBy } from "lodash-es";
 import { escapeSQLLikePattern } from "../lib/utils";
-import { CategorySuggestionSchema } from "../schema/categorySuggestion";
 import { OnlyStringFields, OrbisDBRow } from "../types";
 import { Category, CategorySuggestion } from "../types/category";
 import { CommentType } from "../types/comment";
@@ -105,10 +104,17 @@ export const fetchCategorySuggestions = async (
   const { page = 0, pageSize = 10, filter = {}, orderBy = [] } = options;
   return await fetchRowsPage<CategorySuggestion>({
     model: "categorySuggestions",
-    where: filter,
+    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
     pageSize,
     orderBy,
     page,
+  });
+};
+
+export const fetchCategorySuggestion = async (id: string) => {
+  return await findRow({
+    model: "categorySuggestions",
+    where: { stream_id: id, controller: process.env.NEXT_PUBLIC_APP_DID },
   });
 };
 
@@ -123,7 +129,7 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
   return await fetchRowsPage<Category>({
     model: "categories",
     select: fields,
-    where: filter,
+    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
     page,
     pageSize,
   });
@@ -132,20 +138,29 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
 export const fetchCategory = async (
   filter: FetchCategoriesOptions["filter"],
 ) => {
-  return await findRow<Category>({ model: "categories", where: filter });
+  return await findRow<Category>({
+    model: "categories",
+    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+  });
 };
 
 export const fetchReaction = async (filter: {
   content_id: string;
   user_id: string;
 }) => {
-  return await findRow<Reaction>({ model: "reactions", where: filter });
+  return await findRow<Reaction>({
+    model: "reactions",
+    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+  });
 };
 
 export const fetchTagByName = async (name: string) => {
   return findRow<Tag>({
     model: "tags",
-    where: { name: ilike(escapeSQLLikePattern(name)) },
+    where: {
+      name: ilike(escapeSQLLikePattern(name)),
+      controller: process.env.NEXT_PUBLIC_APP_DID,
+    },
   });
 };
 
@@ -176,7 +191,7 @@ export const fetchTags = async (options: FetchTagsOptions) => {
   return await fetchRowsPage<Tag>({
     model: "tags",
     select: fields,
-    where: filter,
+    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
     orderBy,
     page,
     pageSize,
@@ -193,32 +208,26 @@ export const fetchReactionTypeCounts = async ({
   const upvotes = await findRow<{ count: string }>({
     model: "reactions",
     select: [count("stream_id", "count")],
-    where: { model, content_id, type: "upvote" },
+    where: {
+      model,
+      content_id,
+      type: "upvote",
+      controller: process.env.NEXT_PUBLIC_APP_DID,
+    },
   });
   const downvotes = await findRow<{ count: string }>({
     model: "reactions",
     select: [count("stream_id", "count")],
-    where: { model, content_id, type: "downvote" },
+    where: {
+      model,
+      content_id,
+      type: "downvote",
+      controller: process.env.NEXT_PUBLIC_APP_DID,
+    },
   });
 
   return {
     upvotes: upvotes?.count ? +upvotes.count : 0,
     downvotes: downvotes?.count ? +downvotes.count : 0,
   };
-};
-
-export const suggestCategory = async (
-  categorySuggestion: CategorySuggestionSchema,
-) => {
-  return await insertRow<CategorySuggestion>({
-    model: "categorySuggestions",
-    value: { ...categorySuggestion, status: "pending" },
-  });
-};
-
-export const fetchCategorySuggestion = async (id: string) => {
-  return await findRow({
-    model: "categorySuggestions",
-    where: { stream_id: id },
-  });
 };
