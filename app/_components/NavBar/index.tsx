@@ -14,8 +14,8 @@ const NavBar = () => {
   const { isSidebarOpen, setIsSidebarOpen, toggleSidebar } = useSidebar();
 
   return (
-    <div className="fixed left-0 top-0 z-20 flex h-20 w-full items-center border-b border-neutral-300 bg-white">
-      <div className="container flex h-full items-center justify-between gap-5">
+    <div className="fixed left-0 top-0 z-20 flex h-20 w-fit items-center border-b border-neutral-300 bg-white sm:w-full">
+      <div className="container flex h-full items-center justify-between gap-3">
         <div className="relative -left-4 flex items-center gap-2 pl-4">
           <Button
             size="icon"
