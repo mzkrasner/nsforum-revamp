@@ -21,6 +21,6 @@ export const notifySubscribers = async (streamId: string) => {
   } catch (error: unknown) {
     const message =
       (error as AxiosError).response?.data || (error as Error).message;
-    console.log("Error while notifying subscribers: ", message);
+    console.error("Error while notifying subscribers: ", message);
   }
 };

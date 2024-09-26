@@ -21,8 +21,6 @@ const CategorySuggestionList = ({
     });
   const { hasNextPage, isFetching, fetchNextPage } =
     categorySuggestionListQuery;
-  console.log("has next page: ", hasNextPage);
-  console.log("is fetching: ", isFetching);
 
   const { ref: infiniteScrollRef } = useInfiniteScroll({
     observerOptions: {

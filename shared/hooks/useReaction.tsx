@@ -70,19 +70,16 @@ const useReaction = ({ contentId, model }: Props) => {
     mutationKey: ["upvote", { content_id, user_id }],
     mutationFn: async () => {
       if (!content_id || !user_id) return null;
-      console.log("upvoting");
       const res = await reactToContent({
         content_id,
         user_id,
         type: reaction?.type === "upvote" ? "none" : "upvote",
         model,
       });
-      console.log("res: ", res);
       const reactionTypeCounts = await fetchReactionTypeCounts({
         model,
         content_id,
       });
-      console.log("counts: ", reactionTypeCounts);
 
       return {
         reaction: res.content,
