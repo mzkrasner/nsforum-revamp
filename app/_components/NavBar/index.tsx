@@ -11,16 +11,16 @@ import Image from "next/image";
 import Search from "./components/Search";
 
 const NavBar = () => {
-  const { isSidebarOpen, setIsSidebarOpen, toggleSidebar } = useSidebar();
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
 
   return (
-    <div className="fixed left-0 top-0 z-20 flex h-20 w-fit items-center border-b border-neutral-300 bg-white sm:w-full">
-      <div className="container flex h-full items-center justify-between gap-3">
+    <div className="fixed left-0 top-0 z-20 flex h-20 w-full items-center border-b border-neutral-300 bg-white">
+      <div className="container mx-0 flex h-full min-w-[100vw] items-center justify-between gap-3">
         <div className="relative -left-4 flex items-center gap-2 pl-4">
           <Button
             size="icon"
             variant="secondary"
-            className="mr-2 h-8 w-8"
+            className="mr-2 h-8 w-8 min-w-8"
             onClick={toggleSidebar}
           >
             {isSidebarOpen ? (
@@ -34,7 +34,13 @@ const NavBar = () => {
               href="/"
               className="flex items-center gap-2 text-nowrap text-lg font-semibold"
             >
-              <Image src={logo} height={32} width={32} alt="logo" />
+              <Image
+                src={logo}
+                height={32}
+                width={32}
+                className="inline-block min-h-7 min-w-7"
+                alt="logo"
+              />
               <span className="hidden md:inline">Network Society Forum</span>
             </Link>
           </h1>
