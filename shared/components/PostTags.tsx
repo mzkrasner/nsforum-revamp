@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 
 type Props = { tags: Tag[] };
 const PostTags = ({ tags }: Props) => {
+  if (!tags.length) return null;
   return (
     <ul className="mt-3 flex flex-wrap gap-2">
       {tags.map(({ name }, i) => (

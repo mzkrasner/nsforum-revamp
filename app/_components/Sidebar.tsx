@@ -17,7 +17,7 @@ const Sidebar = () => {
         className="fixed top-20 z-10 h-[calc(100vh_-_80px)] w-full bg-black/10 sm:hidden"
         onClick={() => setIsSidebarOpen(false)}
       ></div>
-      <div className="container fixed left-0 top-20 z-10 mr-0 flex h-[calc(100vh_-_80px)] w-60 flex-col justify-end bg-white pb-10 pr-5 text-sm sm:sticky sm:min-h-[unset] md:justify-start md:pb-0">
+      <div className="container fixed left-0 top-20 z-10 mr-0 flex h-[calc(100vh_-_80px)] w-60 flex-col justify-end bg-white py-1 pr-1 text-sm sm:sticky sm:min-h-[unset] sm:pr-5 md:justify-start">
         <ScrollArea>
           <div className="mt-5 py-2">
             <Link href="/" className="link">
@@ -29,7 +29,7 @@ const Sidebar = () => {
               Categories
             </Link>
           </div>
-          <ul className="mb-5 space-y-1 pl-2 text-[13px]">
+          <ul className="mb-5 space-y-1 pb-10 pl-2 text-[13px]">
             {categories.map((category, i) => {
               const { name, stream_id } = category;
               return (
