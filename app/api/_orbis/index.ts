@@ -1,3 +1,6 @@
+"use server";
+
+import { env } from "@/env";
 import { orbisdb } from "@/shared/orbis";
 import { parseDidSeed } from "@/shared/orbis/utils";
 import { OrbisKeyDidAuth } from "@useorbis/db-sdk/auth";
@@ -9,7 +12,7 @@ export const connectDbWithSeed = async () => {
       return connectedUser.user.did;
     }
 
-    const seed = JSON.parse(process.env.ORBIS_SEED as string);
+    const seed = JSON.parse(env.ORBIS_SEED as string);
     const auth = await OrbisKeyDidAuth.fromSeed(parseDidSeed(seed));
     const authInfo = await orbisdb.connectUser({ auth });
     if (authInfo?.user?.did) {

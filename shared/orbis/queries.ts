@@ -1,5 +1,6 @@
 // "use server";
 
+import { env } from "@/env";
 import { CeramicDocument } from "@useorbis/db-sdk";
 import { count, ilike } from "@useorbis/db-sdk/operators";
 import { isNil, omitBy } from "lodash-es";
@@ -104,7 +105,7 @@ export const fetchCategorySuggestions = async (
   const { page = 0, pageSize = 10, filter = {}, orderBy = [] } = options;
   return await fetchRowsPage<CategorySuggestion>({
     model: "categorySuggestions",
-    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
     pageSize,
     orderBy,
     page,
@@ -114,7 +115,7 @@ export const fetchCategorySuggestions = async (
 export const fetchCategorySuggestion = async (id: string) => {
   return await findRow({
     model: "categorySuggestions",
-    where: { stream_id: id, controller: process.env.NEXT_PUBLIC_APP_DID },
+    where: { stream_id: id, controller: env.NEXT_PUBLIC_APP_DID },
   });
 };
 
@@ -129,7 +130,7 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
   return await fetchRowsPage<Category>({
     model: "categories",
     select: fields,
-    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
     page,
     pageSize,
   });
@@ -140,7 +141,7 @@ export const fetchCategory = async (
 ) => {
   return await findRow<Category>({
     model: "categories",
-    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
   });
 };
 
@@ -150,7 +151,7 @@ export const fetchReaction = async (filter: {
 }) => {
   return await findRow<Reaction>({
     model: "reactions",
-    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
   });
 };
 
@@ -159,7 +160,7 @@ export const fetchTagByName = async (name: string) => {
     model: "tags",
     where: {
       name: ilike(escapeSQLLikePattern(name)),
-      controller: process.env.NEXT_PUBLIC_APP_DID,
+      controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
 };
@@ -187,7 +188,7 @@ export const fetchTags = async (options: FetchTagsOptions) => {
   return await fetchRowsPage<Tag>({
     model: "tags",
     select: fields,
-    where: { ...filter, controller: process.env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
     orderBy,
     page,
     pageSize,
@@ -208,7 +209,7 @@ export const fetchReactionTypeCounts = async ({
       model,
       content_id,
       type: "upvote",
-      controller: process.env.NEXT_PUBLIC_APP_DID,
+      controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
   const downvotes = await findRow<{ count: string }>({
@@ -218,7 +219,7 @@ export const fetchReactionTypeCounts = async ({
       model,
       content_id,
       type: "downvote",
-      controller: process.env.NEXT_PUBLIC_APP_DID,
+      controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
 

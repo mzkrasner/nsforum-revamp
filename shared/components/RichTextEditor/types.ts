@@ -7,7 +7,7 @@ export type MdEditorType = ReturnType<typeof useCodeMirror>;
 
 export interface EditorContextType {
   editor: Editor | null;
-  uploadImage?: (file: File) => Promise<string>;
+  uploadImage?: (formData: FormData) => Promise<string | null | undefined>;
   isMdEditorActive: boolean;
   toggleMarkdown: () => void;
   mdEditor: MdEditorType | null;

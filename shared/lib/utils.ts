@@ -2,7 +2,6 @@ import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import * as _ from "lodash-es";
 import { twMerge } from "tailwind-merge";
-import { pinata } from "../pinata/config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -65,13 +64,6 @@ export const checkSBT = async (
     `https://api.holonym.io/sybil-resistance/gov-id/optimism?user=${address}&action-id=${actionId}`,
   );
   return !!data?.isUnique;
-};
-
-export const uploadToPinata = async (file: File) => {
-  const { data: keyData } = await axios.get("/api/pinata/key");
-  const upload = await pinata.upload.file(file).key(keyData.JWT);
-  const cid = upload.IpfsHash;
-  return cid;
 };
 
 export const reverseString = (str: string) => {

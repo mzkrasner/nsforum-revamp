@@ -28,7 +28,7 @@ type Props = {
   hideToolbar?: boolean;
   placeholder?: string;
   error?: FieldError;
-  uploadImage?: (file: File) => Promise<string>;
+  uploadImage?: (formData: FormData) => Promise<string | null | undefined>;
 };
 const RichTextEditor = forwardRef<HTMLDivElement, Props>(
   (

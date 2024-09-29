@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import axios, { AxiosError } from "axios";
 import { isEqual, isNil } from "lodash-es";
 import relations, { Relation } from "../schemas/relations";
@@ -5,14 +6,15 @@ import { Schema } from "../types";
 
 const fetchOrbisDBSettings = async () => {
   try {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/settings`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.ORBIS_DB_AUTH_TOKEN}`,
-        },
-      },
-    );
+    // const { data } = await axios.get(
+    //   `${env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/settings`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${env.ORBIS_DB_AUTH_TOKEN}`,
+    //     },
+    //   },
+    // );
+    const { data } = await axios.get(`${env.BASE_URL}/api/dev/settings`);
     return data?.settings;
   } catch (error) {
     console.error(
@@ -27,15 +29,16 @@ const createRelation = async <T extends keyof Schema, K extends keyof Schema>(
   relationName: string,
 ) => {
   try {
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
-      relation,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.ORBIS_DB_AUTH_TOKEN}`,
-        },
-      },
-    );
+    // const { data } = await axios.post(
+    //   `${env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
+    //   relation,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${env.ORBIS_DB_AUTH_TOKEN}`,
+    //     },
+    //   },
+    // );
+    const { data } = await axios.get(`${env.BASE_URL}/api/dev/create-relation`);
     console.log("Data returned from relation creation: ", data);
     if (data?.success === true) {
       console.log("Successfully created relation");
@@ -54,15 +57,16 @@ const updateRelation = async <T extends keyof Schema, K extends keyof Schema>(
   relationName: string,
 ) => {
   try {
-    const { data } = await axios.put(
-      `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
-      relation,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.ORBIS_DB_AUTH_TOKEN}`,
-        },
-      },
-    );
+    // const { data } = await axios.put(
+    //   `${env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
+    //   relation,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${env.ORBIS_DB_AUTH_TOKEN}`,
+    //     },
+    //   },
+    // );
+    const { data } = await axios.get(`${env.BASE_URL}/api/dev/update-relation`);
     // console.log("Data returned from relation update: ", data);
     if (data?.success === false && data?.message === "Relation not found") {
       console.log("Relation update failed, trying to create");

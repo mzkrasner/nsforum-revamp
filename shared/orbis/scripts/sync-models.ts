@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import axios, { AxiosError } from "axios";
 import fs from "fs";
 import models from "../models";
@@ -31,7 +32,7 @@ const updateModelVersion = (modelName: string) => {
 };
 
 const syncModels = async () => {
-  const seedString = process.env.ORBIS_SEED;
+  const seedString = env.ORBIS_SEED;
   const newSchemas = { users };
   const newModels: any = {};
   for (const modelName in newSchemas) {
@@ -48,7 +49,7 @@ const syncModels = async () => {
       };
       try {
         const { data } = await axios.post(
-          `${process.env.BASE_URL}/api/dev/create-model`,
+          `${env.BASE_URL}/api/dev/orbis/create-model`,
           {
             model,
             seedString,

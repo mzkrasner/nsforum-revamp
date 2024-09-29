@@ -22,3 +22,7 @@ export const connectDbWithExternalSeed = async (seedString: string) => {
     throw error as Error;
   }
 };
+
+export const createModel = async (model: any) => {
+  return await orbisdb.ceramic.createModel(model);
+};
