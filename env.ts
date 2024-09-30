@@ -38,6 +38,7 @@ export const env = createEnv({
     ),
     BASE_URL: z.string().trim().min(1),
     PINATA_JWT: z.string().trim().min(1),
+    ORBIS_DB_AUTH_TOKEN: z.string().trim().min(1),
   },
   /*
    * Environment variables available on the client (and server).
@@ -63,6 +64,7 @@ export const env = createEnv({
    * 💡 You'll get type errors if not all variables from `server` & `client` are included here.
    */
   runtimeEnv: {
+    ORBIS_DB_AUTH_TOKEN: process.env.ORBIS_DB_AUTH_TOKEN,
     ORBIS_SEED: process.env.ORBIS_SEED,
     PRIVY_APP_SECRET: process.env.PRIVY_APP_SECRET,
     ADMIN_PRIVY_IDS: process.env.ADMIN_PRIVY_IDS,

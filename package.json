@@ -10,7 +10,7 @@
     "db:sync-models": "tsx -r dotenv/config shared/orbis/scripts/sync dotenv_config_path=.env.local models",
     "db:sync-relations": "tsx -r dotenv/config shared/orbis/scripts/sync dotenv_config_path=.env.local relations",
     "db:sync": "tsx -r dotenv/config shared/orbis/scripts/sync dotenv_config_path=.env.local all",
-    "db:app-user": "tsx -r dotenv/config shared/orbis/scripts/app-user dotenv_config_path=.env.local all"
+    "db:auth": "tsx -r dotenv/config shared/orbis/scripts/auth dotenv_config_path=.env.local all"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.2.5",

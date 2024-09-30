@@ -319,36 +319,6 @@ export const reactions = {
   },
 } as const;
 
-export const reaction_counter = {
-  name: "dev_reaction_counter",
-  version: "2.0",
-  interface: false,
-  immutableFields: [],
-  implements: [],
-  accountRelation: {
-    type: "list",
-  },
-  schema: {
-    type: "object",
-    $schema: "https://json-schema.org/draft/2020-12/schema",
-    properties: {
-      upvotes: {
-        type: "number",
-      },
-      downvotes: {
-        type: "number",
-      },
-      content_id: {
-        type: "string",
-      },
-      model: {
-        type: "string",
-      },
-    },
-    additionalProperties: false,
-  },
-} as const;
-
 const schemas = {
   users,
   subscriptions,

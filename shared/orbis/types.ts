@@ -9,7 +9,7 @@ export type Models = typeof models;
 
 export type ModelName = keyof Models;
 
-export type ModelDefinition = Schema[keyof Schema];
+export type ModelSchema = Schema[keyof Schema];
 
 export type Contexts = typeof contexts;
 

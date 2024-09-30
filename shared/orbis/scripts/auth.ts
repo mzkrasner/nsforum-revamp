@@ -3,10 +3,8 @@ import axios, { AxiosError } from "axios";
 
 const main = async () => {
   try {
-    const { data } = await axios.post(`${env.BASE_URL}/api/dev/app-user`, {
-      seedString: env.ORBIS_SEED,
-    });
-    console.log("user: ", data);
+    const { data } = await axios.get(`${env.BASE_URL}/api/dev/orbis/auth`);
+    console.log("Auth info: ", data);
   } catch (error) {
     console.error(
       "Error occured while fetching orbisdb settings: ",

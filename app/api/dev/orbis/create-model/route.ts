@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDbWithExternalSeed, createModel } from "../utils";
+import { connectDbWithSeed } from "@/app/api/_orbis";
+import { NextRequest } from "next/server";
+import { createModel } from "../utils";
 
 export const POST = async (req: NextRequest) => {
-  const { model, seedString } = (await req.json()) || {};
-  await connectDbWithExternalSeed(seedString);
-  const res = await createModel(model);
+  const { schema } = (await req.json()) || {};
+  await connectDbWithSeed();
+  const res = await createModel(schema);
 
-  return NextResponse.json(res);
+  return Response.json(res);
 };
