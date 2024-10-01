@@ -30,6 +30,9 @@ const schemas = {
         },
         "verified": {
           "type": "boolean"
+        },
+        "data": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -59,6 +62,9 @@ const schemas = {
         },
         "post_notifications": {
           "type": "boolean"
+        },
+        "data": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -127,6 +133,9 @@ const schemas = {
         },
         "status": {
           "type": "string"
+        },
+        "data": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -150,6 +159,9 @@ const schemas = {
         },
         "description": {
           "type": "string"
+        },
+        "data": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -172,6 +184,9 @@ const schemas = {
           "type": "string"
         },
         "description": {
+          "type": "string"
+        },
+        "data": {
           "type": "string"
         }
       },
@@ -198,6 +213,9 @@ const schemas = {
           "type": "string"
         },
         "status": {
+          "type": "string"
+        },
+        "data": {
           "type": "string"
         }
       },
@@ -243,6 +261,9 @@ const schemas = {
         },
         "status": {
           "type": "string"
+        },
+        "data": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -278,6 +299,9 @@ const schemas = {
         },
         "status": {
           "type": "string"
+        },
+        "data": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -306,6 +330,9 @@ const schemas = {
           "type": "string"
         },
         "type": {
+          "type": "string"
+        },
+        "data": {
           "type": "string"
         }
       },

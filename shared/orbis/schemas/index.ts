@@ -29,6 +29,9 @@ export const users = {
       verified: {
         type: "boolean",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -98,6 +101,9 @@ export const notifications = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -128,6 +134,9 @@ export const subscriptions = {
       post_notifications: {
         type: "boolean",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -150,6 +159,9 @@ export const categories = {
         type: "string",
       },
       description: {
+        type: "string",
+      },
+      data: {
         type: "string",
       },
     },
@@ -179,6 +191,9 @@ export const categorySuggestions = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -201,6 +216,9 @@ export const tags = {
         type: "string",
       },
       description: {
+        type: "string",
+      },
+      data: {
         type: "string",
       },
     },
@@ -248,6 +266,9 @@ export const posts = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -284,6 +305,9 @@ export const comments = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -312,6 +336,9 @@ export const reactions = {
         type: "string",
       },
       type: {
+        type: "string",
+      },
+      data: {
         type: "string",
       },
     },
