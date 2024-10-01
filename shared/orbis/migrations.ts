@@ -1,7 +1,7 @@
 
 const schemas = {
   "users": {
-    "name": "dev_users",
+    "name": "users",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -39,7 +39,7 @@ const schemas = {
     }
   },
   "subscriptions": {
-    "name": "dev_subscriptions",
+    "name": "subscriptions",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -71,7 +71,7 @@ const schemas = {
     }
   },
   "notifications": {
-    "name": "dev_notifications",
+    "name": "notifications",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -142,7 +142,7 @@ const schemas = {
     }
   },
   "tags": {
-    "name": "dev_tags",
+    "name": "tags",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -168,7 +168,7 @@ const schemas = {
     }
   },
   "categories": {
-    "name": "dev_categories",
+    "name": "categories",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -194,7 +194,7 @@ const schemas = {
     }
   },
   "categorySuggestions": {
-    "name": "dev_category_suggestions",
+    "name": "category_suggestions",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -223,7 +223,7 @@ const schemas = {
     }
   },
   "posts": {
-    "name": "dev_posts",
+    "name": "posts",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -270,7 +270,7 @@ const schemas = {
     }
   },
   "comments": {
-    "name": "dev_comments",
+    "name": "comments",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
@@ -308,7 +308,7 @@ const schemas = {
     }
   },
   "reactions": {
-    "name": "dev_reactions",
+    "name": "reactions",
     "version": "2.0",
     "interface": false,
     "immutableFields": [],
