@@ -81,6 +81,11 @@ const updateRelation = async <T extends keyof Schema, K extends keyof Schema>(
 };
 
 const syncRelations = async () => {
+  if (!env.ORBIS_DB_AUTH_TOKEN) {
+    console.log("ORBIS_DB_AUTH_TOKEN env variable is required");
+    return;
+  }
+
   const settings = await fetchOrbisDBSettings();
   // console.log("Settings: ", settings);
   for (const relationName in relations) {

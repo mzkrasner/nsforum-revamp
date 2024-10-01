@@ -98,6 +98,10 @@ export default migrations;
 };
 
 const syncModels = async () => {
+  if (!env.ORBIS_DB_AUTH_TOKEN) {
+    console.log("ORBIS_DB_AUTH_TOKEN env variable is required");
+    return;
+  }
   const newSchemas = schemas;
   const newModels: any = {};
 

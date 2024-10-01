@@ -38,7 +38,7 @@ export const env = createEnv({
     ),
     BASE_URL: z.string().trim().min(1),
     PINATA_JWT: z.string().trim().min(1),
-    ORBIS_DB_AUTH_TOKEN: z.string().trim().min(1),
+    ORBIS_DB_AUTH_TOKEN: z.string().optional(),
   },
   /*
    * Environment variables available on the client (and server).

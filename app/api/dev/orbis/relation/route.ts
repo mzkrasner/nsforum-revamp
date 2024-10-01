@@ -4,6 +4,12 @@ import axios, { AxiosError } from "axios";
 import { NextRequest } from "next/server";
 
 export const POST = async (req: NextRequest) => {
+  if (!env.ORBIS_DB_AUTH_TOKEN)
+    return Response.json({
+      error: "ORBIS_DB_AUTH_TOKEN env variable is required",
+      status: 500,
+    });
+
   const authInfo = await connectDbWithSeed();
   if (!authInfo)
     return Response.json({ error: "Internal server error", status: 500 });
