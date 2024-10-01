@@ -1,5 +1,6 @@
 "use client";
 
+import { uploadToPinata } from "@/shared/actions/pinata";
 import CategorySelector from "@/shared/components/CategorySelector";
 import NoProfileGuard from "@/shared/components/NoProfileGuard";
 import RichTextEditor from "@/shared/components/RichTextEditor";
@@ -14,7 +15,6 @@ import {
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
 import useProfile from "@/shared/hooks/useProfile";
-import { uploadToPinata } from "@/shared/lib/utils";
 import { usePrivy } from "@privy-io/react-auth";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";

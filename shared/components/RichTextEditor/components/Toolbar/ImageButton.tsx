@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { Toggle } from "@/shared/components/ui/toggle";
 import { ToggleProps } from "@radix-ui/react-toggle";
 import { ImageIcon, LoaderIcon } from "lucide-react";
@@ -18,13 +19,15 @@ const ImageButton = ({ onClick, ...props }: ToggleProps) => {
       if (file && editor) {
         setIsUploading(true);
         try {
-          const cid = await uploadImage?.(file);
-          if (!cid) throw new Error('No cid returned by uploadImage');
+          const formData = new FormData();
+          formData.append("file", file);
+          const cid = await uploadImage?.(formData);
+          if (!cid) throw new Error("No cid returned by uploadImage");
           editor
             .chain()
             .focus()
             .setImage({
-              src: `https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${cid}`,
+              src: `https://${env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${cid}`,
             })
             .run();
         } catch (error) {
@@ -44,7 +47,7 @@ const ImageButton = ({ onClick, ...props }: ToggleProps) => {
     e.target.value = "";
   };
 
-  if (!uploadImage) return
+  if (!uploadImage) return;
 
   return (
     <>
@@ -66,7 +69,7 @@ const ImageButton = ({ onClick, ...props }: ToggleProps) => {
         }}
       >
         {isUploading ? (
-          <LoaderIcon className="w-3.5" />
+          <LoaderIcon className="w-3.5 animate-spin" />
         ) : (
           <ImageIcon className="w-3.5" />
         )}

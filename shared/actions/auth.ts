@@ -1,12 +1,13 @@
 "use server";
 
+import { env } from "@/env";
 import { PrivyClient } from "@privy-io/server-auth";
 import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 
 const privy = new PrivyClient(
-  process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
-  process.env.PRIVY_APP_SECRET!,
+  env.NEXT_PUBLIC_PRIVY_APP_ID!,
+  env.PRIVY_APP_SECRET!,
 );
 
 const getAuthTokenClaims = async () => {
@@ -43,8 +44,7 @@ export const checkAdminAuth = async () => {
     if (!authTokenClaims) return false;
 
     const userId = authTokenClaims.userId.replace("did:privy:", "");
-    const adminIds: string[] =
-      JSON.parse(process.env.ADMIN_DIDS! || "[]") || [];
+    const adminIds: string[] = JSON.parse(env.ADMIN_PRIVY_IDS! || "[]") || [];
     return adminIds.includes(userId);
   } catch (error) {
     console.error(`Admin auth verification failed with error ${error}.`);
@@ -56,8 +56,8 @@ export const getCurrentPrivyUser = async (userId: string) => {
   try {
     if (!userId) return null;
     const privy = new PrivyClient(
-      process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
-      process.env.PRIVY_APP_SECRET!,
+      env.NEXT_PUBLIC_PRIVY_APP_ID!,
+      env.PRIVY_APP_SECRET!,
     );
     const user = await privy.getUser(userId);
     return user;

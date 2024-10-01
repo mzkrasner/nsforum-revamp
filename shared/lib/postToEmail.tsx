@@ -1,3 +1,6 @@
+"use server";
+
+import { env } from "@/env";
 import { Body } from "@react-email/body";
 import { Container } from "@react-email/container";
 import { Head } from "@react-email/head";
@@ -80,8 +83,8 @@ const options: HTMLReactParserOptions = {
 
 const postToEmail = async (post: OrbisDBRow<Post>) => {
   const { title, body, indexed_at, author_username, controller, slug } = post;
-  const authorLink = `${process.env.BASE_URL}/users/${controller}`;
-  const postLink = `${process.env.BASE_URL}/posts/${slug}`;
+  const authorLink = `${env.BASE_URL}/users/${controller}`;
+  const postLink = `${env.BASE_URL}/posts/${slug}`;
   const emailComponent = (
     <Html>
       <Head />
@@ -121,7 +124,7 @@ const postToEmail = async (post: OrbisDBRow<Post>) => {
             <Text className="text-center text-neutral-500">
               You can <Link href={authorLink}>unsubscribe</Link> to{" "}
               {author_username} or{" "}
-              <Link href={`${process.env.BASE_URL}/profile/edit#notifications`}>
+              <Link href={`${env.BASE_URL}/profile/edit#notifications`}>
                 manage notification settings
               </Link>
             </Text>

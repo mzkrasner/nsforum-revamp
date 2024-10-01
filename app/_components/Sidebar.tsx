@@ -11,21 +11,22 @@ const Sidebar = () => {
 
   if (!isSidebarOpen) return null;
 
+  const closeSidebar = () => setIsSidebarOpen(false);
   return (
     <>
       <div
         className="fixed top-20 z-10 h-[calc(100vh_-_80px)] w-full bg-black/10 sm:hidden"
-        onClick={() => setIsSidebarOpen(false)}
+        onClick={closeSidebar}
       ></div>
       <div className="container fixed left-0 top-20 z-10 mr-0 flex h-[calc(100vh_-_80px)] w-60 flex-col justify-end bg-white py-1 pr-1 text-sm sm:sticky sm:min-h-[unset] sm:pr-5 md:justify-start">
         <ScrollArea>
-          <div className="mt-5 py-2">
-            <Link href="/" className="link">
+          <div className="mt-1 py-2">
+            <Link href="/" className="link" onClick={closeSidebar}>
               Home
             </Link>
           </div>
           <div className="flex items-center justify-start gap-5 py-2">
-            <Link href="/categories" className="link">
+            <Link href="/categories" className="link" onClick={closeSidebar}>
               Categories
             </Link>
           </div>
@@ -37,6 +38,7 @@ const Sidebar = () => {
                   <Link
                     href={`/categories/${stream_id}`}
                     className="link block py-1"
+                    onClick={closeSidebar}
                   >
                     {name}
                   </Link>

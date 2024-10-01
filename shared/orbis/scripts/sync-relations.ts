@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import axios, { AxiosError } from "axios";
 import { isEqual, isNil } from "lodash-es";
 import relations, { Relation } from "../schemas/relations";
@@ -6,10 +7,10 @@ import { Schema } from "../types";
 const fetchOrbisDBSettings = async () => {
   try {
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/settings`,
+      `${env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/settings`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.ORBIS_DB_AUTH_TOKEN}`,
+          Authorization: `Bearer ${env.ORBIS_DB_AUTH_TOKEN}`,
         },
       },
     );
@@ -28,17 +29,17 @@ const createRelation = async <T extends keyof Schema, K extends keyof Schema>(
 ) => {
   try {
     const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
+      `${env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
       relation,
       {
         headers: {
-          Authorization: `Bearer ${process.env.ORBIS_DB_AUTH_TOKEN}`,
+          Authorization: `Bearer ${env.ORBIS_DB_AUTH_TOKEN}`,
         },
       },
     );
     console.log("Data returned from relation creation: ", data);
     if (data?.success === true) {
-      console.log("Successfully created relation");
+      console.log("Successfully updated relation: ", relation);
       return data;
     }
   } catch (error) {
@@ -55,11 +56,11 @@ const updateRelation = async <T extends keyof Schema, K extends keyof Schema>(
 ) => {
   try {
     const { data } = await axios.put(
-      `${process.env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
+      `${env.NEXT_PUBLIC_ORBIS_NODE_URL}/api/db/foreign-key`,
       relation,
       {
         headers: {
-          Authorization: `Bearer ${process.env.ORBIS_DB_AUTH_TOKEN}`,
+          Authorization: `Bearer ${env.ORBIS_DB_AUTH_TOKEN}`,
         },
       },
     );
@@ -68,7 +69,7 @@ const updateRelation = async <T extends keyof Schema, K extends keyof Schema>(
       console.log("Relation update failed, trying to create");
       createRelation(relation, relationName);
     } else {
-      console.log("Successfully updated relation");
+      console.log("Successfully updated relation: ", relation);
       return data;
     }
   } catch (error) {
@@ -81,7 +82,7 @@ const updateRelation = async <T extends keyof Schema, K extends keyof Schema>(
 
 const syncRelations = async () => {
   const settings = await fetchOrbisDBSettings();
-  // console.log("Setting relations: ", settings.relations);
+  // console.log("Settings: ", settings);
   for (const relationName in relations) {
     if (Object.prototype.hasOwnProperty.call(relations, relationName)) {
       const relation: Relation<any, any> =
@@ -91,13 +92,13 @@ const syncRelations = async () => {
         settings?.relations[relation.table];
 
       const index = existingRelations?.findIndex((r) => isEqual(r, relation));
-      console.log("Index: ", index);
-      console.log("Relation: ", relation);
+      // console.log("Index: ", index);
+      // console.log("Relation: ", relation);
       if (!isNil(index) && index >= 0) {
-        console.log("Updating");
+        // console.log("Updating");
         await updateRelation({ ...relation, index }, relationName);
       } else {
-        console.log("Creating");
+        // console.log("Creating");
         await createRelation(relation, relationName);
       }
     }

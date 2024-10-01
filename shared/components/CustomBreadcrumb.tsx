@@ -11,7 +11,7 @@ import { Fragment } from "react";
 type Props = { items: { name: string; href?: string; active?: boolean }[] };
 const CustomBreadcrumb = ({ items }: Props) => {
   return (
-    <Breadcrumb>
+    <Breadcrumb className="mt-3">
       <BreadcrumbList>
         {items.map(({ name, href, active = false }, i) => {
           let content = active ? <BreadcrumbPage>{name}</BreadcrumbPage> : name;
