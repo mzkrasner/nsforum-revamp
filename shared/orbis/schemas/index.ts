@@ -29,6 +29,9 @@ export const users = {
       verified: {
         type: "boolean",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -98,6 +101,9 @@ export const notifications = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -128,6 +134,9 @@ export const subscriptions = {
       post_notifications: {
         type: "boolean",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -150,6 +159,9 @@ export const categories = {
         type: "string",
       },
       description: {
+        type: "string",
+      },
+      data: {
         type: "string",
       },
     },
@@ -179,6 +191,9 @@ export const categorySuggestions = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -201,6 +216,9 @@ export const tags = {
         type: "string",
       },
       description: {
+        type: "string",
+      },
+      data: {
         type: "string",
       },
     },
@@ -248,6 +266,9 @@ export const posts = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -284,6 +305,9 @@ export const comments = {
       status: {
         type: "string",
       },
+      data: {
+        type: "string",
+      },
     },
     additionalProperties: false,
   },
@@ -314,34 +338,7 @@ export const reactions = {
       type: {
         type: "string",
       },
-    },
-    additionalProperties: false,
-  },
-} as const;
-
-export const reaction_counter = {
-  name: "reaction_counter",
-  version: "2.0",
-  interface: false,
-  immutableFields: [],
-  implements: [],
-  accountRelation: {
-    type: "list",
-  },
-  schema: {
-    type: "object",
-    $schema: "https://json-schema.org/draft/2020-12/schema",
-    properties: {
-      upvotes: {
-        type: "number",
-      },
-      downvotes: {
-        type: "number",
-      },
-      content_id: {
-        type: "string",
-      },
-      model: {
+      data: {
         type: "string",
       },
     },
