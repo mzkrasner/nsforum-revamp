@@ -20,6 +20,11 @@ export const GET = async () => {
     );
     if (data.settings) {
       return NextResponse.json(data.settings);
+    } else {
+      return Response.json({
+        error: "No settings object was returned",
+        status: 500,
+      });
     }
   } catch (error) {}
 };
