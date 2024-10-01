@@ -139,7 +139,7 @@ export default schemas;
 
 ## Using models
 
-The [OrbisDB SDK](https://github.com/OrbisWeb3/db-sdk) has ORM-like method for querying data. There are [utils](shared/orbis/utils.ts) you can use to write queries more generally. For example:
+The [OrbisDB SDK](https://github.com/OrbisWeb3/db-sdk) has ORM-like method for querying data. There are [utils](shared/orbis/utils.ts) you can also use to write queries. For example:
 
 ```ts
 const data = await findRow({
