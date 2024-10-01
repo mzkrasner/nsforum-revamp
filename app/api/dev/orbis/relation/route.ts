@@ -4,12 +4,16 @@ import axios, { AxiosError } from "axios";
 import { NextRequest } from "next/server";
 
 export const POST = async (req: NextRequest) => {
+  if (!env.ORBIS_DB_AUTH_TOKEN)
+    return Response.json({
+      error: "ORBIS_DB_AUTH_TOKEN env variable is required",
+      status: 500,
+    });
+
   const authInfo = await connectDbWithSeed();
-  console.log("Auth info: ", authInfo);
   if (!authInfo)
     return Response.json({ error: "Internal server error", status: 500 });
 
-  console.log("creating post");
   const { relation } = (await req.json()) || {};
   try {
     const { data } = await axios.post(
@@ -21,7 +25,6 @@ export const POST = async (req: NextRequest) => {
         },
       },
     );
-    console.log("post: ", data);
     return Response.json(data);
   } catch (error) {
     console.error(error);
@@ -37,7 +40,6 @@ export const PUT = async (req: NextRequest) => {
   if (!authInfo)
     return Response.json({ error: "Internal server error", status: 500 });
 
-  console.log("updating relation");
   const { relation } = (await req.json()) || {};
   try {
     const { data } = await axios.put(
@@ -49,7 +51,6 @@ export const PUT = async (req: NextRequest) => {
         },
       },
     );
-    console.log("put: ", data);
     return Response.json(data);
   } catch (error) {
     console.error(error);
