@@ -4,51 +4,6 @@ import { contexts, models, orbisdb } from ".";
 import { GenericCeramicDocument, OrbisDBRow } from "../types";
 import { ColumnName, ContextValue, ModelName } from "./types";
 
-/** Parse a seed from string, or return if it's already in the right format */
-export const parseDidSeed = (seed: string) => {
-  const attemptJsonParse = (str: string) => {
-    try {
-      return JSON.parse(str);
-    } catch {
-      return false;
-    }
-  };
-
-  const parsedSeed = attemptJsonParse(seed) || seed;
-
-  if (typeof parsedSeed === "string") {
-    if (!/^(0x)?[0-9a-f]+$/i.test(seed)) {
-      throw "Invalid seed format. It's not a hex string or an array.";
-    }
-    return seed;
-  }
-
-  if (Array.isArray(parsedSeed)) {
-    return new Uint8Array(parsedSeed);
-  }
-
-  if (parsedSeed instanceof Uint8Array) {
-    return parsedSeed;
-  }
-
-  throw "Invalid seed format. It's not a hex string or an array.";
-};
-
-export const ceramicDocToOrbisRow = <T extends Record<string, any>>(
-  ceramicDoc: GenericCeramicDocument<T>,
-) => {
-  const { id, content, controller, model, context } = ceramicDoc;
-  return {
-    stream_id: id,
-    content,
-    controller,
-    model,
-    context,
-    ...ceramicDoc.content,
-    indexed_at: new Date().toISOString(), // TODO: check out if you can get the actual date
-  } as OrbisDBRow<T>;
-};
-
 export type InsertRowArg<T> = {
   model: ModelName;
   value: T;
@@ -159,4 +114,49 @@ export const upsertRow = async <T extends Record<string, any>>({
     return await updateRow<T>({ id: row.stream_id, set: value });
   }
   return await insertRow<T>({ model, value, context });
+};
+
+/** Parse a seed from string, or return if it's already in the right format */
+export const parseDidSeed = (seed: string) => {
+  const attemptJsonParse = (str: string) => {
+    try {
+      return JSON.parse(str);
+    } catch {
+      return false;
+    }
+  };
+
+  const parsedSeed = attemptJsonParse(seed) || seed;
+
+  if (typeof parsedSeed === "string") {
+    if (!/^(0x)?[0-9a-f]+$/i.test(seed)) {
+      throw "Invalid seed format. It's not a hex string or an array.";
+    }
+    return seed;
+  }
+
+  if (Array.isArray(parsedSeed)) {
+    return new Uint8Array(parsedSeed);
+  }
+
+  if (parsedSeed instanceof Uint8Array) {
+    return parsedSeed;
+  }
+
+  throw "Invalid seed format. It's not a hex string or an array.";
+};
+
+export const ceramicDocToOrbisRow = <T extends Record<string, any>>(
+  ceramicDoc: GenericCeramicDocument<T>,
+) => {
+  const { id, content, controller, model, context } = ceramicDoc;
+  return {
+    stream_id: id,
+    content,
+    controller,
+    model,
+    context,
+    ...ceramicDoc.content,
+    indexed_at: new Date().toISOString(), // TODO: check out if you can get the actual date
+  } as OrbisDBRow<T>;
 };
