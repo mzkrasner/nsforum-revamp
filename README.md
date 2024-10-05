@@ -7,9 +7,9 @@ A decentralized forum built on OrbisDB
 1. Clone the main branch of this repo.
 
 2. Setup OrbisDB.
-   You can either [install locally](https://www.youtube.com/watch?v=8embizFvI-U) or sign up for on shared node [here](https://studio.useorbis.com/).
+   You can either [install locally](https://www.youtube.com/watch?v=8embizFvI-U) or sign up for a shared node [here](https://studio.useorbis.com/).
 
-3. Create a default or root contexts and add it to the [contexts.ts](shared/orbis/contexts.ts) file.
+3. On the OrbisDB dashboard, create a default context and add it's id to the [contexts.ts](shared/orbis/contexts.ts) file.
 
 ```ts
 const contexts = {
@@ -17,7 +17,7 @@ const contexts = {
 } as const;
 ```
 
-4. Add an env.local file as described in the [.env.example](.env.example) file.
+4. Add an env.local file, following the description [.env.example](.env.example).
 
 5. Install dependencies.
 
@@ -31,7 +31,7 @@ npm install
 npm run dev
 ```
 
-7. Create orbisdb models.
+7. Create orbisdb models and relations.
 
 ```bash
 npm run db:sync
