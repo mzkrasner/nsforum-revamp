@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 const ProfileForm = () => {
   const { user, authenticated } = usePrivy();
   const authEmail = user?.email?.address;
-  const { linkPhone, linkTwitter } = useLinkAccount();
+  const { linkPhone, linkTwitter, linkEmail } = useLinkAccount();
   const { linkedPhone, linkedTwitterAcct } = useAuth();
 
   const { profile, saveMutation, profileQuery } = useProfile();
@@ -100,7 +100,23 @@ const ProfileForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" {...field} error={error} disabled />
+                  <div className="flex items-center gap-3">
+                    <Input
+                      type="email"
+                      {...field}
+                      error={error}
+                      disabled={!!field.value}
+                    />
+                  </div>
+                  {!field.value && (
+                    <Button
+                      variant="outline"
+                      className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                      onClick={linkEmail}
+                    >
+                      <PlusIcon size={16} /> Add
+                    </Button>
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
