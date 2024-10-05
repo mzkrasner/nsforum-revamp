@@ -1,5 +1,6 @@
 "use client";
 
+import { useMediaQuery } from "@/shared/components/ui/hooks/use-media-query";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import useCategories from "@/shared/hooks/useCategories";
 import useSidebar from "@/shared/hooks/useSidebar";
@@ -8,6 +9,7 @@ import Link from "next/link";
 const Sidebar = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   const { categories } = useCategories();
+  const isMobile = !useMediaQuery("(min-width: 640px)");
 
   if (!isSidebarOpen) return null;
 
@@ -26,7 +28,11 @@ const Sidebar = () => {
             </Link>
           </div>
           <div className="flex items-center justify-start gap-5 py-2">
-            <Link href="/categories" className="link" onClick={closeSidebar}>
+            <Link
+              href="/categories"
+              className="link"
+              onClick={() => isMobile && closeSidebar()}
+            >
               Categories
             </Link>
           </div>
