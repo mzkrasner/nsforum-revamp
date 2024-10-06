@@ -46,7 +46,7 @@ const ProfileForm = () => {
     if (!watch("phone") && privyPhone) setValue("phone", privyPhone);
     if (!watch("name") && name) setValue("name", name);
     if (!watch("username") && username) setValue("username", username);
-  }, [watch, setValue, privyEmail, name, username]);
+  }, [watch, setValue, privyEmail, privyPhone, name, username]);
 
   if (!authenticated) return;
 

@@ -34,6 +34,12 @@ const NavUser = () => {
   const { is_admin } = profile || {};
   const email = profile?.email || user?.email?.address || "";
 
+  console.log({
+    ready,
+    profileQueryIsFetched: profileQuery.isFetched,
+    authenticated,
+    profileQueryIsLoading: profileQuery.isLoading,
+  });
   if (
     !ready ||
     (!profileQuery.isFetched && authenticated) ||
