@@ -50,7 +50,7 @@ const useProfile = () => {
     enabled: !!did,
   });
 
-  const saveProfile = async (values: ProfileFormType) => {
+  const saveProfile = async ({ phone, ...values }: ProfileFormType) => {
     if (!did || !privyId) return;
 
     const existingProfile = await fetchProfile(did);
@@ -80,7 +80,7 @@ const useProfile = () => {
     onSuccess: (result) => {
       if (!result) return;
       queryClient.setQueryData(
-        ["profile"],
+        ["profile", { did }],
         (oldProfile?: OrbisDBRow<Profile>) => {
           const newProfile = {
             ...(oldProfile || {}),

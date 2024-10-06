@@ -12,8 +12,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Disable /api/dev routes in non-development environments
-  console.log("in middleware: ", env.NODE_ENV);
-  console.log("pathname: ", pathname);
   if (pathname.startsWith("/api/dev")) {
     if (env.NODE_ENV !== "development") {
       return new NextResponse("Route disabled in production", { status: 404 });
