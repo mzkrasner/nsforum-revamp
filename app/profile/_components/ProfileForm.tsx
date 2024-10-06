@@ -168,13 +168,15 @@ const ProfileForm = () => {
                 readOnly
               />
               {linkedTwitterAcct ? (
-                <Button
-                  variant="outline"
-                  className="ml-auto flex w-fit gap-1 px-2 text-sm"
-                  onClick={() => unlinkTwitter(linkedTwitterAcct.subject)}
-                >
-                  <XIcon size={16} /> Remove
-                </Button>
+                privyPhone || privyEmail ? (
+                  <Button
+                    variant="outline"
+                    className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                    onClick={() => unlinkTwitter(linkedTwitterAcct.subject)}
+                  >
+                    <XIcon size={16} /> Remove
+                  </Button>
+                ) : null
               ) : (
                 <Button
                   variant="outline"
