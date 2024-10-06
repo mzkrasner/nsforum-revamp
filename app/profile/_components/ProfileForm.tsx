@@ -28,15 +28,15 @@ const ProfileForm = () => {
   const { linkedPhone, linkedTwitterAcct } = useAuth();
 
   const { profile, saveMutation, profileQuery } = useProfile();
-  const { name = "", username = "", email = "", phone = "" } = profile || {};
+  const { name = "", username = "" } = profile || {};
 
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name,
       username,
-      email: email || privyEmail || "",
-      phone: phone || privyPhone || "",
+      email: privyEmail || "",
+      phone: privyPhone || "",
     },
   });
   const { handleSubmit, control, watch, setValue } = form;
