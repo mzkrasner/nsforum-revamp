@@ -1,3 +1,5 @@
+"use client";
+
 import CommentList from "@/shared/components/CommentList";
 import useProfile from "@/shared/hooks/useProfile";
 

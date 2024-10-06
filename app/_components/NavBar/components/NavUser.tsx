@@ -34,11 +34,7 @@ const NavUser = () => {
   const { is_admin } = profile || {};
   const email = profile?.email || user?.email?.address || "";
 
-  if (
-    !ready ||
-    (!profileQuery.isFetched && authenticated) ||
-    profileQuery.isLoading
-  )
+  if (!ready || profileQuery.isLoading)
     return (
       <Button
         variant="ghost"
