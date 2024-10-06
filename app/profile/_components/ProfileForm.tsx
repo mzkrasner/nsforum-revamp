@@ -110,7 +110,7 @@ const ProfileForm = () => {
                       {...field}
                       className="border-none focus-visible:ring-0"
                       error={error}
-                      readOnly={!!field.value}
+                      readOnly
                     />
                     {!field.value ? (
                       <Button
