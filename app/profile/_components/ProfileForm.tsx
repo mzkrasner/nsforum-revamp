@@ -15,34 +15,38 @@ import useProfile from "@/shared/hooks/useProfile";
 import { ProfileFormType, profileSchema } from "@/shared/schema/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLinkAccount, usePrivy } from "@privy-io/react-auth";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, XIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const ProfileForm = () => {
-  const { user, authenticated } = usePrivy();
-  const authEmail = user?.email?.address;
+  const { user, authenticated, updateEmail, unlinkTwitter } = usePrivy();
+  const privyEmail = user?.email?.address;
+  const privyPhone = user?.phone?.number;
+
   const { linkPhone, linkTwitter, linkEmail } = useLinkAccount();
   const { linkedPhone, linkedTwitterAcct } = useAuth();
 
   const { profile, saveMutation, profileQuery } = useProfile();
-  const { name = "", username = "", email = "" } = profile || {};
+  const { name = "", username = "", email = "", phone = "" } = profile || {};
 
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name,
       username,
-      email: email || authEmail || "",
+      email: email || privyEmail || "",
+      phone: phone || privyPhone || "",
     },
   });
   const { handleSubmit, control, watch, setValue } = form;
 
   useEffect(() => {
-    if (!watch("email") && authEmail) setValue("email", authEmail);
+    if (!watch("email") && privyEmail) setValue("email", privyEmail);
+    if (!watch("phone") && privyPhone) setValue("phone", privyPhone);
     if (!watch("name") && name) setValue("name", name);
     if (!watch("username") && username) setValue("username", username);
-  }, [watch, setValue, authEmail, name, username]);
+  }, [watch, setValue, privyEmail, name, username]);
 
   if (!authenticated) return;
 
@@ -104,19 +108,28 @@ const ProfileForm = () => {
                     <Input
                       type="email"
                       {...field}
+                      className="border-none focus-visible:ring-0"
                       error={error}
-                      disabled={!!field.value}
+                      readOnly={!!field.value}
                     />
+                    {!field.value ? (
+                      <Button
+                        variant="outline"
+                        className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                        onClick={linkEmail}
+                      >
+                        <PlusIcon size={16} /> Add
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                        onClick={() => updateEmail()}
+                      >
+                        Change
+                      </Button>
+                    )}
                   </div>
-                  {!field.value && (
-                    <Button
-                      variant="outline"
-                      className="ml-auto flex w-fit gap-1 px-2 text-sm"
-                      onClick={linkEmail}
-                    >
-                      <PlusIcon size={16} /> Add
-                    </Button>
-                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,7 +143,7 @@ const ProfileForm = () => {
               <Input
                 placeholder="No phone number added"
                 value={linkedPhone?.number || ""}
-                className="border-0"
+                className="border-0 focus-visible:ring-0"
                 readOnly
               />
               <Button
@@ -151,16 +164,26 @@ const ProfileForm = () => {
               <Input
                 placeholder="No account added"
                 value={linkedTwitterAcct?.username || ""}
-                className="border-0"
+                className="border-0 focus-visible:ring-0"
                 readOnly
               />
-              <Button
-                variant="outline"
-                className="ml-auto flex w-fit gap-1 px-2 text-sm"
-                onClick={linkTwitter}
-              >
-                <PlusIcon size={16} /> Add
-              </Button>
+              {linkedTwitterAcct ? (
+                <Button
+                  variant="outline"
+                  className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                  onClick={() => unlinkTwitter(linkedTwitterAcct.subject)}
+                >
+                  <XIcon size={16} /> Remove
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  className="ml-auto flex w-fit gap-1 px-2 text-sm"
+                  onClick={linkTwitter}
+                >
+                  <PlusIcon size={16} /> Add
+                </Button>
+              )}
             </div>
           </FormControl>
           <FormMessage />
