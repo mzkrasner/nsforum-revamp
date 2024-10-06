@@ -40,11 +40,7 @@ const NavUser = () => {
     authenticated,
     profileQueryIsLoading: profileQuery.isLoading,
   });
-  if (
-    !ready ||
-    (!profileQuery.isFetched && authenticated) ||
-    profileQuery.isLoading
-  )
+  if (!ready || profileQuery.isLoading)
     return (
       <Button
         variant="ghost"
