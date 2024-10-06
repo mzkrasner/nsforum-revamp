@@ -1,3 +1,5 @@
+"use client";
+
 import PostList from "@/shared/components/PostList";
 import useProfile from "@/shared/hooks/useProfile";
 

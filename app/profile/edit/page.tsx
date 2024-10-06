@@ -1,3 +1,4 @@
+import AuthGuard from "@/shared/components/AuthGuard";
 import PageHeading from "@/shared/components/PageHeading";
 import SectionHeading from "@/shared/components/SectionHeading";
 import { Metadata } from "next";
@@ -12,7 +13,9 @@ const EditProfilePage = () => {
     <>
       <PageHeading back="/profile">Account Settings</PageHeading>
       <SectionHeading>Profile</SectionHeading>
-      <ProfileForm />
+      <AuthGuard>
+        <ProfileForm />
+      </AuthGuard>
     </>
   );
 };
