@@ -32,7 +32,7 @@ const NavUser = () => {
   const { logout } = useAuth();
   const { profile, profileQuery } = useProfile();
   const { is_admin } = profile || {};
-  const email = profile?.email || user?.email?.address || "";
+  const email = user?.email?.address || "";
 
   if (!ready || profileQuery.isLoading)
     return (

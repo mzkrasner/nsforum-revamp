@@ -3,7 +3,7 @@ export type Profile = {
   name: string;
   phone?: string | null;
   username: string;
-  email: string;
+  email?: string;
   verified: boolean;
   privy_id: string;
   is_admin?: boolean;

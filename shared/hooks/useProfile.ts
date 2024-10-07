@@ -50,7 +50,7 @@ const useProfile = () => {
     enabled: !!did,
   });
 
-  const saveProfile = async ({ phone, ...values }: ProfileFormType) => {
+  const saveProfile = async ({ phone, email, ...values }: ProfileFormType) => {
     if (!did || !privyId) return;
 
     const existingProfile = await fetchProfile(did);
