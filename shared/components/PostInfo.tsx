@@ -1,9 +1,11 @@
+import { ExternalLinkIcon } from "lucide-react";
 import useCategories from "../hooks/useCategories";
 import { OrbisDBRow } from "../types";
 import { Post } from "../types/post";
 import CategoryDisplay from "./CategoryDisplay";
 import DateDisplay from "./DateDisplay";
 import UserDisplay from "./UserDisplay";
+import { Button } from "./ui/button";
 
 type Props = { post: OrbisDBRow<Post> };
 const PostInfo = ({ post }: Props) => {
@@ -12,12 +14,13 @@ const PostInfo = ({ post }: Props) => {
     controller,
     category: categoryId,
     author_username,
+    stream_id,
   } = post;
   const { categories } = useCategories();
   const category = categories.find((c) => c.stream_id === categoryId);
 
   return (
-    <div className="relative flex h-8 flex-row flex-wrap items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
+    <div className="relative flex min-h-8 flex-row flex-wrap items-center gap-2 rounded-full p-1 text-xs text-gray-800 hover:bg-transparent">
       <UserDisplay did={controller} placeholder={author_username} />
       {category && (
         <>
@@ -27,13 +30,20 @@ const PostInfo = ({ post }: Props) => {
       )}
       <span className="text-neutral-400">on</span>
       <DateDisplay dateString={indexed_at} />
-      {/* <Button
+      <Button
         variant="ghost"
         size="sm"
-        className="ml-auto inline-flex h-8 items-center gap-1.5 text-xs"
+        className="ml-auto inline-flex h-8 items-center gap-1.5 px-3 text-xs"
+        asChild
       >
-        Proof <ExternalLinkIcon className="w-4" />
-      </Button> */}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://cerscan.com/mainnet/stream/${stream_id}`}
+        >
+          Proof <ExternalLinkIcon className="w-4" />
+        </a>
+      </Button>
     </div>
   );
 };
