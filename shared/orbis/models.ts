@@ -1,42 +1,42 @@
+// This is not up to date with the current schema file
 
-  const models = {
-  "posts": {
-    "id": "kjzl6hvfrbw6cagvt4ckmukjx1wuy402plesa8a1wujnr307p4pmqvblgkmu5oi",
-    "name": "dev_posts_v16"
+const models = {
+  posts: {
+    id: "kjzl6hvfrbw6c6268y6lkrl545c2abfp0n9ubbufo61zyqw6swji8y9pmrcdidw",
+    name: "dev_posts_v14",
   },
-  "comments": {
-    "id": "kjzl6hvfrbw6c7fc6ln96m5cpohyxvdux8lpsg3aknwj6mocl4xbz5kdstv6omd",
-    "name": "dev_comments_v17"
+  comments: {
+    id: "kjzl6hvfrbw6c9yqzmgvmjfdr48pkbuouesq1ym1xy7mgd145fw2muau0tx6anh",
+    name: "dev_comments_v15",
   },
-  "subscriptions": {
-    "id": "kjzl6hvfrbw6c94x1wyzno307x2aq9ixf4rn6lfpy43rz6kkus13ko4tven0ro7",
-    "name": "dev_subscriptions_v14"
+  subscriptions: {
+    id: "kjzl6hvfrbw6c6cjy0gjxmj9rz50lm1pd2bg3p0hxh31jw39l7iv3g3abglentg",
+    name: "dev_subscriptions_v12",
   },
-  "notifications": {
-    "id": "kjzl6hvfrbw6ca4ke0kkc5jm20l0s7fz19s7t5t0hj2qsaz4srz1okq1bcw1xeb",
-    "name": "dev_notifications_v22"
+  notifications: {
+    id: "kjzl6hvfrbw6c6h5fzfr111kpk1eohthz8rg7o4n7j0kr8c5ioeebzy9f0om3kt",
+    name: "dev_notifications_v20",
   },
-  "tags": {
-    "id": "kjzl6hvfrbw6c64pt1x7dbrk4k8wn2i13tc8oc2rzzyjyresy1xsnrq29o73qtb",
-    "name": "dev_tags_v10"
+  tags: {
+    id: "kjzl6hvfrbw6cacullh2weq1a2arocworpuzv6w3j8je9z88c43w4kq7d8mtj5n",
+    name: "dev_tags_v8",
   },
-  "categories": {
-    "id": "kjzl6hvfrbw6cah1z5x44vjvaupcz5rwjrt4h8gjkph5ffxgn1jrw0e8socvwwg",
-    "name": "dev_categories_v10"
+  categories: {
+    id: "kjzl6hvfrbw6c5w5k4geic1odi1kjv3ymc5i8ks16hj871nwnuaizd1r4apv1mn",
+    name: "dev_categories_v8",
   },
-  "users": {
-    "id": "kjzl6hvfrbw6c89ejocrra13pqy8upmnv877pbfwvbcqtw7409g5co4bzzk80lc",
-    "name": "dev_users_v11"
+  users: {
+    id: "kjzl6hvfrbw6c5qkfothti3ui3vlj2nge7tc6j7ymegsaal7ct3rrcx4yyeezfm",
+    name: "dev_users_v9",
   },
-  "categorySuggestions": {
-    "id": "kjzl6hvfrbw6c8gnldyps7pp1srbz6vyf8sf405rljdh2l7blikbbomxvlsxwyf",
-    "name": "dev_category_suggestions_v5"
+  categorySuggestions: {
+    id: "kjzl6hvfrbw6c6ix42so2hua7agmw3qwlant9tkf7fl1av74yq5zq744dgu6rfa",
+    name: "dev_category_suggestions_v3",
   },
-  "reactions": {
-    "id": "kjzl6hvfrbw6c58tk8aoqlagscikbf2vjdhywg73cipsyoegjjf8zpicplvrzcl",
-    "name": "dev_reactions_v14"
-  }
+  reactions: {
+    id: "kjzl6hvfrbw6c9m1f29anxwxw2h8indtbdfxz5fhztafepy2mt75y445w6fkibr",
+    name: "dev_reactions_v12",
+  },
 } as const;
 
-  export default models;
-  
+export default models;
