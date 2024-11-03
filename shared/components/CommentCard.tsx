@@ -98,7 +98,7 @@ const CommentCard = ({
           )}
         </div>
       </CardHeader>
-      <CardContent className="p-2 pt-0 text-sm">{content}</CardContent>
+      <CardContent className="tiptap p-2 pt-0 text-sm">{content}</CardContent>
       <CardFooter className="p-2 pt-0">
         <div className="flex-1">
           {replying && (
