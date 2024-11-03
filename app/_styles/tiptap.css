@@ -191,5 +191,5 @@
 }
 
 .tiptap a {
-  @apply cursor-pointer text-wrap break-words text-blue-600 hover:underline;
+  @apply cursor-pointer text-wrap break-words text-blue-600 underline;
 }
