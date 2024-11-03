@@ -191,5 +191,5 @@
 }
 
 .tiptap a {
-  @apply cursor-pointer hover:underline;
+  @apply cursor-pointer text-blue-600 hover:underline;
 }
