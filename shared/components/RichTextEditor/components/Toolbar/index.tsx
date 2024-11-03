@@ -24,7 +24,7 @@ const TipTapToolbar = () => {
   if (!editor) return null;
 
   return (
-    <div className="border-gray-1 flex items-center gap-1 border-b p-1">
+    <div className="border-gray-1 sticky top-20 z-[1] flex items-center gap-1 border-b bg-white p-1">
       <Toggle
         size="sm"
         className="h-8 w-8"
