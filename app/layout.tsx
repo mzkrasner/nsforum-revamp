@@ -1,14 +1,23 @@
 import { Toaster } from "@/shared/components/ui/toaster";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Noto_Sans, Noto_Serif } from "next/font/google";
 import NavBar from "./_components/NavBar";
 import Sidebar from "./_components/Sidebar";
 import { AppContextProvider } from "./_providers";
 import "./_styles/globals.css";
 import "./_styles/tiptap.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const noto_sans = Noto_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+});
+const noto_serif = Noto_Serif({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-serif",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -23,8 +32,8 @@ const RootLayout = async ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={`${noto_sans.variable} ${noto_serif.variable}`}>
+      <body className="font-sans">
         <AppContextProvider>
           <TooltipProvider>
             <NavBar />
