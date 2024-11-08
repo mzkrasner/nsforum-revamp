@@ -1,4 +1,5 @@
 import { normalizeAndValidateUrl } from "@/shared/lib/utils";
+import { useCallback } from "react";
 import useEditorContext from "../../hooks/useEditorContext";
 import useMdEditorFunctions from "../MdEditor/useMdEditorFunctions";
 
@@ -7,27 +8,65 @@ const useToolbarInsertFunctions = () => {
 
   const mdEditorFns = useMdEditorFunctions();
 
-  const setLink = () => {
+  const setLink = useCallback(
+    (url: string = "") => {
+      if (isMdEditorActive && url) {
+        mdEditorFns.insertLink(url as `http${string}`);
+        return;
+      }
+
+      if (!editor) return null;
+
+      const { from, to } = editor.state.selection;
+
+      // Check if a range is selected
+      if (from === to && !url) return;
+
+      try {
+        const href = url ? normalizeAndValidateUrl(url)! : "";
+        // update link
+        editor.chain().focus().extendMarkRange("link").setLink({ href }).run();
+      } catch (error: unknown) {
+        alert((error as Error).message);
+      }
+    },
+    [editor],
+  );
+
+  const unsetLink = () => {
     if (!editor) return;
-    let url = editor.getAttributes("link").href;
-    if (!url) return;
 
-    url = normalizeAndValidateUrl(window.prompt("URL", url) || "");
-
-    if (isMdEditorActive) {
-      mdEditorFns.insertLink(url as `http${string}`);
-      return;
-    }
-
-    // empty
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
-    }
-
-    // update link
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    const { to } = editor.state.selection;
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .unsetLink()
+      .setTextSelection(to)
+      .run();
   };
+
+  // const setLink = () => {
+  //   if (!editor) return;
+  //   let url = editor.getAttributes("link").href;
+  //   if (!url) return;
+
+  //   url = normalizeAndValidateUrl(window.prompt("URL", url) || "");
+
+  //   if (isMdEditorActive) {
+  //     mdEditorFns.insertLink(url as `http${string}`);
+  //     return;
+  //   }
+
+  //   // empty
+  //   if (url === "") {
+  //     editor.chain().focus().extendMarkRange("link").unsetLink().run();
+  //     return;
+  //   }
+
+  //   // update link
+  //   editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  // };
 
   const addYoutubeVideo = () => {
     if (!editor) return;
@@ -98,7 +137,7 @@ const useToolbarInsertFunctions = () => {
       .run();
   };
 
-  return { setLink, addYoutubeVideo, addSpotifyPodcastEpisode };
+  return { setLink, unsetLink, addYoutubeVideo, addSpotifyPodcastEpisode };
 };
 
 export default useToolbarInsertFunctions;

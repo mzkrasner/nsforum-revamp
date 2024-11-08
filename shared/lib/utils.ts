@@ -102,6 +102,6 @@ export const normalizeAndValidateUrl = (url: string): string | null => {
     new URL(url); // Will throw if the URL is invalid
     return url; // Return the normalized URL if valid
   } catch (error) {
-    return null; // Return null if the URL is invalid
+    throw new Error("Invalid url");
   }
 };
