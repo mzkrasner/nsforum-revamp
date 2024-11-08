@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
@@ -37,6 +38,7 @@ const config = {
         serif: ["var(--font-serif)"],
       },
       colors: {
+        link: colors.blue,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

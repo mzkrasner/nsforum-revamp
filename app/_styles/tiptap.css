@@ -197,5 +197,5 @@
 }
 
 .tiptap a {
-  @apply cursor-pointer text-wrap break-words text-blue-600 underline;
+  @apply text-link-600 cursor-pointer text-wrap break-words underline;
 }

@@ -28,7 +28,8 @@ const InsertButtons = () => {
 
   if (!editor) return null;
 
-  const insertsDisabled = isNodeActive(["Link", "HtmlBlock"]);
+  const { from, to } = editor.state.selection;
+  const insertsDisabled = isNodeActive(["Link", "HtmlBlock"]) || from === to;
 
   const buttons = (
     <>
