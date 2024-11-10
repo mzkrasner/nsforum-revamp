@@ -12,7 +12,6 @@ const PostHeading = ({ level, children, ...props }: Props) => {
 
   const { ref, inView, entry } = useInView({
     threshold: 0,
-    rootMargin: "-100px 0px 0px 0px",
   });
 
   useEffect(() => {
