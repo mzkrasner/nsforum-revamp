@@ -8,12 +8,12 @@ import axios, { AxiosError } from "axios";
 export const notifySubscribers = async (streamId: string) => {
   if (!env.NEXT_PUBLIC_SST_URL) return;
 
-  const post = await fetchPost({ filter: { stream_id: streamId } });
-  if (!post) throw new Error("No post found");
-
-  const emailContent = await postToEmail(post);
-
   try {
+    const post = await fetchPost({ filter: { stream_id: streamId } });
+    if (!post) throw new Error("No post found");
+
+    const emailContent = await postToEmail(post);
+
     const { data } = await axios.post(
       `${env.NEXT_PUBLIC_SST_URL}/posts/${streamId}/notify-subscribers`,
       {
