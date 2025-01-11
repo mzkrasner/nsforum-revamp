@@ -84,6 +84,7 @@
     "react-intersection-observer": "^9.13.1",
     "slugify": "^1.6.6",
     "tailwind-merge": "^2.4.0",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "tiptap-markdown": "^0.8.10",
     "tsx": "^4.18.0",
