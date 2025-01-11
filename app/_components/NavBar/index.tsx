@@ -15,7 +15,7 @@ const NavBar = () => {
 
   return (
     <div className="fixed left-0 top-0 z-20 flex h-20 w-full items-center border-b border-neutral-300 bg-white">
-      <div className="container mx-0 flex h-full min-w-[100vw] items-center justify-between gap-3">
+      <div className="container mx-0 flex h-full max-w-[unset] items-center justify-between gap-3">
         <div className="relative -left-4 flex items-center gap-2 pl-4">
           <Button
             size="icon"

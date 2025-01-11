@@ -1,7 +1,5 @@
-import { Button } from "@/shared/components/ui/button";
 import useOutsideClick from "@/shared/hooks/useOutsideClick";
 import { cn } from "@/shared/lib/utils";
-import { ArrowLeftIcon, ListIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -42,21 +40,38 @@ const PostTableOfContents = ({ open, setOpen }: Props) => {
         },
       )}
     >
-      <div className="sticky top-[120px] flex h-fit flex-col-reverse md:block">
-        <div className="flex justify-end pt-4 md:block md:pb-4 md:pt-0">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <ArrowLeftIcon size={14} /> : <ListIcon size={14} />}
-          </Button>
-        </div>
+      <div className="sticky top-[108px] flex h-fit flex-col-reverse md:block">
+        {/* {!open && (
+          <div className="flex justify-end pt-4 md:block md:pb-4 md:pt-0">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setOpen(true)}
+            >
+              <ListIcon size={14} />
+            </Button>
+          </div>
+        )} */}
         {open && (
-          <div>
-            <h3 className="mb-3 font-serif text-base">{title}</h3>
-            <ul className="text-sm text-neutral-500">
+          <div className="text-sm">
+            {/* <div className="flex items-center gap-3">
+              <div className="flex justify-end pt-4 md:block md:pb-4 md:pt-0">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setOpen(false)}
+                >
+                  <ArrowLeftIcon size={14} />
+                </Button>
+              </div>
+              <h3 className="mb-3 font-serif text-base">{title}</h3>
+            </div> */}
+            <h3 className="mb-3 font-serif text-base font-medium uppercase">
+              {title}
+            </h3>
+            <ul className="text-neutral-500">
               {postHeadings.map((postHeading, index) => {
                 const { level, id, textContent } = postHeading;
                 return (

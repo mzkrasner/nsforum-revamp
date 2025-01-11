@@ -15,11 +15,11 @@ type Props = {
   initialData?: OrbisDBRow<Post> | null;
 };
 const PostDetails = ({ initialData }: Props) => {
-  const [isTableOfContentOpen, setIsTableOfContentOpen] = useState(false);
+  const [isTableOfContentOpen, setIsTableOfContentOpen] = useState(true);
 
   return (
     <PostContext.Provider value={{ initialData }}>
-      <div className="container relative py-5 md:grid md:grid-cols-[auto_1fr] md:grid-rows-[auto_auto]">
+      <div className="container relative mx-0 !w-full max-w-[unset] py-5 md:grid md:grid-cols-[auto_1fr] md:grid-rows-[auto_auto]">
         <PostTableOfContents
           open={isTableOfContentOpen}
           setOpen={setIsTableOfContentOpen}

@@ -165,7 +165,8 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             className={cn("flex flex-1 flex-col", {
-              "-z-1 pointer-events-none h-0 w-0 opacity-0": isMdEditorActive,
+              "-z-1 pointer-events-none h-0 w-0 flex-[0] opacity-0":
+                isMdEditorActive,
             })}
           />
           <ComponentMenus />
