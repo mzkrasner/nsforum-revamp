@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { catchError } from "@useorbis/db-sdk/util";
 import { isNil } from "lodash-es";
 import { contexts, models, orbisdb } from ".";
@@ -14,6 +15,11 @@ export const insertRow = async <T extends Record<string, any>>({
   value,
   context = contexts.root,
 }: InsertRowArg<T>) => {
+  console.log("insert row argument: ", {
+    model,
+    value,
+    context,
+  });
   const statement = orbisdb
     .insert(models[model].id)
     .value(value)
@@ -25,7 +31,11 @@ export const insertRow = async <T extends Record<string, any>>({
     );
   }
   const [result, error] = await catchError(() => statement.run());
-  if (error) throw new Error(`Error while inserting row in ${model}: ${error}`);
+  if (error) {
+    const errorMsg = `Error while inserting row in ${model}: ${error}`;
+    if (env.NODE_ENV === "development") console.log(errorMsg);
+    throw new Error(errorMsg);
+  }
   return JSON.parse(JSON.stringify(result)) as GenericCeramicDocument<
     typeof value
   >;

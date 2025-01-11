@@ -1,7 +1,7 @@
 import { Button } from "@/shared/components/ui/button";
 import useOutsideClick from "@/shared/hooks/useOutsideClick";
 import { cn } from "@/shared/lib/utils";
-import { ArrowLeftIcon, ListIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, ListIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -35,28 +35,46 @@ const PostTableOfContents = ({ open, setOpen }: Props) => {
     <div
       ref={ref}
       className={cn(
-        "fixed bottom-7 right-3 z-[5] max-h-[calc(100vh_-_100px)] max-w-[calc(100vw_-_24px)] rounded-md p-5 pt-5 md:static md:mb-[132px] md:max-h-[unset] md:w-[280px] md:max-w-[unset] md:overflow-visible md:border-none md:px-0 md:pt-0",
+        "scrollbar-hide fixed bottom-7 right-3 z-[5] max-h-[calc(100vh_-_100px)] max-w-[calc(100vw_-_24px)] overflow-y-auto rounded-md p-5 pt-5 md:static md:mb-[132px] md:max-h-[unset] md:w-[280px] md:max-w-[unset] md:overflow-visible md:border-none md:px-0 md:pt-0",
         {
           "md:w-0": !open,
           "border border-neutral-300 bg-white": open,
         },
       )}
     >
-      <div className="sticky top-[120px] flex h-fit flex-col-reverse md:block">
-        <div className="flex justify-end pt-4 md:block md:pb-4 md:pt-0">
+      <div className="sticky top-[108px] flex h-fit flex-col-reverse md:block">
+        {
           <Button
-            variant="secondary"
+            variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="absolute right-0 top-[calc(50vh-50px)] hidden -translate-y-1/2 text-neutral-500 md:flex"
             onClick={() => setOpen(!open)}
           >
-            {open ? <ArrowLeftIcon size={14} /> : <ListIcon size={14} />}
+            {open ? (
+              <ChevronLeftIcon size={26} strokeWidth={1.5} />
+            ) : (
+              <ChevronRightIcon size={26} strokeWidth={1.5} />
+            )}
           </Button>
-        </div>
+        }
+        {!open && (
+          <div className="fixed bottom-10 right-5 block h-fit w-fit md:hidden">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setOpen(true)}
+            >
+              <ListIcon size={14} />
+            </Button>
+          </div>
+        )}
         {open && (
-          <div>
-            <h3 className="mb-3 font-serif text-base">{title}</h3>
-            <ul className="text-sm text-neutral-500">
+          <div className="text-sm">
+            <h3 className="mb-3 font-serif text-base font-medium uppercase">
+              {title}
+            </h3>
+            <ul className="text-neutral-500">
               {postHeadings.map((postHeading, index) => {
                 const { level, id, textContent } = postHeading;
                 return (
