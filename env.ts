@@ -36,7 +36,7 @@ export const env = createEnv({
           "ADMIN_PRIVY_IDS env variable must be an empty array or an array of strings",
       },
     ),
-    // BASE_URL: z.string().trim().min(1),
+    BASE_URL: z.string().trim().min(1),
     PINATA_JWT: z.string().trim().min(1),
     ORBIS_DB_AUTH_TOKEN: z.string().optional(),
   },
@@ -69,7 +69,7 @@ export const env = createEnv({
     ORBIS_SEED: process.env.ORBIS_SEED,
     PRIVY_APP_SECRET: process.env.PRIVY_APP_SECRET,
     ADMIN_PRIVY_IDS: process.env.ADMIN_PRIVY_IDS,
-    // BASE_URL: process.env.BASE_URL,
+    BASE_URL: process.env.BASE_URL,
     PINATA_JWT: process.env.PINATA_JWT,
     NEXT_PUBLIC_SST_URL: process.env.NEXT_PUBLIC_SST_URL,
     NEXT_PUBLIC_ORBIS_ENVIRONMENT_ID:
