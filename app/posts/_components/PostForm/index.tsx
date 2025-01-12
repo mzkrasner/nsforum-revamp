@@ -4,6 +4,7 @@ import { uploadToPinata } from "@/shared/actions/pinata";
 import CategorySelector from "@/shared/components/CategorySelector";
 import NoProfileGuard from "@/shared/components/NoProfileGuard";
 import RichTextEditor from "@/shared/components/RichTextEditor";
+import { checkAddressLockThreshold } from "@/shared/components/SciLockThresholdCheck";
 import SignInButton from "@/shared/components/SignInButton";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -15,7 +16,7 @@ import {
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
@@ -31,21 +32,20 @@ const PostForm = ({ isEditing }: Props) => {
   const { handleSubmit, control, setValue } = form;
   const [lockedSci, setLockedSci] = useState<boolean | null>(null);
 
-  // useEffect(() => {
-  //   if (!ready) return;
-  //   if (wallets.length) {
-  //     let lockedSci = false;
-  //     for (let i = 0; i < wallets.length; i++) {
-  //       checkAddressLockThreshold(wallets[i].address).then((result) => {
-  //         if (result) {
-  //           lockedSci = true;
-  //           setLockedSci(true);
-  //           return;
-  //         }
-  //       });
-  //     }
-  //   }
-  // }, [wallets, ready]);
+  useEffect(() => {
+    if (wallets.length && ready) {
+      let lockedSci = false;
+      for (let i = 0; i < wallets.length; i++) {
+        checkAddressLockThreshold(wallets[i].address).then((result) => {
+          if (result) {
+            lockedSci = true;
+            setLockedSci(true);
+            return;
+          }
+        });
+      }
+    }
+  }, [wallets, ready]);
 
   if (!authenticated)
     return (
@@ -55,15 +55,15 @@ const PostForm = ({ isEditing }: Props) => {
       </div>
     );
 
-  // if (!lockedSci) {
-  //   return (
-  //     <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
-  //       <h3 className="font-medium">
-  //         You must have greater than 5000 locked SCI to create or edit posts
-  //       </h3>
-  //     </div>
-  //   );
-  // }
+  if (!lockedSci && ready) {
+    return (
+      <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
+        <h3 className="font-medium">
+          You must have greater than 5000 locked SCI to create or edit posts
+        </h3>
+      </div>
+    );
+  }
 
   if (postQuery.isLoading) return "Loading...";
 

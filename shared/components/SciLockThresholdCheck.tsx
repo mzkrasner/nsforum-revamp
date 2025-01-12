@@ -158,7 +158,7 @@ export const checkAddressLockThreshold = async (
 ): Promise<boolean> => {
   const provider = new ethers.JsonRpcProvider(env.NEXT_PUBLIC_RPC_URL);
   const sciManagerContract = new ethers.Contract(
-    "0xd0eFd83eD3F0519eF4fAfde4C3ACD84353f3d97b",
+    "0x21D7e035d0c7Fe110A82161cF6F4d48bf73e2a33",
     sciManagerAbi,
     provider,
   );
