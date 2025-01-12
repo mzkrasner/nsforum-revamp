@@ -62,7 +62,7 @@ const HomePage = async ({ searchParams }: Props) => {
           <div className="mb-5 ml-auto flex flex-col items-end gap-5 xs:ml-0 xs:flex-row xs:justify-between">
             <PostFilters />
             <Button size="sm" asChild>
-              <Link href="/posts/new">Create Post</Link>
+              <Link href="/posts/new">Create Proposal</Link>
             </Button>
           </div>
           <PostList

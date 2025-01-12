@@ -21,8 +21,8 @@ const noto_serif = Noto_Serif({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Network Society Forum",
-    default: "The Network Society Forum",
+    template: "%s | PoSciDonDAO Proposal Forum",
+    default: "The PoSciDonDAO Proposal Forum",
   },
 };
 

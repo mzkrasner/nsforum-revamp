@@ -14,7 +14,8 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useState } from "react";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
@@ -22,11 +23,29 @@ import usePostForm from "./usePostForm";
 type Props = { isEditing?: boolean };
 const PostForm = ({ isEditing }: Props) => {
   const { authenticated, ready } = usePrivy();
+  const { wallets } = useWallets();
   const { postQuery } = usePost();
   const { form, categories, publishMutation, draftMutation } = usePostForm({
     isEditing,
   });
   const { handleSubmit, control, setValue } = form;
+  const [lockedSci, setLockedSci] = useState<boolean | null>(null);
+
+  // useEffect(() => {
+  //   if (!ready) return;
+  //   if (wallets.length) {
+  //     let lockedSci = false;
+  //     for (let i = 0; i < wallets.length; i++) {
+  //       checkAddressLockThreshold(wallets[i].address).then((result) => {
+  //         if (result) {
+  //           lockedSci = true;
+  //           setLockedSci(true);
+  //           return;
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [wallets, ready]);
 
   if (!authenticated)
     return (
@@ -35,6 +54,16 @@ const PostForm = ({ isEditing }: Props) => {
         <SignInButton variant="outline" className="mx-auto" />
       </div>
     );
+
+  // if (!lockedSci) {
+  //   return (
+  //     <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
+  //       <h3 className="font-medium">
+  //         You must have greater than 5000 locked SCI to create or edit posts
+  //       </h3>
+  //     </div>
+  //   );
+  // }
 
   if (postQuery.isLoading) return "Loading...";
 

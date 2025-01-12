@@ -3,7 +3,7 @@ import { PropsWithChildren } from "react";
 
 export const metadata: Metadata = {
   title: {
-    template: "Admin %s | Network Society Forum",
+    template: "Admin %s | PoSciDonDAO Proposal Forum",
     default: "Admin",
   },
 };

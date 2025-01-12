@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/ui/button";
 import useSidebar from "@/shared/hooks/useSidebar";
 import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
-import logo from "../../../public/icon.png";
+import logo from "../../../public/logo.jpg";
 import NavUser from "./components/NavUser";
 // import Notifications from "./components/Notifications";
 import Image from "next/image";
@@ -36,12 +36,12 @@ const NavBar = () => {
             >
               <Image
                 src={logo}
-                height={32}
                 width={32}
+                height={32}
                 className="inline-block min-h-7 min-w-7"
                 alt="logo"
               />
-              <span className="hidden md:inline">Network Society Forum</span>
+              <span className="hidden md:inline">PoSciDonDAO Forum</span>
             </Link>
           </h1>
         </div>
