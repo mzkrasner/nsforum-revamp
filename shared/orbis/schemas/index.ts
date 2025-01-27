@@ -20,12 +20,6 @@ export const users = {
       username: {
         type: "string",
       },
-      email: {
-        type: "string",
-      },
-      privy_id: {
-        type: "string",
-      },
       verified: {
         type: "boolean",
       },

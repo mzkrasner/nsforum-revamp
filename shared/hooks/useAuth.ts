@@ -1,97 +1,109 @@
-import { ConnectedWallet, usePrivy, useWallets } from "@privy-io/react-auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
-import { isAddress } from "viem";
-import { revalidateTagsFromClient } from "../actions/utils";
+import { useState } from "react";
+import { useAccount, useConnect, useDisconnect } from "wagmi"; // Removed useWalletClient since it's not needed
 import { orbisdb } from "../orbis";
 import useOrbis from "./useOrbis";
 
 const useAuth = () => {
   const queryClient = useQueryClient();
-
-  const { ready, authenticated, logout, login, user } = usePrivy();
-  const { wallets } = useWallets();
-  const privyWallet = wallets.find(
-    (wallet) => wallet.walletClientType === "privy",
-  ); // Use the privy wallet to connect to authenticate orbis
+  const { address, isConnected } = useAccount(); // Get the wallet's address and connection state
+  const { connect, connectors } = useConnect();
+  const [connecting, setConnecting] = useState(false);
   const { authInfo, setAuthInfo } = useOrbis();
-  const did = authInfo?.user.did;
+  const { disconnect } = useDisconnect();
 
-  const connectOrbis = async ({
-    ready,
-    authenticated,
-    privyWallet,
-  }: {
-    ready: boolean;
-    authenticated: boolean;
-    privyWallet: ConnectedWallet;
-  }) => {
-    if (!(ready && authenticated && privyWallet)) return null;
+  const connectOrbis = async () => {
+    setConnecting(true);
+    if (!window.ethereum || !isConnected || !address) {
+      console.error("Wallet not connected or incomplete state");
+      setConnecting(false);
+      return null;
+    }
+
     try {
+      const connected = await orbisdb.isUserConnected(address);
       let authInfo;
-      const connected = await orbisdb.isUserConnected(privyWallet.address);
+
       if (connected) {
         authInfo = await orbisdb.getConnectedUser();
       } else {
-        const provider = await privyWallet.getEthereumProvider();
-        if (!provider) throw new Error("Unable to fetch provider");
+        const provider = window.ethereum; // Use window.ethereum directly as the provider
         const auth = new OrbisEVMAuth(provider);
         authInfo = await orbisdb.connectUser({ auth });
       }
-      if (!authInfo)
+
+      if (!authInfo) {
         throw new Error(
-          "Could not fetch authentication information from orbis",
+          "Could not fetch authentication information from Orbis",
         );
-      setAuthInfo(authInfo);
+      }
+
+      setAuthInfo(authInfo); // Save auth info in context or state
+      setConnecting(false);
       return authInfo;
     } catch (error) {
-      console.error(error);
+      console.error("Orbis connection error:", error);
       return null;
     }
   };
 
+  const login = async () => {
+    console.log("Logging in with Silk Wallet...");
+    // @ts-ignore
+    window.silk
+      .loginSelector(window.ethereum)
+      // @ts-ignore
+      .then((result) => {
+        if (result === "silk") {
+          // @ts-ignore
+          window.ethereum = window.silk;
+        } else if (result === "injected") {
+          connect({
+            connector: connectors.filter((conn) => conn.id === "injected")[0],
+          });
+        } else if (result === "walletconnect") {
+          connect({
+            connector: connectors.filter(
+              (conn) => conn.id === "walletConnect",
+            )[0],
+          });
+        }
+      })
+      // @ts-ignore
+      .catch((err) => console.error(err));
+  };
+
   const connectOrbisQuery = useQuery({
-    queryKey: ["connect-orbis", { ready, authenticated, privyWallet }],
+    queryKey: ["connect-orbis", { isConnected }],
     queryFn: async () => {
-      if (!privyWallet) return null;
-      return await connectOrbis({ ready, authenticated, privyWallet });
+      if (!isConnected) return null;
+      return await connectOrbis();
     },
-    enabled: ready && authenticated && !!privyWallet,
+    enabled: isConnected,
   });
 
-  const linkedWallets = user?.linkedAccounts.filter(
-    (acct: Record<string, any> & { address?: string }) =>
-      acct.address && isAddress(acct.address),
-  );
-
-  const linkedPhone = user?.linkedAccounts.find((acc) => acc.type === "phone");
-  const linkedTwitterAcct = user?.linkedAccounts.find(
-    (acc) => acc.type === "twitter_oauth",
-  );
-
-  const isVerified = !!(linkedPhone || linkedTwitterAcct);
-
   return {
-    linkedPhone,
-    linkedTwitterAcct,
-    isVerified,
-    linkedWallets,
+    address, // Current connected wallet address
+    isConnected, // Whether the wallet is connected
     login: async () => {
-      if (!authenticated) {
+      if (!isConnected) {
         login();
       } else if (!authInfo) {
         await connectOrbisQuery.refetch();
       }
     },
-    isLoggedIn: !!(authenticated && authInfo),
+    connect: connectOrbis, // Connect to Orbis
+    isLoggedIn: !!authInfo,
+    isConnecting: connecting,
     logout: async () => {
-      logout();
+      disconnect();
       queryClient.resetQueries();
+      localStorage.removeItem("orbis:session");
       await orbisdb.disconnectUser();
-      await revalidateTagsFromClient([
-        "auth-token-claims",
-        "current-privy-user",
-      ]);
+      // @ts-ignore
+      setAuthInfo(null);
+      setConnecting(false);
     },
   };
 };

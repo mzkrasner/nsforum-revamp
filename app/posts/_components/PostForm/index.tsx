@@ -15,16 +15,15 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
 
 type Props = { isEditing?: boolean };
 const PostForm = ({ isEditing }: Props) => {
-  const { authenticated, ready } = usePrivy();
-  const { wallets } = useWallets();
+  const { isConnected, address } = useAccount();
   const { postQuery } = usePost();
   const { form, categories, publishMutation, draftMutation } = usePostForm({
     isEditing,
@@ -33,21 +32,20 @@ const PostForm = ({ isEditing }: Props) => {
   const [lockedSci, setLockedSci] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (wallets.length && ready) {
+    if (address && address.length && isConnected) {
       let lockedSci = false;
-      for (let i = 0; i < wallets.length; i++) {
-        checkAddressLockThreshold(wallets[i].address).then((result) => {
-          if (result) {
-            lockedSci = true;
-            setLockedSci(true);
-            return;
-          }
-        });
-      }
-    }
-  }, [wallets, ready]);
 
-  if (!authenticated)
+      checkAddressLockThreshold(address).then((result) => {
+        if (result) {
+          lockedSci = true;
+          setLockedSci(true);
+          return;
+        }
+      });
+    }
+  }, [address, isConnected]);
+
+  if (!isConnected)
     return (
       <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
         <h3 className="font-medium">Sign in to create or edit posts</h3>
@@ -55,7 +53,7 @@ const PostForm = ({ isEditing }: Props) => {
       </div>
     );
 
-  if (!lockedSci && ready) {
+  if (!lockedSci && isConnected) {
     return (
       <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
         <h3 className="font-medium">

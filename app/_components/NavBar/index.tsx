@@ -5,7 +5,7 @@ import useSidebar from "@/shared/hooks/useSidebar";
 import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
 import logo from "../../../public/logo.jpg";
-import NavUser from "./components/NavUser";
+import LoginSelector from "../../../shared/components/silkLogin";
 // import Notifications from "./components/Notifications";
 import Image from "next/image";
 import Search from "./components/Search";
@@ -48,7 +48,7 @@ const NavBar = () => {
         <nav className="flex h-full w-full items-center justify-end gap-3">
           <Search />
           {/* <Notifications /> */}
-          <NavUser />
+          <LoginSelector />
         </nav>
       </div>
     </div>

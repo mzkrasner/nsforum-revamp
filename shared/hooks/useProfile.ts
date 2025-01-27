@@ -1,4 +1,3 @@
-import { usePrivy } from "@privy-io/react-auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { checkAdminAuth } from "../actions/auth";
@@ -13,9 +12,6 @@ const useProfile = () => {
   const router = useRouter();
 
   const queryClient = useQueryClient();
-
-  const { user } = usePrivy();
-  const privyId = user?.id;
 
   const { authInfo } = useOrbis();
   const did = authInfo?.user.did;
@@ -50,9 +46,9 @@ const useProfile = () => {
     enabled: !!did,
   });
 
-  const saveProfile = async ({ phone, email, ...values }: ProfileFormType) => {
-    if (!did || !privyId) return;
-
+  const saveProfile = async ({ ...values }: ProfileFormType) => {
+    if (!did) return;
+    console.log("Saving profile", values);
     const existingProfile = await fetchProfile(did);
     if (existingProfile?.stream_id) {
       const result = await updateRow<Profile>({
@@ -64,7 +60,6 @@ const useProfile = () => {
       const newProfile: Profile = {
         ...values,
         verified: false,
-        privy_id: privyId,
       };
       const result = await insertRow({
         model: "users",
