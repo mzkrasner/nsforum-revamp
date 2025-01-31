@@ -96,6 +96,7 @@ const useUser = ({ did }: Props) => {
     mutationKey: ["update-subscription", { did }],
     mutationFn: async (subscribed: boolean) => {
       return await updateSubscription({
+        reader_did: profile?.controller!,
         subscribed,
         post_notifications: true,
         author_did: did,
@@ -108,7 +109,15 @@ const useUser = ({ did }: Props) => {
   const updatePostNotificationsMutation = useMutation({
     mutationKey: ["update-post-notifications", { did }],
     mutationFn: async (post_notifications: boolean) => {
-      return await updateSubscription({ post_notifications, author_did: did });
+      if (!profile?.controller) return;
+
+      const subscribed = true;
+      return await updateSubscription({
+        reader_did: profile.controller,
+        post_notifications,
+        author_did: did,
+        subscribed,
+      });
     },
     onSuccess: onSubscriptionDataUpdate,
     onError: console.error,

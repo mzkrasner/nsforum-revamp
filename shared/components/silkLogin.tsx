@@ -22,7 +22,7 @@ function NavUser() {
   const [open, setOpen] = useState(false);
   const { profile } = useProfile();
   const { logout, login, isLoggedIn, isConnecting } = useAuth();
-  const { is_admin } = profile || {};
+  // const { is_admin } = profile || {};
 
   // Render login button if not connected
   return (
@@ -72,13 +72,6 @@ function NavUser() {
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  {is_admin && (
-                    <DropdownMenuItem>
-                      <Link href="/admin" onClick={() => setOpen(false)}>
-                        Go to admin
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

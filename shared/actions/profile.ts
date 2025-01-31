@@ -2,13 +2,10 @@
 
 import { findRow } from "../orbis/utils";
 import { Profile } from "../types/profile";
-import { getCurrentPrivyUserId } from "./auth";
 
-export const fetchCurrentUserProfile = async () => {
-  const privyId = await getCurrentPrivyUserId();
-  if (!privyId) return null;
+export const fetchCurrentUserProfile = async (reader_did: string) => {
   return await findRow<Profile>({
     model: "users",
-    where: { privy_id: privyId },
+    where: { controller: reader_did },
   });
 };

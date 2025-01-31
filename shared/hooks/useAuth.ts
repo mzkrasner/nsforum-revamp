@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { OrbisEVMAuth } from "@useorbis/db-sdk/auth";
 import { useState } from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi"; // Removed useWalletClient since it's not needed
+import { useAccount, useAccountEffect, useConnect, useDisconnect } from "wagmi"; // Removed useWalletClient since it's not needed
 import { orbisdb } from "../orbis";
 import useOrbis from "./useOrbis";
 
@@ -12,6 +12,16 @@ const useAuth = () => {
   const [connecting, setConnecting] = useState(false);
   const { authInfo, setAuthInfo } = useOrbis();
   const { disconnect } = useDisconnect();
+
+  useAccountEffect({
+    onConnect(data) {
+      console.log("Connected!", data);
+      // You can access the connected address via data.address
+    },
+    onDisconnect() {
+      setConnecting(false);
+    },
+  });
 
   const connectOrbis = async () => {
     setConnecting(true);

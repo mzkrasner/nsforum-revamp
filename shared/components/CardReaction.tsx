@@ -1,6 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
-import useAuth from "../hooks/useAuth";
 import useProfile from "../hooks/useProfile";
 import useReaction from "../hooks/useReaction";
 import { cn } from "../lib/utils";
@@ -19,7 +18,7 @@ const CardReaction = ({ content, model }: Props) => {
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   const { profile } = useProfile();
-  const { isVerified } = useAuth();
+  // const { isVerified } = useAuth();
 
   const {
     reactionDataQuery,
@@ -34,10 +33,10 @@ const CardReaction = ({ content, model }: Props) => {
   if (reactionDataQuery.isLoading) return null;
 
   const guardReaction = (fn: Function) => () => {
-    if (!isVerified) {
-      setIsVerificationModalOpen(true);
-      return;
-    }
+    // if (!isVerified) {
+    //   setIsVerificationModalOpen(true);
+    //   return;
+    // }
     fn();
   };
 

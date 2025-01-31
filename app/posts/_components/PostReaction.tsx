@@ -1,6 +1,5 @@
 import { Button } from "@/shared/components/ui/button";
 import VerificationModal from "@/shared/components/VerificationModal";
-import useAuth from "@/shared/hooks/useAuth";
 import useProfile from "@/shared/hooks/useProfile";
 import useReaction from "@/shared/hooks/useReaction";
 import { cn } from "@/shared/lib/utils";
@@ -13,7 +12,7 @@ const PostReaction = () => {
 
   const { profile } = useProfile();
   const { post } = usePost();
-  const { isVerified } = useAuth();
+  // const { isVerified } = useAuth();
 
   const {
     reactionDataQuery,
@@ -26,10 +25,10 @@ const PostReaction = () => {
   } = useReaction({ contentId: post?.stream_id, model: "posts" });
 
   const guardReaction = (fn: Function) => () => {
-    if (!isVerified) {
-      setIsVerificationModalOpen(true);
-      return;
-    }
+    // if (!isVerified) {
+    //   setIsVerificationModalOpen(true);
+    //   return;
+    // }
     fn();
   };
 

@@ -68,12 +68,13 @@ export const fetchSubscriptionData = async (query: FetchSubscriptionArg) => {
 };
 
 const updateSubscriptionSchema = z.object({
+  reader_did: z.string().trim().min(1),
   author_did: z.string().trim().min(1),
   subscribed: z.boolean().optional().nullable(),
   post_notifications: z.boolean().optional().nullable(),
 });
 export const updateSubscription = async (
-  subscription: Omit<Partial<Subscription>, "reader_did"> & {
+  subscription: Subscription & {
     author_did: string;
   },
 ) => {
@@ -81,7 +82,7 @@ export const updateSubscription = async (
   if (!isValid) throw new Error("Invalid data");
 
   // Ensure they can only update their own subscription object
-  const profile = await fetchCurrentUserProfile();
+  const profile = await fetchCurrentUserProfile(subscription.reader_did);
   if (!profile?.controller) throw new Error("Unable to fetch profile");
 
   await connectDbWithSeed();
@@ -99,8 +100,6 @@ export const updateSubscription = async (
     return await insertRow<Subscription>({
       model: "subscriptions",
       value: {
-        subscribed: false,
-        post_notifications: false,
         ...subscription,
         reader_did: profile.controller,
       },

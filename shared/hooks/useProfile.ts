@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { checkAdminAuth } from "../actions/auth";
 import { fetchSubscriptionData } from "../actions/subscriptions";
 import { findRow, insertRow, updateRow } from "../orbis/utils";
 import { ProfileFormType } from "../schema/profile";
@@ -22,8 +21,7 @@ const useProfile = () => {
       model: "users",
       where: { controller: did },
     });
-    const isAdmin = await checkAdminAuth();
-    if (profile) return { ...profile, is_admin: isAdmin };
+    if (profile) return { ...profile };
     return null;
   };
 

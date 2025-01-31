@@ -33,8 +33,6 @@ const ProfileForm = () => {
   const { handleSubmit, control, watch, setValue } = form;
 
   useEffect(() => {
-    // if (!watch("email") && privyEmail) setValue("email", privyEmail);
-    // if (!watch("phone") && privyPhone) setValue("phone", privyPhone);
     if (!watch("name") && name) setValue("name", name);
     if (!watch("username") && username) setValue("username", username);
   }, [watch, setValue, name, username]);

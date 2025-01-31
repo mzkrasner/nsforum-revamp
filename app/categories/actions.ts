@@ -1,46 +1,67 @@
-// "use server";
+"use server";
 
-// import { suggestCategory } from "@/shared/actions/categories";
-// import { categorySuggestionSchema } from "@/shared/schema/categorySuggestion";
-// import { GenericCeramicDocument } from "@/shared/types";
-// import { CategorySuggestion } from "@/shared/types/category";
-// import { connectDbWithSeed } from "../api/_orbis";
+import { connectDbWithSeed } from "@/app/api/_orbis";
+import { fetchCategorySuggestion } from "@/shared/orbis/queries";
+import { findRow, insertRow, updateRow } from "@/shared/orbis/utils";
+import { CategorySchema } from "@/shared/schema/category";
+import {
+  Category,
+  CategorySuggestion,
+  CategorySuggestionStatus,
+} from "@/shared/types/category";
+import { ilike } from "@useorbis/db-sdk/operators";
 
-// // Handle when suggestion exists
+export const updateCategorySuggestionStatus = async (
+  id: string,
+  status: CategorySuggestionStatus,
+) => {
+  const categorySuggestion = await fetchCategorySuggestion(id);
+  if (!categorySuggestion) throw new Error("Suggestion does not exist");
 
-// export type FormState = {
-//   message: string;
-//   fields?: Record<string, string | undefined | null>;
-//   issues?: string[];
-//   data?: GenericCeramicDocument<CategorySuggestion>;
-// };
+  await connectDbWithSeed();
+  return await updateRow<CategorySuggestion>({ id, set: { status } });
+};
 
-// export async function createCategorySuggestion(
-//   prevState: FormState,
-//   data: FormData,
-// ): Promise<FormState> {
-//   const formData = Object.fromEntries(data);
-//   const parsed = categorySuggestionSchema.safeParse(formData);
+export const acceptCategorySuggestion = async (id: string) => {
+  const categorySuggestion = await fetchCategorySuggestion(id);
+  if (!categorySuggestion) throw new Error("Suggestion does not exist");
 
-//   if (!parsed.success) {
-//     const fields: Record<string, string> = {};
-//     for (const key of Object.keys(formData)) {
-//       fields[key] = formData[key].toString();
-//     }
-//     return {
-//       message: "Invalid form data",
-//       fields,
-//       issues: parsed.error.issues.map((issue) => issue.message),
-//     };
-//   }
+  await connectDbWithSeed();
 
-//   // suggest a category
-//   await connectDbWithSeed();
-//   const res = await suggestCategory(parsed.data);
+  const categoryData = {
+    name: categorySuggestion.name,
+    description: categorySuggestion.description,
+  };
 
-//   return {
-//     message: "Your suggestion has been registered",
-//     data: res,
-//     fields: parsed.data,
-//   };
-// }
+  const result = await insertRow({ model: "categories", value: categoryData });
+
+  if (result) {
+    return await updateCategorySuggestionStatus(id, "accepted");
+  }
+};
+
+const fetchCatgoryByName = async (name: string) => {
+  return await findRow<Category>({
+    model: "categories",
+    select: ["stream_id"],
+    where: { name: ilike(name) },
+  });
+};
+
+export const createCategory = async (categoryData: CategorySchema) => {
+  await connectDbWithSeed();
+
+  const existingCategory = await fetchCatgoryByName(categoryData.name);
+  if (existingCategory) throw new Error("Category already exists");
+
+  return await insertRow({ model: "categories", value: categoryData });
+};
+
+export const editCategory = async ({
+  stream_id,
+  ...categoryData
+}: CategorySchema & { stream_id: string }) => {
+  await connectDbWithSeed();
+
+  return await updateRow({ id: stream_id, set: categoryData });
+};

@@ -53,15 +53,15 @@ const PostForm = ({ isEditing }: Props) => {
       </div>
     );
 
-  if (!lockedSci && isConnected) {
-    return (
-      <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
-        <h3 className="font-medium">
-          You must have greater than 5000 locked SCI to create or edit posts
-        </h3>
-      </div>
-    );
-  }
+  // if (!lockedSci && isConnected) {
+  //   return (
+  //     <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
+  //       <h3 className="font-medium">
+  //         You must have greater than 5000 locked SCI to create or edit posts
+  //       </h3>
+  //     </div>
+  //   );
+  // }
 
   if (postQuery.isLoading) return "Loading...";
 

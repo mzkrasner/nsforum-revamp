@@ -1,6 +1,8 @@
+"use client";
+
 import CustomBreadcrumb from "@/shared/components/CustomBreadcrumb";
 import PageHeading from "@/shared/components/PageHeading";
-import CategorySuggestionForm from "../_components/CategorySuggestionForm";
+import CategoryForm from "../_components/CategoryForm";
 
 const breadcrumbItems = [
   {
@@ -8,18 +10,18 @@ const breadcrumbItems = [
     href: "/categories",
   },
   {
-    name: "Suggest Category",
+    name: "New Category",
     active: true,
   },
 ];
 
-const SuggestCategoryPage = () => {
+const NewCategoryPage = () => {
   return (
     <div className="container mx-auto flex max-w-[640px] flex-1 flex-col pb-10">
       <CustomBreadcrumb items={breadcrumbItems} />
-      <PageHeading className="mt-5">Suggest Category</PageHeading>
-      <CategorySuggestionForm />
+      <PageHeading className="mt-5">New Category</PageHeading>
+      <CategoryForm />
     </div>
   );
 };
-export default SuggestCategoryPage;
+export default NewCategoryPage;
