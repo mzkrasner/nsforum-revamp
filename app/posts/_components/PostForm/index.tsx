@@ -48,7 +48,7 @@ const PostForm = ({ isEditing }: Props) => {
   if (!isConnected)
     return (
       <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
-        <h3 className="font-medium">Sign in to create or edit posts</h3>
+        <h3 className="font-medium">Sign in to create or edit proposals</h3>
         <SignInButton variant="outline" className="mx-auto" />
       </div>
     );
@@ -57,7 +57,7 @@ const PostForm = ({ isEditing }: Props) => {
     return (
       <div className="flex h-full flex-1 flex-col items-center justify-center gap-5">
         <h3 className="font-medium">
-          You must have greater than 5000 locked SCI to create or edit posts
+          You must have greater than 5000 locked SCI to create or edit proposals
         </h3>
       </div>
     );
