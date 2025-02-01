@@ -64,14 +64,13 @@ const useAuth = () => {
           connect({
             connector: connectors.filter((conn) => conn.id === "injected")[0],
           });
+        } else if (result === "walletconnect") {
+          connect({
+            connector: connectors.filter(
+              (conn) => conn.id === "walletConnect",
+            )[0],
+          });
         }
-        // else if (result === "walletconnect") {
-        //   connect({
-        //     connector: connectors.filter(
-        //       (conn) => conn.id === "walletConnect",
-        //     )[0],
-        //   });
-        // }
       })
       // @ts-ignore
       .catch((err) => console.error(err));

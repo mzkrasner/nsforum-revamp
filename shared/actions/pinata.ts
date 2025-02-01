@@ -40,3 +40,9 @@ export const uploadToPinata = async (formData: FormData) => {
   const cid = upload.IpfsHash;
   return cid;
 };
+
+export const uploadImageToPinata = async (image: FormData) => {
+  const cid = await uploadToPinata(image);
+  console.log(cid);
+  return `https://${env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${cid}`;
+}

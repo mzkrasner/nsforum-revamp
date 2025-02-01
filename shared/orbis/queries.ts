@@ -155,13 +155,6 @@ export const fetchReaction = async (filter: {
   });
 };
 
-export const fetchAllReactionsByContentId = async (content_id: string) => {
-  return await fetchRowsPage<Reaction>({
-    model: "reactions",
-    where: { content_id },
-  });
-}
-
 export const fetchTagByName = async (name: string) => {
   return findRow<Tag>({
     model: "tags",
@@ -202,6 +195,13 @@ export const fetchTags = async (options: FetchTagsOptions) => {
   });
 };
 
+export const fetchAllReactionsForContentId = async (content_id: string) => {
+  return await fetchRowsPage<Reaction>({
+    model: "reactions",
+    where: { content_id },
+  });
+}
+
 export const fetchReactionTypeCounts = async ({
   model,
   content_id,
@@ -209,29 +209,26 @@ export const fetchReactionTypeCounts = async ({
   model: string;
   content_id: string;
 }) => {
-  const allReactions = await fetchAllReactionsByContentId(content_id);
-  // order the reactions from most recent to oldest
-  allReactions.sort((a, b) => new Date(b.indexed_at).getTime() - new Date(a.indexed_at).getTime());
-  const uniqueReactions = allReactions.reduce((acc, reaction) => {
-    if (!acc[reaction.user_id]) {
-      acc[reaction.user_id] = reaction;
-    }
-    return acc;
-  }, {} as Record<string, Reaction>);
-  console.log("Unique reactions", uniqueReactions);
-
-  // count the number of unique upvotes and downvotes using the uniqueReactions object
-  const upvotes = Object.values(uniqueReactions).filter(
-    (reaction) => reaction.type === "upvote",
+  const all = await fetchAllReactionsForContentId(content_id);
+  // order by indexed_at time descending
+  all.sort((a, b) => {
+    return new Date(b.indexed_at).getTime() - new Date(a.indexed_at).getTime();
+  });
+  // filter out duplicates based on user_id, retaining the ones that were indexed latest
+  const unique = all.filter(
+    (item, index, self) =>
+      index === self.findIndex((t) => t.user_id === item.user_id),
   );
-  const downvotes = Object.values(uniqueReactions).filter(
-    (reaction) => reaction.type === "downvote",
-  );
+  console.log("unique", unique);
 
-
+  // count number of upvotes and downvotes
+  const upvotes = unique.filter((item) => item.type === "upvote");
+  const downvotes = unique.filter((item) => item.type === "downvote");
+  console.log("upvotes", upvotes);
+  console.log("downvotes", downvotes);
 
   return {
-    upvotes: upvotes.length,
-    downvotes: downvotes.length,
+    upvotes: upvotes.length ? upvotes.length : 0,
+    downvotes: downvotes.length ? downvotes.length : 0,
   };
 };

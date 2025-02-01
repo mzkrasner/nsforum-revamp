@@ -1,5 +1,5 @@
 
-  const models = {
+const models = {
   "users": {
     "id": "kjzl6hvfrbw6ca6s2q0jvlvspt6l1bs7ruzftg6jrt6ps11fymydygm1pehmevr",
     "name": "users_v0"
@@ -33,10 +33,9 @@
     "name": "comments_v0"
   },
   "reactions": {
-    "id": "kjzl6hvfrbw6cb6w026sm0a3auchy60q6r5je5q0hkit4qc9rv8lyp9cgwd3tf8",
+    "id": "kjzl6hvfrbw6c95xkxfu7n07t0bhbc2pxxpa5o2jat0t2fxm2kb61hpo91cv6am",
     "name": "reactions_v0"
   }
 } as const;
 
-  export default models;
-  
+export default models;

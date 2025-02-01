@@ -314,8 +314,7 @@ export const reactions = {
   immutableFields: [],
   implements: [],
   accountRelation: {
-    type: "set",
-    fields: ['content_id'],
+    type: "list",
   },
   schema: {
     type: "object",
@@ -337,7 +336,6 @@ export const reactions = {
         type: "string",
       },
     },
-    required: ['content_id'],
     additionalProperties: false,
   },
 } as const;
