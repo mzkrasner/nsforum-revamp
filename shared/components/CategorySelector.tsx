@@ -86,4 +86,8 @@ const CategorySelector = forwardRef<HTMLButtonElement, Props>(
     );
   },
 );
+
+// Set the display name
+CategorySelector.displayName = "CategorySelector";
+
 export default CategorySelector;

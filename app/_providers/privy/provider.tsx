@@ -6,18 +6,6 @@ import { base, Chain, hardhat } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
 import "../../../app/_styles/globals.css";
 
-// const PRIVY_APP_ID = env.NEXT_PUBLIC_PRIVY_APP_ID;
-
-// const AppPrivyProvider = ({ children }: PropsWithChildren) => {
-//   if (!PRIVY_APP_ID) return <>{children}</>;
-//   return (
-//     <PrivyProvider appId={PRIVY_APP_ID} config={config}>
-//       {children}
-//     </PrivyProvider>
-//   );
-// };
-// export default AppPrivyProvider;
-
 const defaultChains: Chain[] = [base];
 
 if (process.env.NODE_ENV == "development") {
@@ -36,7 +24,7 @@ const wagmiConfig = createConfig({
   connectors: [
     injected(),
     walletConnect({
-      projectId: "1af1f3a8b9196ececc0fe5f0c5c4f35f",
+      projectId: "9079d1a5fcc1e24a84174328e8eb9be2",
     }),
   ],
 });

@@ -45,6 +45,17 @@ const useProfile = () => {
   });
 
   const saveProfile = async ({ ...values }: ProfileFormType) => {
+    // if there is another profile with the same username, invalidate
+    if (values.username) {
+      const existingProfile = await findRow<Profile>({
+        model: "users",
+        where: { username: values.username },
+      });
+      console.log("Existing profile", existingProfile);
+      if (existingProfile !== null) {
+        throw new Error("Username already taken");
+      }
+    }
     if (!did) return;
     console.log("Saving profile", values);
     const existingProfile = await fetchProfile(did);
@@ -87,7 +98,9 @@ const useProfile = () => {
       });
       router.push("/profile");
     },
-    onError: console.error,
+    onError: (error) => {
+      return error;
+    },
   });
 
   return {

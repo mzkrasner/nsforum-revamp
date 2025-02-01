@@ -13,15 +13,7 @@ const useAuth = () => {
   const { authInfo, setAuthInfo } = useOrbis();
   const { disconnect } = useDisconnect();
 
-  useAccountEffect({
-    onConnect(data) {
-      console.log("Connected!", data);
-      // You can access the connected address via data.address
-    },
-    onDisconnect() {
-      setConnecting(false);
-    },
-  });
+
 
   const connectOrbis = async () => {
     setConnecting(true);
@@ -72,13 +64,14 @@ const useAuth = () => {
           connect({
             connector: connectors.filter((conn) => conn.id === "injected")[0],
           });
-        } else if (result === "walletconnect") {
-          connect({
-            connector: connectors.filter(
-              (conn) => conn.id === "walletConnect",
-            )[0],
-          });
         }
+        // else if (result === "walletconnect") {
+        //   connect({
+        //     connector: connectors.filter(
+        //       (conn) => conn.id === "walletConnect",
+        //     )[0],
+        //   });
+        // }
       })
       // @ts-ignore
       .catch((err) => console.error(err));
@@ -91,6 +84,17 @@ const useAuth = () => {
       return await connectOrbis();
     },
     enabled: isConnected,
+  });
+
+  useAccountEffect({
+    onConnect(data) {
+      console.log("Connected!", data);
+      // force a re render of the app
+      queryClient.invalidateQueries();
+    },
+    onDisconnect() {
+      setConnecting(false);
+    },
   });
 
   return {

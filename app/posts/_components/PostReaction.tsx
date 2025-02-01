@@ -25,10 +25,6 @@ const PostReaction = () => {
   } = useReaction({ contentId: post?.stream_id, model: "posts" });
 
   const guardReaction = (fn: Function) => () => {
-    // if (!isVerified) {
-    //   setIsVerificationModalOpen(true);
-    //   return;
-    // }
     fn();
   };
 

@@ -113,7 +113,10 @@ const CategoryForm = ({ id }: Props = {}) => {
           }),
         );
       }
-      router.push("/admin/categories");
+      router.push("/categories");
+    },
+    onError: (error) => {
+      alert(error);
     },
   });
 

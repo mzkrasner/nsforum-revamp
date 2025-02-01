@@ -67,8 +67,8 @@ export const fetchComments = async ({
 export type FetchPostsOptions = {
   fields?: string[];
   filter?:
-    | Record<string, any>
-    | Partial<OnlyStringFields<Post & CeramicDocument["content"]>>;
+  | Record<string, any>
+  | Partial<OnlyStringFields<Post & CeramicDocument["content"]>>;
   orderBy?: [keyof OrbisDBRow<Post>, "asc" | "desc"][];
 } & PaginationOptions;
 
@@ -122,15 +122,15 @@ export const fetchCategorySuggestion = async (id: string) => {
 export type FetchCategoriesOptions = {
   fields?: string[];
   filter?:
-    | Record<string, any>
-    | Partial<OnlyStringFields<Category & CeramicDocument["content"]>>;
+  | Record<string, any>
+  | Partial<OnlyStringFields<Category & CeramicDocument["content"]>>;
 } & PaginationOptions;
 export const fetchCategories = async (options?: FetchCategoriesOptions) => {
   const { page = 0, pageSize = 10, fields = [], filter = {} } = options || {};
   return await fetchRowsPage<Category>({
     model: "categories",
     select: fields,
-    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
+    // where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
     page,
     pageSize,
   });
@@ -155,6 +155,13 @@ export const fetchReaction = async (filter: {
   });
 };
 
+export const fetchAllReactionsByContentId = async (content_id: string) => {
+  return await fetchRowsPage<Reaction>({
+    model: "reactions",
+    where: { content_id },
+  });
+}
+
 export const fetchTagByName = async (name: string) => {
   return findRow<Tag>({
     model: "tags",
@@ -172,8 +179,8 @@ export const updateTag = async (tagId: string, data: Tag) => {
 export type FetchTagsOptions = {
   fields?: string[];
   filter?:
-    | Record<string, any>
-    | Partial<OnlyStringFields<Tag & CeramicDocument["content"]>>;
+  | Record<string, any>
+  | Partial<OnlyStringFields<Tag & CeramicDocument["content"]>>;
   orderBy?: [keyof OrbisDBRow<Tag>, "asc" | "desc"][];
 } & PaginationOptions;
 
@@ -202,29 +209,29 @@ export const fetchReactionTypeCounts = async ({
   model: string;
   content_id: string;
 }) => {
-  const upvotes = await findRow<{ count: string }>({
-    model: "reactions",
-    select: [count("stream_id", "count")],
-    where: {
-      model,
-      content_id,
-      type: "upvote",
-      controller: env.NEXT_PUBLIC_APP_DID,
-    },
-  });
-  const downvotes = await findRow<{ count: string }>({
-    model: "reactions",
-    select: [count("stream_id", "count")],
-    where: {
-      model,
-      content_id,
-      type: "downvote",
-      controller: env.NEXT_PUBLIC_APP_DID,
-    },
-  });
+  const allReactions = await fetchAllReactionsByContentId(content_id);
+  // order the reactions from most recent to oldest
+  allReactions.sort((a, b) => new Date(b.indexed_at).getTime() - new Date(a.indexed_at).getTime());
+  const uniqueReactions = allReactions.reduce((acc, reaction) => {
+    if (!acc[reaction.user_id]) {
+      acc[reaction.user_id] = reaction;
+    }
+    return acc;
+  }, {} as Record<string, Reaction>);
+  console.log("Unique reactions", uniqueReactions);
+
+  // count the number of unique upvotes and downvotes using the uniqueReactions object
+  const upvotes = Object.values(uniqueReactions).filter(
+    (reaction) => reaction.type === "upvote",
+  );
+  const downvotes = Object.values(uniqueReactions).filter(
+    (reaction) => reaction.type === "downvote",
+  );
+
+
 
   return {
-    upvotes: upvotes?.count ? +upvotes.count : 0,
-    downvotes: downvotes?.count ? +downvotes.count : 0,
+    upvotes: upvotes.length,
+    downvotes: downvotes.length,
   };
 };

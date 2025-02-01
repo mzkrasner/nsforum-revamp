@@ -52,7 +52,9 @@ export const createCategory = async (categoryData: CategorySchema) => {
   await connectDbWithSeed();
 
   const existingCategory = await fetchCatgoryByName(categoryData.name);
-  if (existingCategory) throw new Error("Category already exists");
+  if (existingCategory){
+    throw new Error("Category already exists");
+  } 
 
   return await insertRow({ model: "categories", value: categoryData });
 };

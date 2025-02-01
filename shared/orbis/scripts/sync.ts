@@ -18,6 +18,6 @@ if (require.main === module) {
     const [_, mode] = args;
     if (mode === "all") syncAll();
     if (mode === "models") syncModels();
-    if (mode === "relations") syncRelations();
+    // if (mode === "relations") syncRelations();
   }
 }

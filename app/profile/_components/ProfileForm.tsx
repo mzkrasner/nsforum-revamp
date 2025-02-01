@@ -30,7 +30,8 @@ const ProfileForm = () => {
       username,
     },
   });
-  const { handleSubmit, control, watch, setValue } = form;
+
+  const { handleSubmit, control, watch, setValue, setError } = form;
 
   useEffect(() => {
     if (!watch("name") && name) setValue("name", name);
@@ -44,38 +45,48 @@ const ProfileForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={handleSubmit((v) => saveMutation.mutate(v))}
+        onSubmit={handleSubmit((values) => {
+          saveMutation.mutate(values, {
+            onError: (error) => {
+              if (
+                error instanceof Error &&
+                error.message === "Username already taken"
+              ) {
+                setError("username", {
+                  type: "manual",
+                  message: "This username is already taken. Please choose another.",
+                });
+              }
+            },
+          });
+        })}
         className="mx-auto flex w-full flex-col gap-3"
       >
         <FormField
           control={control}
           name="name"
-          render={({ field, fieldState: { error } }) => {
-            return (
-              <FormItem>
-                <FormLabel>Full name</FormLabel>
-                <FormControl>
-                  <Input {...field} error={error} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
+          render={({ field, fieldState: { error } }) => (
+            <FormItem>
+              <FormLabel>Full name</FormLabel>
+              <FormControl>
+                <Input {...field} error={error} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <FormField
           control={control}
           name="username"
-          render={({ field, fieldState: { error } }) => {
-            return (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input {...field} error={error} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
+          render={({ field, fieldState: { error } }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input {...field} error={error} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         <Button
@@ -90,4 +101,5 @@ const ProfileForm = () => {
     </Form>
   );
 };
+
 export default ProfileForm;
