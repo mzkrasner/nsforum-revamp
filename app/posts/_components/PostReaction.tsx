@@ -24,7 +24,8 @@ const PostReaction = () => {
     downvoteMutation,
   } = useReaction({ contentId: post?.stream_id, model: "posts" });
 
-  const guardReaction = (fn: Function) => () => {
+  const guardReaction = (fn: Function, type: string) => () => {
+    console.log(type, "guardReaction");
     fn();
   };
 
@@ -47,7 +48,7 @@ const PostReaction = () => {
           variant="ghost"
           size="sm"
           className={cn("h-8 w-8 p-0", { "text-neutral-400": !upvoted })}
-          onClick={guardReaction(upvoteMutation.mutate)}
+          onClick={guardReaction(upvoteMutation.mutate, "upvote")}
           loading={upvoteMutation.isPending}
           loadingText=""
           loaderProps={{ className: "text-neutral-600" }}
@@ -63,7 +64,7 @@ const PostReaction = () => {
           variant="ghost"
           size="sm"
           className={cn("h-8 w-8 p-0", { "text-neutral-400": !downvoted })}
-          onClick={guardReaction(downvoteMutation.mutate)}
+          onClick={guardReaction(downvoteMutation.mutate, "downvote")}
           loading={downvoteMutation.isPending}
           loadingText=""
           loaderProps={{ className: "text-neutral-600" }}

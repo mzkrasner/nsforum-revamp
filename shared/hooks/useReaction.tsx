@@ -46,8 +46,6 @@ const useReaction = ({ contentId, model }: Props) => {
         content_id,
       });
 
-      console.log("Reaction type counts", reactionTypeCounts);
-
       return {
         reaction,
         ...reactionTypeCounts,

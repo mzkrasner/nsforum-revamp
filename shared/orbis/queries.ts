@@ -130,7 +130,7 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
   return await fetchRowsPage<Category>({
     model: "categories",
     select: fields,
-    // where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
     page,
     pageSize,
   });
@@ -195,13 +195,6 @@ export const fetchTags = async (options: FetchTagsOptions) => {
   });
 };
 
-export const fetchAllReactionsForContentId = async (content_id: string) => {
-  return await fetchRowsPage<Reaction>({
-    model: "reactions",
-    where: { content_id },
-  });
-}
-
 export const fetchReactionTypeCounts = async ({
   model,
   content_id,
@@ -209,26 +202,29 @@ export const fetchReactionTypeCounts = async ({
   model: string;
   content_id: string;
 }) => {
-  const all = await fetchAllReactionsForContentId(content_id);
-  // order by indexed_at time descending
-  all.sort((a, b) => {
-    return new Date(b.indexed_at).getTime() - new Date(a.indexed_at).getTime();
+  const upvotes = await findRow<{ count: string }>({
+    model: "reactions",
+    select: [count("stream_id", "count")],
+    where: {
+      model,
+      content_id,
+      type: "upvote",
+      controller: env.NEXT_PUBLIC_APP_DID,
+    },
   });
-  // filter out duplicates based on user_id, retaining the ones that were indexed latest
-  const unique = all.filter(
-    (item, index, self) =>
-      index === self.findIndex((t) => t.user_id === item.user_id),
-  );
-  console.log("unique", unique);
-
-  // count number of upvotes and downvotes
-  const upvotes = unique.filter((item) => item.type === "upvote");
-  const downvotes = unique.filter((item) => item.type === "downvote");
-  console.log("upvotes", upvotes);
-  console.log("downvotes", downvotes);
+  const downvotes = await findRow<{ count: string }>({
+    model: "reactions",
+    select: [count("stream_id", "count")],
+    where: {
+      model,
+      content_id,
+      type: "downvote",
+      controller: env.NEXT_PUBLIC_APP_DID,
+    },
+  });
 
   return {
-    upvotes: upvotes.length ? upvotes.length : 0,
-    downvotes: downvotes.length ? downvotes.length : 0,
+    upvotes: upvotes?.count ? +upvotes.count : 0,
+    downvotes: downvotes?.count ? +downvotes.count : 0,
   };
 };
