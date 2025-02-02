@@ -1,6 +1,6 @@
-# Network Society Forum
+# PoSciDonDAO Forum
 
-A decentralized forum built on OrbisDB
+A decentralized forum built on OrbisDB, designed for the PoSciDonDAO community.
 
 ## Getting Started
 
@@ -25,125 +25,42 @@ const contexts = {
 npm install
 ```
 
-6. Start the app.
+6. If you are using the default hosted endpoints for `NEXT_PUBLIC_CERAMIC_NODE_URL` and `NEXT_PUBLIC_ORBIS_NODE_URL`, you can leave these as-is in your `.env.local` file
+
+7. Run the following to generate credential values:
+
+```bash
+npm run generateCreds
+```
+
+Save the corresponding values to your `.env.local` file
+
+8. Back in your Orbis Studio UI, select the value under "Environment ID" on the main page and assign it to `NEXT_PUBLIC_ORBIS_ENVIRONMENT_ID`
+
+9. This application uses Pinata to host rich media assets. Set up an account on the [Pinata Cloud](https://app.pinata.cloud/auth/signin) site and assign your unique gateway to `NEXT_PUBLIC_GATEWAY_URL`
+
+10. Assign the value of `BASE_URL` to the root URL of your website. If you are running locally, this can simply be "http://localhost:3000" (or your desired local endpoint)
+
+11. This application uses Base to check locked sci tokens - obtain a valid RPC URL and assign to `NEXT_PUBLIC_RPC_URL`
+
+12. Go to your Orbis Studio UI ([studio.useorbis.com](https://studio.useorbis.com/) if using the hosted instance) and open up the developer tools. Go to the "Application" tab and click into "Local storage". Find a key-value pair for `orbisdb_admin_session` and assign the value to `ORBIS_DB_AUTH_TOKEN` in your `.env.local` file
+
+13. This application uses [Silk Wallet](https://www.silk.sc/) for sign-in and allows WalletConnect as an option. Set up a project under [WalletConnect Cloud](https://cloud.reown.com/) and assign your project ID to `NEXT_PUBLIC_PROJECT_ID`
+
+14. Start up the application - we will need the server running in order to perform a database migration:
 
 ```bash
 npm run dev
 ```
 
-7. Create orbisdb models and relations.
+15. Once running, open up a new terminal and run the following to perform the database migration:
 
 ```bash
 npm run db:sync
 ```
 
-8. Open [http://localhost:3000](http://localhost:3000) and sign in.
+You should now be ready to use the application
 
-9. Go to the privy dashboard, copy the id of your user and add it to the ADMIN_PRIVY_IDS environment variable as a stringified array. You can also add other admins if you wish.
+## Credit
 
-```bash
-ADMIN_PRIVY_IDS='["<YOUR PRIVY USER ID>", "<ANOTHER PRIVY USER ID>"]'
-```
-
-10. Every post must have a category, so before trying to create a new post, you should create at least one category here [http://localhost:3000/admin/categories/new](http://localhost:3000/admin/categories/new).
-
-11. You can now create new posts.
-
-## Email Notifications
-
-### Current Setup
-
-We currently use AWS Lambda to handle email notifications. We plan to use an OrbisDB plugin once we move from a shared instance to a dedicated one.
-
-The lambda functions are built and deployed with sst. You can find the code we used repo [here](https://github.com/JM-M/nsforum-sst)
-
-If you wish to use the same setup, you can clone and deploy the sst repo above. You'll have to set the following env variable as the you sst app's url.
-
-```bash
-NEXT_PUBLIC_SST_URL=
-```
-
-### Set up your own
-
-You can edit the notifySubscribers function in [here](app/posts/actions.ts)
-
-## Models
-
-You can find the schema for all models in the [this file](shared/orbis/schemas/index.ts).
-
-Once created, model schemas cannot be changed. To mitigate this, every model has a "data" field.
-
-```ts
-export const modelName = {
-  ...
-  schema: {
-    ...
-    properties: {
-      ...
-      data: {
-        type: "string",
-      },
-    },
-    additionalProperties: false,
-  },
-} as const;
-```
-
-Additional fields can be added to an object which would then be stringified and passed to this "data" field. The downside query the data as you would if it were not stringified.
-
-### "Editing" Models
-
-You cant edit a model, but during development you might want to change a model's schema. A script has been setup that allows you to create a new model, simply edit the [schema file](shared/orbis/schemas/index.ts) and run.
-
-```bash
-npm run db:sync-models
-```
-
-This would update only the models whose schemas have been changed.
-
-### Creating models
-
-Models are defined using the 2020-12 draft (December 2020 version) of the JSON Schema specification. You can check the existing models for examples. The notifications schema has an array of objects.
-
-```ts
-...
-
-export const modelName = {
-  ...
-  schema: {
-    ...
-    properties: {
-      ...
-      name: {
-        type: "string",
-      },
-      users: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-      },
-    },
-    additionalProperties: false,
-  },
-} as const;
-
-// Ensure to add it to the object exported as the default export
-const schemas = {
-  ...,
-  modelName
-} as const;
-
-export default schemas;
-```
-
-## Using models
-
-The [OrbisDB SDK](https://github.com/OrbisWeb3/db-sdk) has ORM-like method for querying data. There are [utils](shared/orbis/utils.ts) you can also use to write queries. For example:
-
-```ts
-const data = await findRow({
-  model: modelName,
-  where: { name: "Lorem ipsum" },
-});
-```
+This forum design is based off the [Network Society Forum](https://github.com/JM-M/nsforum-revamp). 

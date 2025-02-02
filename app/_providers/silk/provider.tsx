@@ -4,6 +4,7 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { base, Chain, hardhat } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
+import { env } from "@/env";
 import "../../../app/_styles/globals.css";
 
 const defaultChains: Chain[] = [base];
@@ -24,7 +25,7 @@ const wagmiConfig = createConfig({
   connectors: [
     injected(),
     walletConnect({
-      projectId: "9079d1a5fcc1e24a84174328e8eb9be2",
+      projectId: env.NEXT_PUBLIC_PROJECT_ID,
     }),
   ],
 });
