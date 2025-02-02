@@ -20,6 +20,7 @@ import { useAccount } from "wagmi";
 import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
+import { checkProfanity } from "@/shared/actions/profanityGuard";
 
 type Props = { isEditing?: boolean };
 const PostForm = ({ isEditing }: Props) => {
@@ -30,6 +31,16 @@ const PostForm = ({ isEditing }: Props) => {
   });
   const { handleSubmit, control, setValue } = form;
   const [lockedSci, setLockedSci] = useState<boolean | null>(null);
+
+  const guardProfanity = async (fn: Function, text: string) => {
+    const isProfane = await checkProfanity(text);
+    if (isProfane) {
+      alert("Your post contains inappropriate language and cannot be submitted.");
+      return;
+    }
+    fn();
+  };
+
 
   useEffect(() => {
     if (address && address.length && isConnected) {
@@ -70,7 +81,7 @@ const PostForm = ({ isEditing }: Props) => {
       <Form {...form}>
         <form
           className="mx-auto w-full max-w-[640px] space-y-5"
-          onSubmit={handleSubmit((v: any) => publishMutation.mutate(v))} // TODO: Fix type error
+          onSubmit={handleSubmit((v: any) => guardProfanity(() => publishMutation.mutate(v), v.title + " " + v.body))}
         >
           <FormField
             control={control}
@@ -163,7 +174,7 @@ const PostForm = ({ isEditing }: Props) => {
           <div className="flex justify-end gap-3">
             <Button
               variant="outline"
-              onClick={handleSubmit((v: any) => draftMutation.mutate(v))}
+              onClick={handleSubmit((v: any) => guardProfanity(() => draftMutation.mutate(v), v.title + " " + v.body))}
               loading={draftMutation.isPending}
               loadingText={`${isEditing ? "Saving as" : "Converting to"} draft...`}
             >

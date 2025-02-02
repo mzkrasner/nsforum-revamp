@@ -25,7 +25,7 @@ const wagmiConfig = createConfig({
   connectors: [
     injected(),
     walletConnect({
-      projectId: env.NEXT_PUBLIC_PROJECT_ID,
+      projectId: "9079d1a5fcc1e24a84174328e8eb9be2",
     }),
   ],
 });
@@ -35,14 +35,7 @@ const AppSilkProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     try {
-      const testReferralCode = "aaaaaaaaaaaaaaaaaaaaaaaa";
       const provider = initSilk({
-        // referralCode: testReferralCode
-        // config: {
-        //   appName: 'Uniswap',
-        //   darkMode: true
-        //   // appLogo: `${window.location.origin}${Uniswap}`
-        // }
       });
       // @ts-ignore
       window.silk = provider;

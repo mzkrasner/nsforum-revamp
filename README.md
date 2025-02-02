@@ -45,15 +45,17 @@ Save the corresponding values to your `.env.local` file
 
 12. Go to your Orbis Studio UI ([studio.useorbis.com](https://studio.useorbis.com/) if using the hosted instance) and open up the developer tools. Go to the "Application" tab and click into "Local storage". Find a key-value pair for `orbisdb_admin_session` and assign the value to `ORBIS_DB_AUTH_TOKEN` in your `.env.local` file
 
-13. This application uses [Silk Wallet](https://www.silk.sc/) for sign-in and allows WalletConnect as an option. Set up a project under [WalletConnect Cloud](https://cloud.reown.com/) and assign your project ID to `NEXT_PUBLIC_PROJECT_ID`
+13. This application uses [Silk Wallet](https://www.silk.sc/) for sign-in and allows WalletConnect as an option. Set up a project under [WalletConnect Cloud](https://cloud.reown.com/). Once you have your project ID, assign it to the `projectId` variable in the [Silk Provider](app/_providers/silk/provider.tsx).
 
-14. Start up the application - we will need the server running in order to perform a database migration:
+14. Obtain an OpenAI API key to assign to `OPENAI_API_KEY` in your `.env.local` file - this will be used for content moderation
+
+15. Start up the application - we will need the server running in order to perform a database migration:
 
 ```bash
 npm run dev
 ```
 
-15. Once running, open up a new terminal and run the following to perform the database migration:
+16. Once running, open up a new terminal and run the following to perform the database migration:
 
 ```bash
 npm run db:sync

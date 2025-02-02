@@ -37,7 +37,6 @@ export const env = createEnv({
     NEXT_PUBLIC_ORBIS_NODE_URL: z.string().trim().min(1),
     NEXT_PUBLIC_GATEWAY_URL: z.string().trim().min(1),
     NEXT_PUBLIC_RPC_URL: z.string().trim().min(1),
-    NEXT_PUBLIC_PROJECT_ID: z.string().trim().min(1),
   },
   shared: {
     NODE_ENV: z.enum(["test", "development", "production"]).optional(),
@@ -62,6 +61,5 @@ export const env = createEnv({
     NEXT_PUBLIC_GATEWAY_URL: process.env.NEXT_PUBLIC_GATEWAY_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL,
-    NEXT_PUBLIC_PROJECT_ID: process.env.NEXT_PUBLIC_PROJECT_ID,
   },
 });
