@@ -41,7 +41,6 @@ const CommentForm = ({
   const { handleSubmit, control } = form;
   const [isProfanityModalOpen, setIsProfanityModalOpen] = useState(false);
 
-
   const guardProfanity = async (fn: Function, text: string) => {
     const isProfane = await checkProfanity(text);
     if (isProfane) {

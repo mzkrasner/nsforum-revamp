@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/ui/button";
 import useSidebar from "@/shared/hooks/useSidebar";
 import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
-import logo from "../../../public/logo.jpg";
+import logo from "../../../public/icon.png";
 import LoginSelector from "../../../shared/components/silkLogin";
 // import Notifications from "./components/Notifications";
 import Image from "next/image";

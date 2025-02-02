@@ -24,6 +24,10 @@ export const metadata: Metadata = {
     template: "%s | PoSciDonDAO Proposal Forum",
     default: "The PoSciDonDAO Proposal Forum",
   },
+  icons: [
+    { rel: "icon", url: "/favicon.ico" },
+    { rel: "icon", type: "image/png", url: "/icon.png" }, // Optional PNG fallback
+  ],
 };
 
 const RootLayout = async ({
@@ -33,6 +37,9 @@ const RootLayout = async ({
 }>) => {
   return (
     <html lang="en" className={`${noto_sans.variable} ${noto_serif.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className="font-sans">
         <AppContextProvider>
           <TooltipProvider>
