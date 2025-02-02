@@ -22,6 +22,7 @@ export const env = createEnv({
     ),
     BASE_URL: z.string().trim().min(1),
     PINATA_JWT: z.string().trim().min(1),
+    OPENAI_API_KEY: z.string().trim().min(1),
     ORBIS_DB_AUTH_TOKEN: z.string().optional(),
   },
   /*
@@ -61,5 +62,6 @@ export const env = createEnv({
     NEXT_PUBLIC_GATEWAY_URL: process.env.NEXT_PUBLIC_GATEWAY_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
 });
