@@ -118,6 +118,7 @@ const useAuth = () => {
       setAuthInfo(null);
       setConnecting(false);
     },
+    authInfo,
   };
 };
 

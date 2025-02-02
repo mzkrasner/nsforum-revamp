@@ -311,7 +311,10 @@ const schemas = {
     "immutableFields": [],
     "implements": [],
     "accountRelation": {
-      "type": "list"
+      "type": "set",
+      "fields": [
+        "content_id"
+      ]
     },
     "schema": {
       "type": "object",
@@ -333,6 +336,9 @@ const schemas = {
           "type": "string"
         }
       },
+      "required": [
+        "content_id"
+      ],
       "additionalProperties": false
     }
   }

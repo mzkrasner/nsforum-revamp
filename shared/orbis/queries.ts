@@ -130,7 +130,7 @@ export const fetchCategories = async (options?: FetchCategoriesOptions) => {
   return await fetchRowsPage<Category>({
     model: "categories",
     select: fields,
-    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter },
     page,
     pageSize,
   });
@@ -141,7 +141,7 @@ export const fetchCategory = async (
 ) => {
   return await findRow<Category>({
     model: "categories",
-    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter },
   });
 };
 
@@ -151,7 +151,7 @@ export const fetchReaction = async (filter: {
 }) => {
   return await findRow<Reaction>({
     model: "reactions",
-    where: { ...filter, controller: env.NEXT_PUBLIC_APP_DID },
+    where: { ...filter },
   });
 };
 
@@ -159,8 +159,7 @@ export const fetchTagByName = async (name: string) => {
   return findRow<Tag>({
     model: "tags",
     where: {
-      name: ilike(escapeSQLLikePattern(name)),
-      controller: env.NEXT_PUBLIC_APP_DID,
+      name: ilike(escapeSQLLikePattern(name))
     },
   });
 };
@@ -209,7 +208,7 @@ export const fetchReactionTypeCounts = async ({
       model,
       content_id,
       type: "upvote",
-      controller: env.NEXT_PUBLIC_APP_DID,
+      // controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
   const downvotes = await findRow<{ count: string }>({
@@ -219,7 +218,7 @@ export const fetchReactionTypeCounts = async ({
       model,
       content_id,
       type: "downvote",
-      controller: env.NEXT_PUBLIC_APP_DID,
+      // controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
 

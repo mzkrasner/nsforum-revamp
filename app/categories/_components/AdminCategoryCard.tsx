@@ -10,10 +10,12 @@ import { OrbisDBRow } from "@/shared/types";
 import { Category } from "@/shared/types/category";
 import { EditIcon } from "lucide-react";
 import Link from "next/link";
+import useAuth from "@/shared/hooks/useAuth";
 
 type Props = { category: OrbisDBRow<Category>; className?: string };
 const AdminCategoryCard = ({ category, className }: Props) => {
-  const { name, description, stream_id } = category;
+  const { name, description, stream_id, controller } = category;
+  const { authInfo } = useAuth();
   return (
     <Card className="flex h-full flex-col">
       <CardHeader className="p-3">
@@ -27,10 +29,12 @@ const AdminCategoryCard = ({ category, className }: Props) => {
           className="gap-2 px-2 text-sm"
           asChild
         >
-          <Link href={`/admin/categories/${stream_id}`}>
-            <EditIcon size={14} />
-            Edit
-          </Link>
+          {authInfo?.user?.did === controller &&
+
+            <Link href={`/categories/${stream_id}`}>
+              <EditIcon size={14} />
+              Edit
+            </Link>}
         </Button>
       </CardFooter>
     </Card>

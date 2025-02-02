@@ -22,15 +22,19 @@ import {
 } from "@tanstack/react-query";
 import { produce } from "immer";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useCategory from "../_hooks/useCategory";
+import AuthGuard from "@/shared/components/AuthGuard";
 import { createCategory, editCategory } from "../actions";
+import useAuth from "@/shared/hooks/useAuth";
+import { set } from "date-fns";
 
 type Props = { id?: string };
 const CategoryForm = ({ id }: Props = {}) => {
   const router = useRouter();
-
+  const { authInfo } = useAuth();
+  const [controller, setController] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const form = useForm<CategorySchema>({
@@ -48,6 +52,7 @@ const CategoryForm = ({ id }: Props = {}) => {
 
   useEffect(() => {
     const category = categoryQuery.data;
+    if (category?.controller) setController(category.controller);
     if (!category) return;
     setValue("name", category.name);
     setValue("description", category.description);
@@ -123,57 +128,71 @@ const CategoryForm = ({ id }: Props = {}) => {
   if (categoryQuery.isLoading) return "Loading...";
 
   return (
-    <Form {...form}>
-      <form
-        className="w-full space-y-5"
-        onSubmit={handleSubmit((values) => categoryMutation.mutate(values))}
-      >
-        <FormField
-          control={control}
-          name="name"
-          render={({ field, fieldState: { error } }) => {
-            return (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} placeholder="Category name" error={error} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <FormField
-          control={control}
-          name="description"
-          render={({ field, fieldState: { error } }) => {
-            return (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Category description"
-                    rows={1}
-                    className="min-h-12"
-                    error={error}
-                    autoGrow
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <div className="flex justify-end gap-3">
-          <Button
-            type="submit"
-            loading={categoryMutation.isPending}
-            loadingText={`${id ? "Updating" : "Creating"} Category`}
+    <AuthGuard message="Sign in to create categories.">
+      {controller === authInfo?.user?.did ?
+
+        (<Form {...form}>
+          <form
+            className="w-full space-y-5"
+            onSubmit={handleSubmit((values) => categoryMutation.mutate(values))}
           >
-            {id ? "Update" : "Create"} Category
-          </Button>
+            <FormField
+              control={control}
+              name="name"
+              render={({ field, fieldState: { error } }) => {
+                return (
+                  <FormItem>
+                    <FormControl>
+                      <Input {...field} placeholder="Category name" error={error} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={control}
+              name="description"
+              render={({ field, fieldState: { error } }) => {
+                return (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Category description"
+                        rows={1}
+                        className="min-h-12"
+                        error={error}
+                        autoGrow
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <div className="flex justify-end gap-3">
+              <Button
+                type="submit"
+                loading={categoryMutation.isPending}
+                loadingText={`${id ? "Updating" : "Creating"} Category`}
+              >
+                {id ? "Update" : "Create"} Category
+              </Button>
+            </div>
+          </form>
+        </Form>)
+        : <div className="p-4 border border-gray-300 rounded-lg shadow-sm">
+          <p className="font-medium text-lg text-gray-900">{categoryQuery.data?.name}</p>
+          <p className="text-sm text-gray-700">{categoryQuery.data?.description}</p>
+          <hr className="my-3 border-gray-300" />
+          <div className="bg-red-100 p-2 rounded-md border border-red-300">
+            <p className="font-medium text-red-600">Access Denied</p>
+            <p className="text-sm text-red-600">You are not the controller of this category.</p>
+          </div>
         </div>
-      </form>
-    </Form>
+      }
+    </AuthGuard>
   );
 };
 export default CategoryForm;
