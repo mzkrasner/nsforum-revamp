@@ -208,7 +208,6 @@ export const fetchReactionTypeCounts = async ({
       model,
       content_id,
       type: "upvote",
-      // controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
   const downvotes = await findRow<{ count: string }>({
@@ -218,7 +217,6 @@ export const fetchReactionTypeCounts = async ({
       model,
       content_id,
       type: "downvote",
-      // controller: env.NEXT_PUBLIC_APP_DID,
     },
   });
 

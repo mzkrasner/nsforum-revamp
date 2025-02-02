@@ -6,13 +6,14 @@ import { cn } from "@/shared/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import usePost from "../_hooks/usePost";
+import useAuth from "@/shared/hooks/useAuth";
 
 const PostReaction = () => {
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   const { profile } = useProfile();
   const { post } = usePost();
-  // const { isVerified } = useAuth();
+  const { authInfo } = useAuth();
 
   const {
     reactionDataQuery,
@@ -25,7 +26,7 @@ const PostReaction = () => {
   } = useReaction({ contentId: post?.stream_id, model: "posts" });
 
   const guardReaction = (fn: Function, type: string) => () => {
-    console.log(type, "guardReaction");
+    if (!authInfo) return setIsVerificationModalOpen(true);
     fn();
   };
 

@@ -91,16 +91,56 @@ const ProfileForm = () => {
             <FormItem>
               <FormLabel>Profile Image</FormLabel>
               <FormControl>
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-3">
+                  {/* Profile Image Preview */}
                   {imagePreview ? (
-                    <img src={imagePreview} alt="Profile" className="h-24 w-24 rounded-full object-cover" />
+                    <div className="relative w-24 h-24">
+                      <img
+                        src={imagePreview}
+                        alt="Profile"
+                        className="w-24 h-24 rounded-full object-cover border border-gray-300 shadow-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setImagePreview(null)}
+                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs shadow-md hover:bg-red-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   ) : (
-                    <input type="file" accept="image/*" onChange={handleImageUpload} />
+                    <div
+                      className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50"
+                      onClick={() => document.getElementById("profile-image-upload")?.click()}
+                    >
+                      <p className="text-gray-600 text-sm">Click to upload</p>
+                      <p className="text-xs text-gray-500">PNG, JPG, GIF (max 2MB)</p>
+                    </div>
                   )}
 
+                  {/* Hidden File Input */}
+                  <input
+                    id="profile-image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+
+                  {/* Upload Button */}
+                  {!imagePreview && (
+                    <Button
+                      type="button"
+                      onClick={() => document.getElementById("profile-image-upload")?.click()}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                    >
+                      Upload Image
+                    </Button>
+                  )}
                 </div>
               </FormControl>
               <FormMessage />
+              {error && <p className="text-red-500 text-xs mt-1">{error.message}</p>}
             </FormItem>
           )}
         />
