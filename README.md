@@ -66,3 +66,7 @@ You should now be ready to use the application
 ## Credit
 
 This forum design is based off the [Network Society Forum](https://github.com/JM-M/nsforum-revamp). 
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
