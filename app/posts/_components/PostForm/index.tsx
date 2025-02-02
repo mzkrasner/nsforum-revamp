@@ -21,6 +21,7 @@ import usePost from "../../_hooks/usePost";
 import TagsSelector from "./components/TagsSelector";
 import usePostForm from "./usePostForm";
 import { checkProfanity } from "@/shared/actions/profanityGuard";
+import ProfanityModal from "@/shared/components/ProfanityModal";
 
 type Props = { isEditing?: boolean };
 const PostForm = ({ isEditing }: Props) => {
@@ -31,12 +32,12 @@ const PostForm = ({ isEditing }: Props) => {
   });
   const { handleSubmit, control, setValue } = form;
   const [lockedSci, setLockedSci] = useState<boolean | null>(null);
+  const [isProfanityModalOpen, setIsProfanityModalOpen] = useState(false);
 
   const guardProfanity = async (fn: Function, text: string) => {
     const isProfane = await checkProfanity(text);
     if (isProfane) {
-      alert("Your post contains inappropriate language and cannot be submitted.");
-      return;
+      return setIsProfanityModalOpen(true);
     }
     fn();
   };
@@ -78,6 +79,10 @@ const PostForm = ({ isEditing }: Props) => {
 
   return (
     <NoProfileGuard message="You must add a profile before you create posts">
+      <ProfanityModal
+        open={isProfanityModalOpen}
+        onOpenChange={setIsProfanityModalOpen}
+      />
       <Form {...form}>
         <form
           className="mx-auto w-full max-w-[640px] space-y-5"

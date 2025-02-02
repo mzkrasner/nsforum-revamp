@@ -13,7 +13,9 @@ import { OrbisDBRow } from "../types";
 import { CommentType } from "../types/comment";
 import RichTextEditor from "./RichTextEditor";
 import { checkProfanity } from "../actions/profanityGuard";
+import ProfanityModal from "./ProfanityModal";
 import { Button } from "./ui/button";
+import { useState } from "react";
 
 type Props = {
   comment?: OrbisDBRow<CommentType>;
@@ -37,19 +39,23 @@ const CommentForm = ({
     fetchCommentsArg,
   });
   const { handleSubmit, control } = form;
+  const [isProfanityModalOpen, setIsProfanityModalOpen] = useState(false);
+
 
   const guardProfanity = async (fn: Function, text: string) => {
     const isProfane = await checkProfanity(text);
     if (isProfane) {
-      alert("Your comment contains inappropriate language and cannot be submitted.");
-      return;
+      return setIsProfanityModalOpen(true);
     }
     fn();
   };
 
   return (
     <Form {...form}>
-      {/* TODO: Handle type here */}
+      <ProfanityModal
+        open={isProfanityModalOpen}
+        onOpenChange={setIsProfanityModalOpen}
+      />
       <form
         onSubmit={handleSubmit((v: any) =>
           guardProfanity(() => saveMutation.mutate(v), v.body)
