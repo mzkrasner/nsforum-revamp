@@ -121,7 +121,7 @@ const useLockedSciBalance = (sciManager: string | undefined) => {
 
 const getNetworkInfo = () => ({
   chainId: 84532,
-  sciManager: "0xd0eFd83eD3F0519eF4fAfde4C3ACD84353f3d97b",
+  sciManager: env.NEXT_PUBLIC_MANAGER_ADDRESS,
   governorOperations: "0xD6cB2848F4c4504051915a401BB80ba32f5692f8",
 });
 
@@ -158,7 +158,7 @@ export const checkAddressLockThreshold = async (
 ): Promise<boolean> => {
   const provider = new ethers.JsonRpcProvider(env.NEXT_PUBLIC_RPC_URL);
   const sciManagerContract = new ethers.Contract(
-    "0x21D7e035d0c7Fe110A82161cF6F4d48bf73e2a33",
+    env.NEXT_PUBLIC_MANAGER_ADDRESS,
     sciManagerAbi,
     provider,
   );

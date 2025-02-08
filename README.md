@@ -61,11 +61,18 @@ npm run dev
 npm run db:sync
 ```
 
+17. Ensure that your value for `NEXT_PUBLIC_MANAGER_ADDRESS` is the up-to-date contract address to retrieve data from the sci manager contract
+
 You should now be ready to use the application
 
 ## Credit
 
 This forum design is based off the [Network Society Forum](https://github.com/JM-M/nsforum-revamp). 
+
+## Additional Information
+
+[OrbisDB Documentation](https://orbisclub.notion.site/OrbisDB-Docs-e77a592361b74e66a45404ca1cbc517b)
+[OrbisDB Main Site](https://useorbis.com/)
 
 ## License
 
